@@ -7,4 +7,4 @@ Mono forecast is an android app to predict weather for EUC, motocycle and bike r
 * Custom view style is controled with settings
 * App can track your location if you need it. Weather data will also be tracked with your location
 * App can automaticly define your location using GNSS systems the location also can be provided by user
-* Ypu can view your saved tracks in the app or export it and open wuth another device
+* You can view your saved tracks in the app or export it and open wuth another device
