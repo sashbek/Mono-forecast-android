@@ -16,11 +16,11 @@ Mono forecast is an android app to predict weather for EUC, motocycle and bike r
 ### Result
 
 * 3 or 4 screen application with following pages: Main page, Settings page, Forecast page and (optional) Log page.
-* Main page must contain: header (with page label and settings button), 4 sqare sections lower (Forecast with cloud/sun/etc icon, Bluetooth connect with BLE symbol icon, Location with standart point-on-map icon, logs page with some icon) Ref: 
+* Main page must contain: header (with page label and settings button), 4 sqare sections lower (Forecast with cloud/sun/etc icon, Bluetooth connect with BLE symbol icon, Location with standart point-on-map icon, logs page with some icon) square icons are supposed to use Fragments. Ref: 
 
 <img src="./readmi_img\Screenshot_20260212-202757.png" alt="Macrodroid main page" width="200"/>
 
-* Settings page must contain: header (with page label and settings button), "use system theme" checkbox, light|dark theme switch (disabled if checkbox is marked), API dropout choice list, activity dropout choice list (EUC, Bike, Motorcycle, etc). Ref: 
+* Settings page must contain: header (with page label and settings button), "use system theme" checkbox, light|dark theme switch (disabled if checkbox is marked), API dropout choice list, activity dropout choice list (EUC, Bike, Motorcycle, etc). Theme is supposed to change as soon as switch is clicked by user. Ref: 
   
 <img src="./readmi_img\image1.png" alt="Wheellog settings page" width="200"/>
 
@@ -29,5 +29,12 @@ Mono forecast is an android app to predict weather for EUC, motocycle and bike r
   
 <img src="./readmi_img\image2.png" alt="Wheellog logs page" width="200"/>
 
+* Services should be used somehow in the app :)
 
+### Tools to use
+* only Kotlin
+* only [XML](https://developer.android.com/develop/ui/views/layout/declaring-layout?hl=ru)
+* [retrofit](https://developer.android.com/codelabs/basic-android-kotlin-compose-getting-data-internet#0) 2 or/and [okhttp](https://habr.com/ru/articles/717900/)
 
+### Sources
+[Youtube](https://www.youtube.com/playlist?list=PLgPRahgE-GctUcLMcQFvl00xsXqpNJOix) 
