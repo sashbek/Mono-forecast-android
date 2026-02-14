@@ -4,20 +4,18 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.ComponentActivity
-import org.pakicek.monoforecast.domain.WeatherRepository
-import org.pakicek.monoforecast.domain.model.EucDevice
 import org.pakicek.monoforecast.domain.model.RideDifficulty
+import org.pakicek.monoforecast.domain.repositories.ForecastRepository
 import org.pakicek.monoforecast.logic.ForecastAnalyzer
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val repository = WeatherRepository()
+        val repository = ForecastRepository()
         val analyzer = ForecastAnalyzer()
-        val myDevice = EucDevice("Example", 100.0, 80)
         val weather = repository.getCurrentWeather()
-        val difficulty = analyzer.analyzeDifficulty(weather, myDevice)
+        val difficulty = analyzer.analyzeDifficulty(weather)
 
         val myTextView = TextView(this)
 
@@ -29,8 +27,7 @@ class MainActivity : ComponentActivity() {
             Mono Forecast
             
             Vehicle
-            Name: ${myDevice.name}
-            Battery: ${myDevice.getBatteryLevel()}%
+            TODO
             
             Weather:
             Temperature: ${weather.tempC} C

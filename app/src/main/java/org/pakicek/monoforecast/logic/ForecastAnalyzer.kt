@@ -1,15 +1,14 @@
 package org.pakicek.monoforecast.logic
 
 import org.pakicek.monoforecast.domain.model.RideDifficulty
-import org.pakicek.monoforecast.domain.model.Vehicle
-import org.pakicek.monoforecast.domain.model.WeatherSnapshot
+import org.pakicek.monoforecast.domain.model.dto.logs.WeatherBlockEntity
 import org.pakicek.monoforecast.utils.toKmh
 
 class ForecastAnalyzer {
-    fun analyzeDifficulty(weather: WeatherSnapshot, vehicle: Vehicle): RideDifficulty {
-        if (!vehicle.isSafeForRide(weather)) {
-            return RideDifficulty.Hard("Vehicle limitation exceeded", weather.windSpeedMs)
-        }
+    fun analyzeDifficulty(weather: WeatherBlockEntity): RideDifficulty {
+        //if (!vehicle.isSafeForRide(weather)) {
+        //    return RideDifficulty.Hard("Vehicle limitation exceeded", weather.windSpeedMs)
+        //}
 
         return when {
             weather.rainMm > 5.0 -> RideDifficulty.Extreme
