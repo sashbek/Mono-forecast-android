@@ -41,6 +41,13 @@ Mono forecast is an android app to predict weather for EUC, motocycle and bike r
 
 ### UML architecture
 
+Build:
+
+<img src="./readmi_img/android-monoforecast.svg" alt="Arch" width="800"/>
+
+
+Source:
+
 ```plantuml
 @startuml
 !theme plain
