@@ -38,3 +38,205 @@ Mono forecast is an android app to predict weather for EUC, motocycle and bike r
 
 ### Sources
 [Youtube](https://www.youtube.com/playlist?list=PLgPRahgE-GctUcLMcQFvl00xsXqpNJOix) 
+
+### UML architecture
+
+```plantuml
+@startuml
+!theme plain
+skinparam componentStyle rectangle
+skinparam backgroundColor #FEFEFE
+skinparam component {
+  BackgroundColor #E1F5FE
+  BorderColor #0288D1
+  FontColor #01579B
+}
+skinparam database {
+  BackgroundColor #FFF9C4
+  BorderColor #FBC02D
+  FontColor #B26A00
+}
+skinparam interface {
+  BackgroundColor #C8E6C9
+  BorderColor #2E7D32
+  FontColor #1B5E20
+}
+skinparam control {
+  BackgroundColor #FFE0B2
+  BorderColor #E65100
+  FontColor #BF360C
+}
+skinparam rectangle {
+  BackgroundColor #F3E5F5
+  BorderColor #7B1FA2
+  FontColor #4A148C
+}
+skinparam note {
+  BackgroundColor #FFFACD
+  BorderColor #B8860B
+}
+
+title "Mono-forecast-android — Sprint 1 Architecture\n(12.02–19.02)\nАктивности как основные экраны + фрагмент для деталей лога"
+
+' ========== LAYERS ==========
+
+package "UI Layer (Activities + Fragment)" {
+  [MainActivity] <<activity>>
+  [ForecastActivity] <<activity>>
+  [SettingsActivity] <<activity>>
+  [LogsActivity] <<activity>>
+  [LogDetailFragment] <<fragment>>
+}
+
+note right of [LogDetailFragment]
+  открывается при клике
+  на лог в LogsActivity
+end note
+
+package "ViewModel Layer" {
+  [MainViewModel] <<viewmodel>>
+  [ForecastViewModel] <<viewmodel>>
+  [SettingsViewModel] <<viewmodel>>
+  [LogsViewModel] <<viewmodel>>
+  [LogDetailViewModel] <<viewmodel>>
+}
+
+package "Service Layer" {
+  [WeatherSyncService] <<service>>
+  [LocationTrackingService] <<service>>
+  [VehicleConnectionService] <<service>>
+}
+
+note right of [VehicleConnectionService]
+  для будущих спринтов
+end note
+
+package "Repository Layer" {
+  [ForecastRepository] <<repository>>
+  [SettingsRepository] <<repository>>
+  [LogRepository] <<repository>>
+}
+
+note right of [ForecastRepository]
+  только прогнозы (API)
+end note
+
+note right of [SettingsRepository]
+  настройки приложения
+end note
+
+note right of [LogRepository]
+  центральный репозиторий логов
+end note
+
+package "Models" {
+  
+  package "DTO" {
+    component "WeatherResponseDto" <<dto>>
+    component "ForecastDto" <<dto>>
+    component "WindDto" <<dto>>
+    component "MainDto" <<dto>>
+  }
+  
+  package "LogFrame" {
+    component "LogFrameEntity" <<entity>>
+    component "LocationBlockEntity" <<entity>>
+    component "WeatherBlockEntity" <<entity>>
+    component "DeviceMetricsBlockEntity" <<entity>>
+    
+    [LogFrameEntity] *-- [LocationBlockEntity] : "0..1"
+    [LogFrameEntity] *-- [WeatherBlockEntity] : "0..1"
+    [LogFrameEntity] *-- [DeviceMetricsBlockEntity] : "0..1"
+  }
+}
+
+note top of [LogFrameEntity]
+  Каждый лог представляет собой
+  временную метку + опциональные блоки:
+  • LocationBlock (координаты, скорость)
+  • WeatherBlock (темп, ветер, влажность)
+  • DeviceMetricsBlock (данные EUC)
+  
+  Блоки могут сохраняться независимо
+  в зависимости от активных сервисов
+end note
+
+note right of [LocationBlockEntity]
+  optional
+end note
+
+note right of [WeatherBlockEntity]
+  optional
+end note
+
+note right of [DeviceMetricsBlockEntity]
+  optional
+end note
+
+package "Local Storage" {
+  database "Room Database" <<db>> {
+    component "LogFrameDao" <<dao>>
+    component "SettingsDao" <<dao>>
+  }
+}
+
+' ========== RELATIONS ==========
+
+' Activity → ViewModel
+[MainActivity] --> [MainViewModel]
+[ForecastActivity] --> [ForecastViewModel]
+[SettingsActivity] --> [SettingsViewModel]
+[LogsActivity] --> [LogsViewModel]
+
+' Fragment → ViewModel
+[LogDetailFragment] --> [LogDetailViewModel]
+
+' ViewModel → Repository
+[MainViewModel] --> [ForecastRepository]
+[MainViewModel] --> [LogRepository]
+[ForecastViewModel] --> [ForecastRepository]
+[SettingsViewModel] --> [SettingsRepository]
+[LogsViewModel] --> [LogRepository]
+[LogDetailViewModel] --> [LogRepository]
+
+' Service → Repository
+[WeatherSyncService] --> [ForecastRepository]
+[LocationTrackingService] --> [LogRepository]
+[VehicleConnectionService] --> [LogRepository]
+
+' Repository dependencies
+[ForecastRepository] --> [WeatherResponseDto]
+[ForecastRepository] --> [WeatherSyncService]
+
+[LogRepository] --> [LogFrameDao]
+[LogRepository] --> [LogFrameEntity]
+[LogRepository] --> [LocationBlockEntity]
+[LogRepository] --> [WeatherBlockEntity]
+[LogRepository] --> [DeviceMetricsBlockEntity]
+
+[SettingsRepository] --> [SettingsDao]
+
+' API связи
+[WeatherSyncService] --> [WeatherResponseDto]
+[WeatherResponseDto] *-- [MainDto]
+[WeatherResponseDto] *-- [WindDto]
+
+' DAO связи
+[LogFrameDao] ..> [LogFrameEntity]
+[SettingsDao] ..> [SettingsEntity]
+
+note right of [SettingsEntity]
+  <<entity>>
+  настройки темы, API,
+  типов активности
+end note
+
+' Навигация между Activity
+[MainActivity] --> [ForecastActivity] : "startActivity"
+[MainActivity] --> [SettingsActivity] : "startActivity"
+[MainActivity] --> [LogsActivity] : "startActivity"
+
+[LogsActivity] --> [LogDetailFragment] : "открывает в контейнере"
+
+@enduml
+```
