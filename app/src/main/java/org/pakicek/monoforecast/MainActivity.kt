@@ -28,28 +28,27 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Обработка 4 кнопок опций
-        val btnOption1 = findViewById<LinearLayout>(R.id.btnOption1)
-        val btnOption2 = findViewById<LinearLayout>(R.id.btnOption2)
-        val btnOption3 = findViewById<LinearLayout>(R.id.btnOption3)
-        val btnOption4 = findViewById<LinearLayout>(R.id.btnOption4)
+        val forecastButton = findViewById<LinearLayout>(R.id.forecastActivityButton)
+        val bluetoothButton = findViewById<LinearLayout>(R.id.bluetoothActivityButton)
+        val locationButton = findViewById<LinearLayout>(R.id.locationActivityButton)
+        val logsButton = findViewById<LinearLayout>(R.id.logsActivityButton)
 
-        btnOption1.setOnClickListener {
-            Toast.makeText(this, "Выбрана опция 1", Toast.LENGTH_SHORT).show()
-            // Здесь переход на другое Activity
-            // val intent = Intent(this, Option1Activity::class.java)
-            // startActivity(intent)
+        forecastButton.setOnClickListener {
+            val intent = Intent(this, ForecastActivity::class.java)
+            startActivity(intent)
         }
 
-        btnOption2.setOnClickListener {
-            Toast.makeText(this, "Выбрана опция 2", Toast.LENGTH_SHORT).show()
+        bluetoothButton.setOnClickListener {
+            Toast.makeText(this, "BLE Connect: not implemented", Toast.LENGTH_SHORT).show()
         }
 
-        btnOption3.setOnClickListener {
-            Toast.makeText(this, "Выбрана опция 3", Toast.LENGTH_SHORT).show()
+        locationButton.setOnClickListener {
+            Toast.makeText(this, "Location tracker: not implemented", Toast.LENGTH_SHORT).show()
         }
 
-        btnOption4.setOnClickListener {
-            Toast.makeText(this, "Выбрана опция 4", Toast.LENGTH_SHORT).show()
+        logsButton.setOnClickListener {
+            val intent = Intent(this, LogsActivity::class.java)
+            startActivity(intent)
         }
     }
 

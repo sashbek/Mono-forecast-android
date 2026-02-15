@@ -72,7 +72,7 @@
                 app:cardElevation="4dp">
 
                 <LinearLayout
-                    android:id="@+id/btnOption1"
+                    android:id="@+id/forecastActivityButton"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="?attr/selectableItemBackground"
@@ -109,7 +109,7 @@
                 app:cardElevation="4dp">
 
                 <LinearLayout
-                    android:id="@+id/btnOption2"
+                    android:id="@+id/bluetoothActivityButton"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="?attr/selectableItemBackground"
@@ -155,7 +155,7 @@
                 app:cardElevation="4dp">
 
                 <LinearLayout
-                    android:id="@+id/btnOption3"
+                    android:id="@+id/locationActivityButton"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="?attr/selectableItemBackground"
@@ -192,7 +192,7 @@
                 app:cardElevation="4dp">
 
                 <LinearLayout
-                    android:id="@+id/btnOption4"
+                    android:id="@+id/logsActivityButton"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="?attr/selectableItemBackground"
