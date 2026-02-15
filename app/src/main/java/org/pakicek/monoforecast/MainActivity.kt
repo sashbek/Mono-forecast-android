@@ -1,21 +1,24 @@
 package org.pakicek.monoforecast
 
 import android.content.Intent
-import android.graphics.Typeface
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import org.pakicek.monoforecast.domain.model.RideDifficulty
-import org.pakicek.monoforecast.domain.repositories.ForecastRepository
-import org.pakicek.monoforecast.logic.ForecastAnalyzer
+import androidx.core.view.WindowInsetsControllerCompat
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setupStatusBar()
         setContentView(R.layout.activity_main)
+        setupWindowInsets()
 
         // Обработка кнопки настроек
         val settingsButton = findViewById<ImageButton>(R.id.btnSettings)
@@ -56,6 +59,36 @@ class MainActivity : AppCompatActivity() {
             is RideDifficulty.Moderate -> "Warning: ${diff.warnings}"
             is RideDifficulty.Hard -> "Danger: ${diff.dangerReason}"
             is RideDifficulty.Extreme -> "Maybe you should stay home?"
+        }
+    }
+
+    private fun setupStatusBar() {
+        // Делаем статус бар прозрачным
+        window.statusBarColor = Color.TRANSPARENT
+
+        // Настраиваем цвет иконок статус бара
+        // Для темного фона (gray_500) - светлые иконки
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
+
+        // Включаем edge-to-edge режим
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+    }
+
+    private fun setupWindowInsets() {
+        // Добавляем отступ для верхней секции, чтобы контент не наезжал на статус бар
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val headerLayout = findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.constraintLayout)
+
+            // Добавляем отступ сверху равный высоте статус бара
+            headerLayout.setPadding(
+                headerLayout.paddingLeft,
+                headerLayout.paddingTop + insets.systemWindowInsetTop,
+                headerLayout.paddingRight,
+                headerLayout.paddingBottom
+            )
+
+            // Возвращаем insets без изменений
+            insets
         }
     }
 }
