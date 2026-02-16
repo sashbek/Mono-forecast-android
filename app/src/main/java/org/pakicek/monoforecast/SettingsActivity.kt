@@ -6,7 +6,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageButton
 import android.widget.Spinner
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -53,7 +52,7 @@ class SettingsActivity : AppCompatActivity() {
 
         // Выставляем в выпадающий список актуальный элемент
         val prefs = getSharedPreferences("settings", MODE_PRIVATE)
-        val savedTheme = prefs.getString("theme_pref", "Системная")
+        val savedTheme = prefs.getString("theme_pref", "System")
         spinner.setSelection(options.indexOf(savedTheme))
 
         // Добавляем обработчик для выбора из выпадающего списка
@@ -73,7 +72,7 @@ class SettingsActivity : AppCompatActivity() {
                     else -> AppCompatDelegate.getDefaultNightMode()
                 }
 
-//                AppCompatDelegate.setDefaultNightMode(mode)
+                AppCompatDelegate.setDefaultNightMode(mode)
 
                 // Сохраняем выбор в SharedPreferences
                 val prefs = getSharedPreferences("settings", MODE_PRIVATE)

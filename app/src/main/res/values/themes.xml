@@ -3,13 +3,14 @@
     <!-- Базовая тема приложения (обязательно наследуется от AppCompat) -->
     <style name="Theme.MonoForecast" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Primary brand color -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryDark">@color/purple_700</item>
-        <item name="colorAccent">@color/teal_200</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/middle_gray</item>
+        <item name="colorAccent">@color/purple_700</item>
+
+        <item name="android:textColor">@color/black</item>
 
         <!-- Window background -->
-        <item name="android:windowBackground">@color/white</item>
-        <item name="android:statusBarColor">@color/purple_500</item>  <!-- Цвет статус бара -->
-
+        <item name="android:windowBackground">@color/middle_gray</item>
+        <item name="android:statusBarColor">@color/middle_gray</item>
     </style>
 </resources>

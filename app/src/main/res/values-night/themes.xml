@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Темная тема приложения (обязательно наследуется от AppCompat) -->
+    <style name="Theme.MonoForecast" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Primary brand color -->
+        <item name="colorPrimary">@color/dark_gray</item>
+        <item name="colorPrimaryDark">@color/black</item>
+        <item name="colorAccent">@color/purple_200</item>
+
+        <item name="android:textColor">@color/white</item>
+
+        <!-- Window background -->
+        <item name="android:windowBackground">@color/black</item>
+        <item name="android:statusBarColor">@color/black</item>
+
+    </style>
+</resources>

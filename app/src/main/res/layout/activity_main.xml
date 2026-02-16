@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorPrimary"
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
@@ -14,7 +15,7 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/gray_500"
+        android:background="?attr/colorPrimaryDark"
         android:padding="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -24,7 +25,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/main_header"
-            android:textColor="@android:color/white"
+            android:textColor="?android:attr/textColor"
             android:textSize="26sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -34,18 +35,21 @@
 
         <ImageButton
             android:id="@+id/btnSettings"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/ic_settings"
+            app:tint="?android:attr/textColor"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.1" />  <!-- 8% от ширины экрана -->
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:padding="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Секция с 4 кнопками 2x2 -->
     <LinearLayout
@@ -68,8 +72,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="@color/white"
-                app:cardElevation="4dp">
+                app:cardBackgroundColor="?attr/colorPrimary"
+                app:cardElevation="5dp"
+                app:cardUseCompatPadding="true">
 
                 <LinearLayout
                     android:id="@+id/forecastActivityButton"
@@ -79,13 +84,15 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    >
 
                     <ImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:layout_gravity="center_horizontal"
-                        android:src="@drawable/ic_forecast_button" />
+                        android:src="@drawable/ic_forecast_button"
+                        app:tint="?android:attr/textColor"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -93,8 +100,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="8dp"
                         android:text="@string/forecast_button_text"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
+                        android:textSize="22sp" />
 
                 </LinearLayout>
 
@@ -105,8 +111,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="@color/white"
-                app:cardElevation="4dp">
+                app:cardBackgroundColor="?attr/colorPrimary"
+                app:cardElevation="5dp"
+                app:cardUseCompatPadding="true">
 
                 <LinearLayout
                     android:id="@+id/bluetoothActivityButton"
@@ -122,7 +129,8 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:layout_gravity="center_horizontal"
-                        android:src="@drawable/ic_bluetooth_button" />
+                        android:src="@drawable/ic_bluetooth_button"
+                        app:tint="?android:attr/textColor"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -130,8 +138,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="8dp"
                         android:text="@string/bluetooth_button_text"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
+                        android:textSize="22sp" />
 
                 </LinearLayout>
 
@@ -151,8 +158,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="@color/white"
-                app:cardElevation="4dp">
+                app:cardBackgroundColor="?attr/colorPrimary"
+                app:cardElevation="5dp"
+                app:cardUseCompatPadding="true">
 
                 <LinearLayout
                     android:id="@+id/locationActivityButton"
@@ -168,7 +176,8 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:layout_gravity="center_horizontal"
-                        android:src="@drawable/ic_location_button" />
+                        android:src="@drawable/ic_location_button"
+                        app:tint="?android:attr/textColor"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -176,8 +185,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="8dp"
                         android:text="Опция 3"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
+                        android:textSize="22sp" />
 
                 </LinearLayout>
 
@@ -188,8 +196,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="@color/white"
-                app:cardElevation="4dp">
+                app:cardBackgroundColor="?attr/colorPrimary"
+                app:cardElevation="5dp"
+                app:cardUseCompatPadding="true">
 
                 <LinearLayout
                     android:id="@+id/logsActivityButton"
@@ -205,7 +214,8 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:layout_gravity="center_horizontal"
-                        android:src="@drawable/ic_logs_button" />
+                        android:src="@drawable/ic_logs_button"
+                        app:tint="?android:attr/textColor"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -213,8 +223,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="8dp"
                         android:text="@string/logs_button_text"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
+                        android:textSize="22sp" />
 
                 </LinearLayout>
 

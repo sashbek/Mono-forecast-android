@@ -7,6 +7,7 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import org.pakicek.monoforecast.domain.model.RideDifficulty
@@ -16,6 +17,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        setupTheme()
         setupStatusBar()
         setContentView(R.layout.activity_main)
         setupWindowInsets()
@@ -58,6 +60,15 @@ class MainActivity : AppCompatActivity() {
             is RideDifficulty.Moderate -> "Warning: ${diff.warnings}"
             is RideDifficulty.Hard -> "Danger: ${diff.dangerReason}"
             is RideDifficulty.Extreme -> "Maybe you should stay home?"
+        }
+    }
+
+    private fun setupTheme() {
+        val prefs = getSharedPreferences("settings", MODE_PRIVATE)
+        when (prefs.getString("theme_pref", "System")) {
+            "Light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            "Dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
     }
 
