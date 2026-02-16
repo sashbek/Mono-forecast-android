@@ -7,4 +7,6 @@
     <string name="settings_header_text">Settings</string>
     <string name="forecast_header_text">Forecast</string>
     <string name="logs_header_text">Logs</string>
+    <string name="go_back">Go back</string>
+    <string name="set_theme">Application theme</string>
 </resources>
