@@ -1,6 +1,6 @@
-package org.pakicek.monoforecast.domain.model
+package org.pakicek.monoforecast.domain.model.dto.logs
 
-data class WeatherSnapshot(
+data class WeatherBlockEntity(
     val tempC: Double,
     val windSpeedMs: Double,
     val rainMm: Double,

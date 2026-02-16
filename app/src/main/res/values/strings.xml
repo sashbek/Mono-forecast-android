@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Mono-forecast-android</string>
+    <string name="main_header">Mono forecast</string>
+    <string name="forecast_button_text">Forecast</string>
+    <string name="logs_button_text">Logs</string>
+    <string name="bluetooth_button_text">Bluetooth</string>
+    <string name="settings_header_text">Settings</string>
+    <string name="forecast_header_text">Forecast</string>
+    <string name="logs_header_text">Logs</string>
 </resources>

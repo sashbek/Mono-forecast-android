@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Базовая тема приложения (обязательно наследуется от AppCompat) -->
+    <style name="Theme.MonoForecast" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Primary brand color -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryDark">@color/purple_700</item>
+        <item name="colorAccent">@color/teal_200</item>
 
-    <style name="Theme.Monoforecastandroid" parent="android:Theme.Material.Light.NoActionBar" />
+        <!-- Window background -->
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:statusBarColor">@color/purple_500</item>  <!-- Цвет статус бара -->
+
+    </style>
 </resources>
