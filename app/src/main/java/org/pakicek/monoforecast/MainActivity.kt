@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupWindowInsets() {
         // Добавляем отступ для верхней секции, чтобы контент не наезжал на статус бар
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val headerLayout = findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.constraintLayout)
+            val headerLayout = findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.header)
 
             // Добавляем отступ сверху равный высоте статус бара
             headerLayout.setPadding(
