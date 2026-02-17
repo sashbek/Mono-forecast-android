@@ -1,47 +1,55 @@
 package org.pakicek.monoforecast
 
-import android.graphics.Typeface
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
-import android.widget.TextView
-import androidx.activity.ComponentActivity
-import org.pakicek.monoforecast.domain.WeatherRepository
-import org.pakicek.monoforecast.domain.model.EucDevice
+import android.widget.ImageButton
+import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import org.pakicek.monoforecast.domain.model.RideDifficulty
-import org.pakicek.monoforecast.logic.ForecastAnalyzer
+import androidx.core.view.WindowInsetsControllerCompat
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val repository = WeatherRepository()
-        val analyzer = ForecastAnalyzer()
-        val myDevice = EucDevice("Example", 100.0, 80)
-        val weather = repository.getCurrentWeather()
-        val difficulty = analyzer.analyzeDifficulty(weather, myDevice)
+        setupStatusBar()
+        setContentView(R.layout.activity_main)
+        setupWindowInsets()
 
-        val myTextView = TextView(this)
+        // Обработка кнопки настроек
+        val settingsButton = findViewById<ImageButton>(R.id.btnSettings)
+        settingsButton.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+        }
 
-        myTextView.textSize = 20f
-        myTextView.setPadding(50, 50, 50, 50)
-        myTextView.typeface = Typeface.MONOSPACE
+        // Обработка 4 кнопок опций
+        val forecastButton = findViewById<LinearLayout>(R.id.forecastActivityButton)
+        val bluetoothButton = findViewById<LinearLayout>(R.id.bluetoothActivityButton)
+        val locationButton = findViewById<LinearLayout>(R.id.locationActivityButton)
+        val logsButton = findViewById<LinearLayout>(R.id.logsActivityButton)
 
-        val textToDisplay = """
-            Mono Forecast
-            
-            Vehicle
-            Name: ${myDevice.name}
-            Battery: ${myDevice.getBatteryLevel()}%
-            
-            Weather:
-            Temperature: ${weather.tempC} C
-            Wind: ${weather.windSpeedMs} m/s
-            Rain: ${weather.rainMm} mm
-            
-            Result: ${formatDifficulty(difficulty)}
-        """.trimIndent()
-        myTextView.text = textToDisplay
+        forecastButton.setOnClickListener {
+            val intent = Intent(this, ForecastActivity::class.java)
+            startActivity(intent)
+        }
 
-        setContentView(myTextView)
+        bluetoothButton.setOnClickListener {
+            Toast.makeText(this, "BLE Connect: not implemented", Toast.LENGTH_SHORT).show()
+        }
+
+        locationButton.setOnClickListener {
+            Toast.makeText(this, "Location tracker: not implemented", Toast.LENGTH_SHORT).show()
+        }
+
+        logsButton.setOnClickListener {
+            val intent = Intent(this, LogsActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun formatDifficulty(diff: RideDifficulty): String {
@@ -50,6 +58,36 @@ class MainActivity : ComponentActivity() {
             is RideDifficulty.Moderate -> "Warning: ${diff.warnings}"
             is RideDifficulty.Hard -> "Danger: ${diff.dangerReason}"
             is RideDifficulty.Extreme -> "Maybe you should stay home?"
+        }
+    }
+
+    private fun setupStatusBar() {
+        // Делаем статус бар прозрачным
+        window.statusBarColor = Color.TRANSPARENT
+
+        // Настраиваем цвет иконок статус бара
+        // Для темного фона (gray_500) - светлые иконки
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
+
+        // Включаем edge-to-edge режим
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+    }
+
+    private fun setupWindowInsets() {
+        // Добавляем отступ для верхней секции, чтобы контент не наезжал на статус бар
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val headerLayout = findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.constraintLayout)
+
+            // Добавляем отступ сверху равный высоте статус бара
+            headerLayout.setPadding(
+                headerLayout.paddingLeft,
+                headerLayout.paddingTop + insets.systemWindowInsetTop,
+                headerLayout.paddingRight,
+                headerLayout.paddingBottom
+            )
+
+            // Возвращаем insets без изменений
+            insets
         }
     }
 }
