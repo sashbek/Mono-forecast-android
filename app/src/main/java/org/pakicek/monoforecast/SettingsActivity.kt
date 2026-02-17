@@ -4,15 +4,14 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.ImageButton
 import android.widget.ScrollView
-import android.widget.Spinner
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import org.pakicek.monoforecast.databinding.ActivitySettingsBinding
 import org.pakicek.monoforecast.domain.model.AppTheme
 import org.pakicek.monoforecast.domain.model.UserActivity
 import org.pakicek.monoforecast.domain.model.WeatherApi
@@ -21,12 +20,17 @@ import org.pakicek.monoforecast.logic.factories.SettingsViewModelFactory
 import org.pakicek.monoforecast.logic.viewmodel.SettingsViewModel
 
 class SettingsActivity : AppCompatActivity() {
+    private var _binding: ActivitySettingsBinding? = null
+    private val binding
+        get() = _binding ?: throw IllegalStateException("Binding must not be null")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_settings)
-
+        _binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setupInsets()
+        enableEdgeToEdge()
+
 
         val repo = SettingsRepository(this)
         val factory = SettingsViewModelFactory(repo)
@@ -37,8 +41,7 @@ class SettingsActivity : AppCompatActivity() {
         setupActivitySpinner(viewModel)
 
         // Обработка кнопки возврата
-        val btnBack = findViewById<ImageButton>(R.id.btnBack)
-        btnBack.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             finish()
         }
     }
@@ -85,7 +88,6 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun setupThemeSpinner(viewModel: SettingsViewModel){
         // Задаем элементы выпадающего списка тем
-        val spinner: Spinner = findViewById(R.id.themeSpinner)
         val options = listOf("System", "Light", "Dark")
         val adapter = ArrayAdapter(
             this,
@@ -93,18 +95,18 @@ class SettingsActivity : AppCompatActivity() {
             options
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapter
+        binding.themeSpinner.adapter = adapter
 
         // Выставляем в выпадающий список актуальный элемент
         val savedTheme = viewModel.getTheme()
         when(savedTheme) {
-            AppTheme.DARK -> spinner.setSelection(options.indexOf("Dark"))
-            AppTheme.LIGHT -> spinner.setSelection(options.indexOf("Light"))
-            else -> spinner.setSelection(options.indexOf("System"))
+            AppTheme.DARK -> binding.themeSpinner.setSelection(options.indexOf("Dark"))
+            AppTheme.LIGHT -> binding.themeSpinner.setSelection(options.indexOf("Light"))
+            else -> binding.themeSpinner.setSelection(options.indexOf("System"))
         }
 
         // Добавляем обработчик для выбора из выпадающего списка
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        binding.themeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
                 view: View?,
@@ -135,7 +137,6 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun setupApiSpinner(viewModel: SettingsViewModel){
         // Задаем элементы выпадающего списка тем
-        val spinner: Spinner = findViewById(R.id.apiSpinner)
         val options = listOf("NinjaAPI")
         val adapter = ArrayAdapter(
             this,
@@ -143,16 +144,16 @@ class SettingsActivity : AppCompatActivity() {
             options
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapter
+        binding.apiSpinner.adapter = adapter
 
         // Выставляем в выпадающий список актуальный элемент
         val api = viewModel.getApi()
         when(api) {
-            WeatherApi.NINJA_API -> spinner.setSelection(options.indexOf("NinjaAPI"))
+            WeatherApi.NINJA_API -> binding.apiSpinner.setSelection(options.indexOf("NinjaAPI"))
         }
 
         // Добавляем обработчик для выбора из выпадающего списка
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        binding.apiSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
                 view: View?,
@@ -172,7 +173,6 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun setupActivitySpinner(viewModel: SettingsViewModel){
         // Задаем элементы выпадающего списка тем
-        val spinner: Spinner = findViewById(R.id.activitySpinner)
         val options = listOf("Bike", "Mono Wheel", "Bicycle")
         val adapter = ArrayAdapter(
             this,
@@ -180,18 +180,18 @@ class SettingsActivity : AppCompatActivity() {
             options
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapter
+        binding.activitySpinner.adapter = adapter
 
         // Выставляем в выпадающий список актуальный элемент
         val activity = viewModel.getActivity()
         when(activity) {
-            UserActivity.BIKE -> spinner.setSelection(options.indexOf("Bike"))
-            UserActivity.MONO_WHEEL -> spinner.setSelection(options.indexOf("Mono Wheel"))
-            else -> spinner.setSelection(options.indexOf("Bicycle"))
+            UserActivity.BIKE -> binding.activitySpinner.setSelection(options.indexOf("Bike"))
+            UserActivity.MONO_WHEEL -> binding.activitySpinner.setSelection(options.indexOf("Mono Wheel"))
+            else -> binding.activitySpinner.setSelection(options.indexOf("Bicycle"))
         }
 
         // Добавляем обработчик для выбора из выпадающего списка
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        binding.activitySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
                 view: View?,

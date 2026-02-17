@@ -6,10 +6,6 @@ import org.pakicek.monoforecast.utils.toKmh
 
 class ForecastAnalyzer {
     fun analyzeDifficulty(weather: WeatherBlockEntity): RideDifficulty {
-        //if (!vehicle.isSafeForRide(weather)) {
-        //    return RideDifficulty.Hard("Vehicle limitation exceeded", weather.windSpeedMs)
-        //}
-
         return when {
             weather.rainMm > 5.0 -> RideDifficulty.Extreme
             weather.tempC < 5.0 -> RideDifficulty.Moderate(listOf("Ice risk", "Cold hands"))
