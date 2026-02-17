@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageButton
+import android.widget.ScrollView
 import android.widget.Spinner
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -32,6 +33,25 @@ class SettingsActivity : AppCompatActivity() {
             v.setPadding(
                 leftInset,
                 systemBars.top,
+                rightInset,
+                0
+            )
+
+            insets
+        }
+
+        // Делаем отступы для системных панелей для основного контента
+        val content : ScrollView = findViewById(R.id.settingsWrap)
+        ViewCompat.setOnApplyWindowInsetsListener(content) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val cutout = insets.displayCutout
+
+            val leftInset = maxOf(systemBars.left, cutout?.safeInsetLeft ?: 0)
+            val rightInset = maxOf(systemBars.right, cutout?.safeInsetRight ?: 0)
+
+            v.setPadding(
+                leftInset,
+                0,
                 rightInset,
                 0
             )
