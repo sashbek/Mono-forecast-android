@@ -1,4 +1,16 @@
 package org.pakicek.monoforecast.logic.viewmodel
 
-class SettingsViewModel {
+import androidx.lifecycle.ViewModel
+import org.pakicek.monoforecast.domain.model.AppTheme
+import org.pakicek.monoforecast.domain.repositories.SettingsRepository
+
+class SettingsViewModel(
+    private val repository: SettingsRepository
+) : ViewModel() {
+
+    fun getTheme(): AppTheme = repository.getTheme()
+
+    fun saveTheme(theme: AppTheme) {
+        repository.saveTheme(theme)
+    }
 }

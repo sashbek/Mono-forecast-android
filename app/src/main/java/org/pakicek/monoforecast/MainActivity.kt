@@ -12,6 +12,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import org.pakicek.monoforecast.domain.model.RideDifficulty
 import androidx.core.view.WindowInsetsControllerCompat
+import org.pakicek.monoforecast.domain.model.AppTheme
+import org.pakicek.monoforecast.domain.repositories.SettingsRepository
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,10 +64,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupTheme() {
-        val prefs = getSharedPreferences("settings", MODE_PRIVATE)
-        when (prefs.getString("theme_pref", "System")) {
-            "Light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            "Dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+
+        val settingsRepository = SettingsRepository(this)
+        val theme = settingsRepository.getTheme()
+
+        when (theme) {
+            AppTheme.LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            AppTheme.DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
     }

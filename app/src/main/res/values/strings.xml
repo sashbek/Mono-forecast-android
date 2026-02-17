@@ -9,4 +9,6 @@
     <string name="logs_header_text">Logs</string>
     <string name="go_back">Go back</string>
     <string name="set_theme">Application theme</string>
+    <string name="choose_forecast_api">Choose forecast API</string>
+    <string name="choose_activity_type">Choose activity type</string>
 </resources>

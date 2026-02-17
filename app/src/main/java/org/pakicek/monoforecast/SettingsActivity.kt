@@ -14,6 +14,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.content.edit
+import org.pakicek.monoforecast.domain.model.AppTheme
+import org.pakicek.monoforecast.domain.repositories.SettingsRepository
+import org.pakicek.monoforecast.logic.factories.SettingsViewModelFactory
+import org.pakicek.monoforecast.logic.viewmodel.SettingsViewModel
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,6 +25,65 @@ class SettingsActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_settings)
 
+        setupInsets()
+
+        val repo = SettingsRepository(this)
+        val factory = SettingsViewModelFactory(repo)
+        val viewModel = androidx.lifecycle.ViewModelProvider(this, factory)[SettingsViewModel::class.java]
+
+        // Задаем элементы выпадающего списка
+        val spinner: Spinner = findViewById(R.id.themeSpinner)
+        val options = listOf("System", "Light", "Dark")
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            options
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+
+        // Выставляем в выпадающий список актуальный элемент
+        val savedTheme = viewModel.getTheme()
+        when(savedTheme) {
+            AppTheme.DARK -> spinner.setSelection(options.indexOf("Dark"))
+            AppTheme.LIGHT -> spinner.setSelection(options.indexOf("Light"))
+            else -> spinner.setSelection(options.indexOf("System"))
+        }
+
+        // Добавляем обработчик для выбора из выпадающего списка
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val selected = options[position]
+
+                val mode = when (selected) {
+                    "Light" -> AppCompatDelegate.MODE_NIGHT_NO
+                    "Dark" -> AppCompatDelegate.MODE_NIGHT_YES
+                    "System" -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    else -> AppCompatDelegate.getDefaultNightMode()
+                }
+
+                AppCompatDelegate.setDefaultNightMode(mode)
+
+                // Сохраняем тему
+                viewModel.saveTheme(AppTheme.valueOf(selected.uppercase()))
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+
+        // Обработка кнопки возврата
+        val btnBack = findViewById<ImageButton>(R.id.btnBack)
+        btnBack.setOnClickListener {
+            finish()
+        }
+    }
+
+    private fun setupInsets() {
         // Делаем отступы для системных панелей для контента header
         val header : ConstraintLayout = findViewById(R.id.headerContentWrap)
         ViewCompat.setOnApplyWindowInsetsListener(header) { v, insets ->
@@ -57,55 +120,6 @@ class SettingsActivity : AppCompatActivity() {
             )
 
             insets
-        }
-
-        // Задаем элементы выпадающего списка
-        val spinner: Spinner = findViewById(R.id.themeSpinner)
-        val options = listOf("System", "Light", "Dark")
-        val adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item,
-            options
-        )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapter
-
-        // Выставляем в выпадающий список актуальный элемент
-        val prefs = getSharedPreferences("settings", MODE_PRIVATE)
-        val savedTheme = prefs.getString("theme_pref", "System")
-        spinner.setSelection(options.indexOf(savedTheme))
-
-        // Добавляем обработчик для выбора из выпадающего списка
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                val selected = options[position]
-
-                val mode = when (selected) {
-                    "Light" -> AppCompatDelegate.MODE_NIGHT_NO
-                    "Dark" -> AppCompatDelegate.MODE_NIGHT_YES
-                    "System" -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                    else -> AppCompatDelegate.getDefaultNightMode()
-                }
-
-                AppCompatDelegate.setDefaultNightMode(mode)
-
-                // Сохраняем выбор в SharedPreferences
-                val prefs = getSharedPreferences("settings", MODE_PRIVATE)
-                prefs.edit { putString("theme_pref", selected) }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
-
-        // Обработка кнопки возврата
-        val btnBack = findViewById<ImageButton>(R.id.btnBack)
-        btnBack.setOnClickListener {
-            finish()
         }
     }
 }
