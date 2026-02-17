@@ -7,6 +7,7 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import org.pakicek.monoforecast.domain.model.RideDifficulty
@@ -16,9 +17,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setupStatusBar()
+        setupTheme()
         setContentView(R.layout.activity_main)
-        setupWindowInsets()
 
         // Обработка кнопки настроек
         val settingsButton = findViewById<ImageButton>(R.id.btnSettings)
@@ -61,33 +61,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupStatusBar() {
-        // Делаем статус бар прозрачным
-        window.statusBarColor = Color.TRANSPARENT
-
-        // Настраиваем цвет иконок статус бара
-        // Для темного фона (gray_500) - светлые иконки
-        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
-
-        // Включаем edge-to-edge режим
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-    }
-
-    private fun setupWindowInsets() {
-        // Добавляем отступ для верхней секции, чтобы контент не наезжал на статус бар
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val headerLayout = findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.constraintLayout)
-
-            // Добавляем отступ сверху равный высоте статус бара
-            headerLayout.setPadding(
-                headerLayout.paddingLeft,
-                headerLayout.paddingTop + insets.systemWindowInsetTop,
-                headerLayout.paddingRight,
-                headerLayout.paddingBottom
-            )
-
-            // Возвращаем insets без изменений
-            insets
+    private fun setupTheme() {
+        val prefs = getSharedPreferences("settings", MODE_PRIVATE)
+        when (prefs.getString("theme_pref", "System")) {
+            "Light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            "Dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
     }
 }
