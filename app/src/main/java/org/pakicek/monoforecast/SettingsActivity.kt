@@ -15,6 +15,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.content.edit
 import org.pakicek.monoforecast.domain.model.AppTheme
+import org.pakicek.monoforecast.domain.model.UserActivity
+import org.pakicek.monoforecast.domain.model.WeatherApi
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
 import org.pakicek.monoforecast.logic.factories.SettingsViewModelFactory
 import org.pakicek.monoforecast.logic.viewmodel.SettingsViewModel
@@ -31,50 +33,9 @@ class SettingsActivity : AppCompatActivity() {
         val factory = SettingsViewModelFactory(repo)
         val viewModel = androidx.lifecycle.ViewModelProvider(this, factory)[SettingsViewModel::class.java]
 
-        // Задаем элементы выпадающего списка
-        val spinner: Spinner = findViewById(R.id.themeSpinner)
-        val options = listOf("System", "Light", "Dark")
-        val adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item,
-            options
-        )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapter
-
-        // Выставляем в выпадающий список актуальный элемент
-        val savedTheme = viewModel.getTheme()
-        when(savedTheme) {
-            AppTheme.DARK -> spinner.setSelection(options.indexOf("Dark"))
-            AppTheme.LIGHT -> spinner.setSelection(options.indexOf("Light"))
-            else -> spinner.setSelection(options.indexOf("System"))
-        }
-
-        // Добавляем обработчик для выбора из выпадающего списка
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                val selected = options[position]
-
-                val mode = when (selected) {
-                    "Light" -> AppCompatDelegate.MODE_NIGHT_NO
-                    "Dark" -> AppCompatDelegate.MODE_NIGHT_YES
-                    "System" -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                    else -> AppCompatDelegate.getDefaultNightMode()
-                }
-
-                AppCompatDelegate.setDefaultNightMode(mode)
-
-                // Сохраняем тему
-                viewModel.saveTheme(AppTheme.valueOf(selected.uppercase()))
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
+        setupThemeSpinner(viewModel)
+        setupApiSpinner(viewModel)
+        setupActivitySpinner(viewModel)
 
         // Обработка кнопки возврата
         val btnBack = findViewById<ImageButton>(R.id.btnBack)
@@ -120,6 +81,134 @@ class SettingsActivity : AppCompatActivity() {
             )
 
             insets
+        }
+    }
+
+    private fun setupThemeSpinner(viewModel: SettingsViewModel){
+        // Задаем элементы выпадающего списка тем
+        val spinner: Spinner = findViewById(R.id.themeSpinner)
+        val options = listOf("System", "Light", "Dark")
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            options
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+
+        // Выставляем в выпадающий список актуальный элемент
+        val savedTheme = viewModel.getTheme()
+        when(savedTheme) {
+            AppTheme.DARK -> spinner.setSelection(options.indexOf("Dark"))
+            AppTheme.LIGHT -> spinner.setSelection(options.indexOf("Light"))
+            else -> spinner.setSelection(options.indexOf("System"))
+        }
+
+        // Добавляем обработчик для выбора из выпадающего списка
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val selected = options[position]
+
+                val mode = when (selected) {
+                    "Light" -> AppCompatDelegate.MODE_NIGHT_NO
+                    "Dark" -> AppCompatDelegate.MODE_NIGHT_YES
+                    else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                }
+
+                AppCompatDelegate.setDefaultNightMode(mode)
+
+                // Сохраняем тему
+                when(selected) {
+                    "Light" -> viewModel.saveTheme(AppTheme.LIGHT)
+                    "Dark" -> viewModel.saveTheme(AppTheme.DARK)
+                    "System" -> viewModel.saveTheme(AppTheme.SYSTEM)
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+    }
+
+    private fun setupApiSpinner(viewModel: SettingsViewModel){
+        // Задаем элементы выпадающего списка тем
+        val spinner: Spinner = findViewById(R.id.apiSpinner)
+        val options = listOf("NinjaAPI")
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            options
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+
+        // Выставляем в выпадающий список актуальный элемент
+        val api = viewModel.getApi()
+        when(api) {
+            WeatherApi.NINJA_API -> spinner.setSelection(options.indexOf("NinjaAPI"))
+        }
+
+        // Добавляем обработчик для выбора из выпадающего списка
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val selected = options[position]
+
+                when(selected) {
+                    "NinjaAPI" -> viewModel.saveApi(WeatherApi.NINJA_API)
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+    }
+
+    private fun setupActivitySpinner(viewModel: SettingsViewModel){
+        // Задаем элементы выпадающего списка тем
+        val spinner: Spinner = findViewById(R.id.activitySpinner)
+        val options = listOf("Bike", "Mono Wheel", "Bicycle")
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            options
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+
+        // Выставляем в выпадающий список актуальный элемент
+        val activity = viewModel.getActivity()
+        when(activity) {
+            UserActivity.BIKE -> spinner.setSelection(options.indexOf("Bike"))
+            UserActivity.MONO_WHEEL -> spinner.setSelection(options.indexOf("Mono Wheel"))
+            else -> spinner.setSelection(options.indexOf("Bicycle"))
+        }
+
+        // Добавляем обработчик для выбора из выпадающего списка
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val selected = options[position]
+
+                when (selected) {
+                    "Bike" -> viewModel.saveActivity(UserActivity.BIKE)
+                    "Mono Wheel" -> viewModel.saveActivity(UserActivity.MONO_WHEEL)
+                    "Bicycle" -> viewModel.saveActivity(UserActivity.BICYCLE)
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
 }
