@@ -6,9 +6,7 @@ import org.pakicek.monoforecast.domain.model.UserActivity
 import org.pakicek.monoforecast.domain.model.WeatherApi
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
 
-class SettingsViewModel(
-    private val repository: SettingsRepository
-) : ViewModel() {
+class SettingsViewModel(private val repository: SettingsRepository) : ViewModel() {
 
     fun getTheme(): AppTheme = repository.getTheme()
 

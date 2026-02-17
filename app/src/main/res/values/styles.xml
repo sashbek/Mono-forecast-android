@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TextAppearance.AppCompat.BaseText">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.ButtonLabel">
+        <item name="android:textSize">22sp</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.Header">
+        <item name="android:textSize">26sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+</resources>

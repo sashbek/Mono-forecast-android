@@ -12,5 +12,6 @@
         <!-- Window background -->
         <item name="android:windowBackground">@color/middle_gray</item>
         <item name="android:statusBarColor">@color/middle_gray</item>
+
     </style>
 </resources>

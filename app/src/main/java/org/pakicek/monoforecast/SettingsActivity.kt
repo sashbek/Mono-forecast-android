@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.content.edit
 import org.pakicek.monoforecast.domain.model.AppTheme
 import org.pakicek.monoforecast.domain.model.UserActivity
 import org.pakicek.monoforecast.domain.model.WeatherApi

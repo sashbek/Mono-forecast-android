@@ -4,6 +4,7 @@ import android.content.Context
 import org.pakicek.monoforecast.domain.model.AppTheme
 import org.pakicek.monoforecast.domain.model.UserActivity
 import org.pakicek.monoforecast.domain.model.WeatherApi
+import androidx.core.content.edit
 
 class SettingsRepository(context: Context) {
 
@@ -17,9 +18,9 @@ class SettingsRepository(context: Context) {
 
     fun saveTheme(theme: AppTheme) {
         val value = theme.name
-        prefs.edit()
-            .putString("theme_pref", value)
-            .apply()
+        prefs.edit {
+            putString("theme_pref", value)
+        }
     }
 
     fun getApi(): WeatherApi {
@@ -30,9 +31,9 @@ class SettingsRepository(context: Context) {
 
     fun saveApi(api: WeatherApi) {
         val value = api.name
-        prefs.edit()
-            .putString("api_pref", value)
-            .apply()
+        prefs.edit {
+            putString("api_pref", value)
+        }
     }
 
     fun getActivity(): UserActivity {
@@ -43,8 +44,8 @@ class SettingsRepository(context: Context) {
 
     fun saveActivity(activity: UserActivity) {
         val value = activity.name
-        prefs.edit()
-            .putString("activity_pref", value)
-            .apply()
+        prefs.edit {
+            putString("activity_pref", value)
+        }
     }
 }

@@ -24,10 +24,10 @@
             android:id="@+id/tvSectionTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:text="@string/main_header"
             android:textColor="?android:attr/textColor"
-            android:textSize="26sp"
-            android:textStyle="bold"
+            style="@style/TextAppearance.AppCompat.Header"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnSettings"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,17 +37,15 @@
             android:id="@+id/btnSettings"
             android:layout_width="40dp"
             android:layout_height="40dp"
-
+            android:layout_margin="10dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/settings_button_icon"
             android:scaleType="centerInside"
             android:src="@drawable/ic_settings"
             app:tint="?android:attr/textColor"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
-            android:padding="5dp"
             app:layout_constraintBottom_toBottomOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -99,6 +97,7 @@
                             android:layout_width="64dp"
                             android:layout_height="64dp"
                             android:layout_gravity="center_horizontal"
+                            android:contentDescription="@string/forecast_button_icon"
                             android:src="@drawable/ic_forecast_button"
                             app:tint="?android:attr/textColor"/>
 
@@ -108,7 +107,7 @@
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="8dp"
                             android:text="@string/forecast_button_text"
-                            android:textSize="22sp" />
+                            style="@style/TextAppearance.AppCompat.ButtonLabel" />
 
                     </LinearLayout>
 
@@ -137,6 +136,7 @@
                             android:layout_width="64dp"
                             android:layout_height="64dp"
                             android:layout_gravity="center_horizontal"
+                            android:contentDescription="@string/bluetooth_button_icon"
                             android:src="@drawable/ic_bluetooth_button"
                             app:tint="?android:attr/textColor"/>
 
@@ -146,7 +146,7 @@
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="8dp"
                             android:text="@string/bluetooth_button_text"
-                            android:textSize="22sp" />
+                            style="@style/TextAppearance.AppCompat.ButtonLabel" />
 
                     </LinearLayout>
 
@@ -184,6 +184,7 @@
                             android:layout_width="64dp"
                             android:layout_height="64dp"
                             android:layout_gravity="center_horizontal"
+                            android:contentDescription="@string/location_button_icon"
                             android:src="@drawable/ic_location_button"
                             app:tint="?android:attr/textColor"/>
 
@@ -192,8 +193,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="8dp"
-                            android:text="Опция 3"
-                            android:textSize="22sp" />
+                            android:text="@string/location_button_text"
+                            style="@style/TextAppearance.AppCompat.ButtonLabel" />
 
                     </LinearLayout>
 
@@ -222,6 +223,7 @@
                             android:layout_width="64dp"
                             android:layout_height="64dp"
                             android:layout_gravity="center_horizontal"
+                            android:contentDescription="@string/logs_button_icon"
                             android:src="@drawable/ic_logs_button"
                             app:tint="?android:attr/textColor"/>
 
@@ -231,7 +233,7 @@
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="8dp"
                             android:text="@string/logs_button_text"
-                            android:textSize="22sp" />
+                            style="@style/TextAppearance.AppCompat.ButtonLabel" />
 
                     </LinearLayout>
 
