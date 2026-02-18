@@ -17,4 +17,5 @@
     <string name="location_button_icon">Location</string>
     <string name="logs_button_icon">Logs</string>
     <string name="back_button_icon">Go back</string>
+    <string name="location_header_text">Location</string>
 </resources>

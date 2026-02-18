@@ -36,7 +36,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.locationActivityButton.setOnClickListener {
-            Toast.makeText(this, "Location tracker: not implemented", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, LocationActivity::class.java)
+            startActivity(intent)
         }
 
         binding.logsActivityButton.setOnClickListener {

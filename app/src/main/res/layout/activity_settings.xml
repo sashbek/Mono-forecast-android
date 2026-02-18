@@ -42,20 +42,13 @@
 
             <ImageButton
                 android:id="@+id/btnBack"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_margin="10dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                style="@style/backButton"
                 android:contentDescription="@string/back_button_icon"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_back_button"
-                app:tint="?android:attr/textColor"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_default="percent"
-                tools:ignore="TouchTargetSizeCheck" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintWidth_default="percent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
