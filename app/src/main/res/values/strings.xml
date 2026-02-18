@@ -21,4 +21,7 @@
     <string name="map_shut_text">Map preview</string>
     <string name="start_tracking_button_text">Start tracking</string>
     <string name="zeroes_timer">00:00:00</string>
+    <string name="share_button_text">Share</string>
+    <string name="copy_button_text">Copy</string>
+    <string name="logging_button_text">Start Logging</string>
 </resources>
