@@ -12,19 +12,18 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/middle_gray"
+        android:background="?attr/colorPrimaryDark"
         android:padding="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/tvSectionTitle"
+            style="@style/TextAppearance.AppCompat.Header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="@string/forecast_header_text"
-            android:textColor="@android:color/white"
-            style="@style/TextAppearance.AppCompat.Header"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnBack"
             app:layout_constraintStart_toStartOf="parent"
@@ -32,20 +31,14 @@
 
         <ImageButton
             android:id="@+id/btnBack"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_margin="10dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            style="@style/backButton"
             android:contentDescription="@string/back_button_icon"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_back_button"
+            app:tint="?android:attr/textColor"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.1" />  <!-- 8% от ширины экрана -->
-
+            app:layout_constraintWidth_default="percent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

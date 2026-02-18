@@ -21,6 +21,8 @@
 
     <string name="logs_header_text">Logs</string>
 
+    <string name="location_header_text">Location</string>
+
     <string name="forecast_header_text">Forecast</string>
     <string name="current_weather_header_text">Current Weather</string>
     <string name="ride_status_header_text">Ride Status</string>
