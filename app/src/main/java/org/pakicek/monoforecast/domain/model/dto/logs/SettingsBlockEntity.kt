@@ -11,13 +11,13 @@ import androidx.room.PrimaryKey
             entity = LogFrameEntity::class,
             parentColumns = ["id"],
             childColumns = ["logId"],
-            onDelete = CASCADE,
+            onDelete = CASCADE
         )
     ]
 )
-data class LocationBlockEntity(
+data class SettingsBlockEntity(
     @PrimaryKey
     val logId: Long,
-    var latitude: Double,
-    var longitude: Double
+    val setting: String,
+    val value: String
 )
