@@ -33,11 +33,13 @@
             android:id="@+id/btnBack"
             style="@style/backButton"
             android:contentDescription="@string/back_button_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintWidth_default="percent" />
+            app:layout_constraintWidth_default="percent"
+            app:tint="?android:attr/textColor"
+            tools:ignore="TouchTargetSizeCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

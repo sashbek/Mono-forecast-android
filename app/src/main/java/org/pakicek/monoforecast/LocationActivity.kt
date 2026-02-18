@@ -9,6 +9,8 @@ class LocationActivity : AppCompatActivity() {
     private val binding
         get() = _binding ?: throw IllegalStateException("Binding must not be null")
 
+    private var isTracking = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityLocationBinding.inflate(layoutInflater)
@@ -16,6 +18,13 @@ class LocationActivity : AppCompatActivity() {
 
         binding.btnBack.setOnClickListener {
             finish()
+        }
+
+        binding.btnStartTracking.setOnClickListener {
+            isTracking = !isTracking
+            binding.btnStartTracking.isSelected = isTracking
+
+            binding.btnStartTracking.text = if (isTracking) "Stop Tracking" else "Start Tracking"
         }
     }
 }

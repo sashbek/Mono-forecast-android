@@ -18,4 +18,7 @@
     <string name="logs_button_icon">Logs</string>
     <string name="back_button_icon">Go back</string>
     <string name="location_header_text">Location</string>
+    <string name="map_shut_text">Map preview</string>
+    <string name="start_tracking_button_text">Start tracking</string>
+    <string name="zeroes_timer">00:00:00</string>
 </resources>
