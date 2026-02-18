@@ -11,11 +11,14 @@ import androidx.room.PrimaryKey
             entity = LogFrameEntity::class,
             parentColumns = ["id"],
             childColumns = ["logId"],
-            onDelete = CASCADE,
+            onDelete = CASCADE
         )
     ]
 )
-data class DeviceMetricsBlockEntity(
+data class SettingsBlockEntity(
     @PrimaryKey
-    val logId: Long
+    val logId: Long,
+
+    val setting: String,
+    val value: String
 )
