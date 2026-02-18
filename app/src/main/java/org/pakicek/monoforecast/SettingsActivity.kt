@@ -31,8 +31,8 @@ class SettingsActivity : AppCompatActivity() {
         setupInsets()
         enableEdgeToEdge()
 
-        val repo = SettingsRepository(this)
-        val factory = SettingsViewModelFactory(repo)
+        val repository = SettingsRepository(this)
+        val factory = SettingsViewModelFactory(repository)
         val viewModel = androidx.lifecycle.ViewModelProvider(this, factory)[SettingsViewModel::class.java]
 
         setupThemeSpinner(viewModel)

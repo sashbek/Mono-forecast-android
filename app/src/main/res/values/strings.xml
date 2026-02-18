@@ -1,20 +1,49 @@
 <resources>
     <string name="app_name">Mono-forecast-android</string>
+    <string name="back_button_icon">Go back</string>
     <string name="main_header">Mono forecast</string>
+
     <string name="forecast_button_text">Forecast</string>
     <string name="bluetooth_button_text">Bluetooth</string>
     <string name="location_button_text">Location</string>
     <string name="logs_button_text">Logs</string>
-    <string name="settings_header_text">Settings</string>
-    <string name="forecast_header_text">Forecast</string>
-    <string name="logs_header_text">Logs</string>
-    <string name="set_theme">Application theme</string>
-    <string name="choose_forecast_api">Choose forecast API</string>
-    <string name="choose_activity_type">Choose activity type</string>
+
     <string name="settings_button_icon">Settings</string>
     <string name="forecast_button_icon">Forecast</string>
     <string name="bluetooth_button_icon">Bluetooth</string>
     <string name="location_button_icon">Location</string>
     <string name="logs_button_icon">Logs</string>
-    <string name="back_button_icon">Go back</string>
+
+    <string name="settings_header_text">Settings</string>
+    <string name="set_theme">Application theme</string>
+    <string name="choose_forecast_api">Choose forecast API</string>
+    <string name="choose_activity_type">Choose activity type</string>
+
+    <string name="logs_header_text">Logs</string>
+
+    <string name="forecast_header_text">Forecast</string>
+    <string name="current_weather_header_text">Current Weather</string>
+    <string name="ride_status_header_text">Ride Status</string>
+    <string name="weather_refresh_button_text">Update via Service</string>
+
+    <string name="placeholder_temp">Temp: —</string>
+    <string name="placeholder_wind">Wind: —</string>
+    <string name="placeholder_rain">Rain: —</string>
+    <string name="ride_status_refresh_text">Press refresh to check</string>
+
+    <string name="fmt_temp">Temp: %1$.1f °C</string>
+    <string name="fmt_wind">Wind: %1$.1f m/s</string>
+    <string name="fmt_rain">Rain: %1$.1f mm</string>
+
+    <string name="status_title_unknown">Unknown</string>
+    <string name="status_title_easy">GO RIDE!</string>
+    <string name="status_title_moderate">CAREFUL</string>
+    <string name="status_title_hard">DANGEROUS</string>
+    <string name="status_title_extreme">STAY HOME</string>
+
+    <string name="status_desc_easy">Conditions are perfect.</string>
+    <string name="status_desc_extreme">Extreme weather conditions.</string>
+
+    <string name="status_desc_warnings">Warnings: %1$s</string>
+    <string name="status_desc_reason">Reason: %1$s</string>
 </resources>
