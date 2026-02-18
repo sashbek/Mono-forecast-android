@@ -20,6 +20,14 @@
     <string name="choose_activity_type">Choose activity type</string>
 
     <string name="logs_header_text">Logs</string>
+    <string name="share_button_text">Share</string>
+    <string name="copy_button_text">Copy</string>
+    <string name="logging_button_text">Start Logging</string>
+
+    <string name="location_header_text">Location</string>
+    <string name="map_shut_text">Map preview</string>
+    <string name="start_tracking_button_text">Start tracking</string>
+    <string name="zeroes_timer">00:00:00</string>
 
     <string name="forecast_header_text">Forecast</string>
     <string name="current_weather_header_text">Current Weather</string>
@@ -46,4 +54,5 @@
 
     <string name="status_desc_warnings">Warnings: %1$s</string>
     <string name="status_desc_reason">Reason: %1$s</string>
+    <string name="logs_placeholder_text">Logs will appear here…</string>
 </resources>

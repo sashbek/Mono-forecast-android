@@ -11,6 +11,8 @@ class LogsActivity : AppCompatActivity() {
     private val binding
         get() = _binding ?: throw IllegalStateException("Binding must not be null")
 
+    private var isLogging = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityLogsBinding.inflate(layoutInflater)
@@ -20,6 +22,12 @@ class LogsActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        binding.btnStartLogging.setOnClickListener {
+            isLogging = !isLogging
+            binding.btnStartLogging.isSelected = isLogging
+            binding.btnStartLogging.text = if (isLogging) "Stop Logging" else "Start Logging"
         }
 
         binding.btnBack.setOnClickListener {
