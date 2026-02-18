@@ -1,52 +1,45 @@
 package org.pakicek.monoforecast
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import org.pakicek.monoforecast.domain.model.RideDifficulty
-import androidx.core.view.WindowInsetsControllerCompat
+import org.pakicek.monoforecast.databinding.ActivityMainBinding
+import org.pakicek.monoforecast.domain.model.dto.enums.AppTheme
+import org.pakicek.monoforecast.domain.repositories.SettingsRepository
 
 class MainActivity : AppCompatActivity() {
+    private var _binding: ActivityMainBinding? = null
+    private val binding
+        get() = _binding ?: throw IllegalStateException("Binding must not be null")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        _binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setupTheme()
-        setContentView(R.layout.activity_main)
 
-        // Обработка кнопки настроек
-        val settingsButton = findViewById<ImageButton>(R.id.btnSettings)
-        settingsButton.setOnClickListener {
+        binding.btnSettings.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
 
-        // Обработка 4 кнопок опций
-        val forecastButton = findViewById<LinearLayout>(R.id.forecastActivityButton)
-        val bluetoothButton = findViewById<LinearLayout>(R.id.bluetoothActivityButton)
-        val locationButton = findViewById<LinearLayout>(R.id.locationActivityButton)
-        val logsButton = findViewById<LinearLayout>(R.id.logsActivityButton)
-
-        forecastButton.setOnClickListener {
+        binding.forecastActivityButton.setOnClickListener {
             val intent = Intent(this, ForecastActivity::class.java)
             startActivity(intent)
         }
 
-        bluetoothButton.setOnClickListener {
+        binding.bluetoothActivityButton.setOnClickListener {
             Toast.makeText(this, "BLE Connect: not implemented", Toast.LENGTH_SHORT).show()
         }
 
-        locationButton.setOnClickListener {
+        binding.locationActivityButton.setOnClickListener {
             Toast.makeText(this, "Location tracker: not implemented", Toast.LENGTH_SHORT).show()
         }
 
-        logsButton.setOnClickListener {
+        binding.logsActivityButton.setOnClickListener {
             val intent = Intent(this, LogsActivity::class.java)
             startActivity(intent)
         }
@@ -62,10 +55,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupTheme() {
-        val prefs = getSharedPreferences("settings", MODE_PRIVATE)
-        when (prefs.getString("theme_pref", "System")) {
-            "Light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            "Dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        val settingsRepository = SettingsRepository(this)
+        val theme = settingsRepository.getTheme()
+
+        when (theme) {
+            AppTheme.LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            AppTheme.DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
     }

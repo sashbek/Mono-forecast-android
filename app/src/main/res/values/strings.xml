@@ -2,11 +2,19 @@
     <string name="app_name">Mono-forecast-android</string>
     <string name="main_header">Mono forecast</string>
     <string name="forecast_button_text">Forecast</string>
-    <string name="logs_button_text">Logs</string>
     <string name="bluetooth_button_text">Bluetooth</string>
+    <string name="location_button_text">Location</string>
+    <string name="logs_button_text">Logs</string>
     <string name="settings_header_text">Settings</string>
     <string name="forecast_header_text">Forecast</string>
     <string name="logs_header_text">Logs</string>
-    <string name="go_back">Go back</string>
     <string name="set_theme">Application theme</string>
+    <string name="choose_forecast_api">Choose forecast API</string>
+    <string name="choose_activity_type">Choose activity type</string>
+    <string name="settings_button_icon">Settings</string>
+    <string name="forecast_button_icon">Forecast</string>
+    <string name="bluetooth_button_icon">Bluetooth</string>
+    <string name="location_button_icon">Location</string>
+    <string name="logs_button_icon">Logs</string>
+    <string name="back_button_icon">Go back</string>
 </resources>
