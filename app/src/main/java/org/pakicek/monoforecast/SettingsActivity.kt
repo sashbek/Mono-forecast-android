@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ScrollView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -29,7 +28,6 @@ class SettingsActivity : AppCompatActivity() {
         _binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupInsets()
-        enableEdgeToEdge()
 
         val repository = SettingsRepository(this)
         val factory = SettingsViewModelFactory(repository)
