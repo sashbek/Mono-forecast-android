@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import org.pakicek.monoforecast.domain.model.RideDifficulty
 import org.pakicek.monoforecast.databinding.ActivityMainBinding
-import org.pakicek.monoforecast.domain.model.AppTheme
+import org.pakicek.monoforecast.domain.model.dto.enums.AppTheme
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
 
 class MainActivity : AppCompatActivity() {
@@ -21,13 +21,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupTheme()
 
-        // Обработка кнопки настроек
         binding.btnSettings.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
 
-        // Обработка 4 кнопок опций
         binding.forecastActivityButton.setOnClickListener {
             val intent = Intent(this, ForecastActivity::class.java)
             startActivity(intent)
@@ -57,7 +55,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupTheme() {
-
         val settingsRepository = SettingsRepository(this)
         val theme = settingsRepository.getTheme()
 

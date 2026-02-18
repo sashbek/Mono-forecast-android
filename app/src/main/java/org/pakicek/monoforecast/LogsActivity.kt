@@ -24,7 +24,6 @@ class LogsActivity : AppCompatActivity() {
             insets
         }
 
-        // Обработка кнопки возврата
         binding.btnBack.setOnClickListener {
             finish()
         }

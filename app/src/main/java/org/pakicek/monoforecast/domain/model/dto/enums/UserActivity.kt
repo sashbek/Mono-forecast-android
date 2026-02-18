@@ -1,4 +1,4 @@
-package org.pakicek.monoforecast.domain.model
+package org.pakicek.monoforecast.domain.model.dto.enums
 
 enum class UserActivity {
     BIKE,

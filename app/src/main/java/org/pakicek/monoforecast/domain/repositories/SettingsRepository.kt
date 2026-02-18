@@ -1,51 +1,51 @@
 package org.pakicek.monoforecast.domain.repositories
 
 import android.content.Context
-import org.pakicek.monoforecast.domain.model.AppTheme
-import org.pakicek.monoforecast.domain.model.UserActivity
-import org.pakicek.monoforecast.domain.model.WeatherApi
+import org.pakicek.monoforecast.domain.model.dto.enums.AppTheme
+import org.pakicek.monoforecast.domain.model.dto.enums.UserActivity
+import org.pakicek.monoforecast.domain.model.dto.enums.WeatherApi
 import androidx.core.content.edit
 
 class SettingsRepository(context: Context) {
 
-    private val prefs = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+    private val prefs = context.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+
+    companion object {
+        private const val KEY_THEME = "KEY_THEME"
+        private const val KEY_API = "KEY_API"
+        private const val KEY_ACTIVITY = "KEY_ACTIVITY"
+    }
 
     fun getTheme(): AppTheme {
-        val stored = prefs.getString("theme_pref", "SYSTEM")
-        val value = AppTheme.valueOf(stored ?: "SYSTEM")
-        return value
+        val stored = prefs.getString(KEY_THEME, "SYSTEM")
+        return AppTheme.valueOf(stored ?: "SYSTEM")
     }
 
     fun saveTheme(theme: AppTheme) {
-        val value = theme.name
         prefs.edit {
-            putString("theme_pref", value)
+            putString(KEY_THEME, theme.name)
         }
     }
 
     fun getApi(): WeatherApi {
-        val stored = prefs.getString("api_pref", "NINJA_API")
-        val value = WeatherApi.valueOf(stored ?: "NINJA_API")
-        return value
+        val stored = prefs.getString(KEY_API, "NINJA_API")
+        return WeatherApi.valueOf(stored ?: "NINJA_API")
     }
 
     fun saveApi(api: WeatherApi) {
-        val value = api.name
         prefs.edit {
-            putString("api_pref", value)
+            putString(KEY_API, api.name)
         }
     }
 
     fun getActivity(): UserActivity {
-        val stored = prefs.getString("activity_pref", "BIKE")
-        val value = UserActivity.valueOf(stored ?: "BIKE")
-        return value
+        val stored = prefs.getString(KEY_ACTIVITY, "BIKE")
+        return UserActivity.valueOf(stored ?: "BIKE")
     }
 
     fun saveActivity(activity: UserActivity) {
-        val value = activity.name
         prefs.edit {
-            putString("activity_pref", value)
+            putString(KEY_ACTIVITY, activity.name)
         }
     }
 }

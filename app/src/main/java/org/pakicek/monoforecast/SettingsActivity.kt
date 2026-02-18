@@ -12,9 +12,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import org.pakicek.monoforecast.databinding.ActivitySettingsBinding
-import org.pakicek.monoforecast.domain.model.AppTheme
-import org.pakicek.monoforecast.domain.model.UserActivity
-import org.pakicek.monoforecast.domain.model.WeatherApi
+import org.pakicek.monoforecast.domain.model.dto.enums.AppTheme
+import org.pakicek.monoforecast.domain.model.dto.enums.UserActivity
+import org.pakicek.monoforecast.domain.model.dto.enums.WeatherApi
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
 import org.pakicek.monoforecast.logic.factories.SettingsViewModelFactory
 import org.pakicek.monoforecast.logic.viewmodel.SettingsViewModel
@@ -31,7 +31,6 @@ class SettingsActivity : AppCompatActivity() {
         setupInsets()
         enableEdgeToEdge()
 
-
         val repo = SettingsRepository(this)
         val factory = SettingsViewModelFactory(repo)
         val viewModel = androidx.lifecycle.ViewModelProvider(this, factory)[SettingsViewModel::class.java]
@@ -40,7 +39,6 @@ class SettingsActivity : AppCompatActivity() {
         setupApiSpinner(viewModel)
         setupActivitySpinner(viewModel)
 
-        // Обработка кнопки возврата
         binding.btnBack.setOnClickListener {
             finish()
         }
