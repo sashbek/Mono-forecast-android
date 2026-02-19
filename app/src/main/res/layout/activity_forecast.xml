@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="?android:attr/statusBarColor"
     tools:context=".ForecastActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -46,6 +47,7 @@
         android:id="@+id/contentScroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="?attr/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header">
 
