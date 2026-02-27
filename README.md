@@ -11,7 +11,7 @@ Mono forecast is an android app to predict weather for EUC, motocycle and bike r
 
 # Development
 
-## Sprint 2 (19.02 to 26.02)
+## Sprint 2 (19.02 to 5.03)
 
 ### Result
 
@@ -19,7 +19,12 @@ Mono forecast is an android app to predict weather for EUC, motocycle and bike r
   
 <img src="./readmi_img\image2.png" alt="Wheellog logs page" width="200"/>
 
-* WeatherUpdateService must run correctly and should be mocked with random temperature updates one time per second.
+* WeatherUpdateService must run correctly in background and should be mocked with random temperature updates one time per second.
+* WeatherUpdateService must use Retrofit, and clients to open connection to API
+* One more forecst API must be added to project support.
+* Some data storage must be created using SQLITE
+* Forecast data must be collected via intercector and saved to data storage
+* Some animation should be added
 
 ## Sprint 1 (12.02 to 19.02)
 
