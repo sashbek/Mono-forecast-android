@@ -4,6 +4,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
+import java.time.ZonedDateTime
+import java.time.Instant
+import java.time.ZoneId
 
 @Entity(
     foreignKeys = [
@@ -18,6 +21,13 @@ import androidx.room.PrimaryKey
 data class LocationBlockEntity(
     @PrimaryKey
     val logId: Long,
+
     var latitude: Double,
     var longitude: Double
-)
+) {
+
+    constructor(id: Long, nmeaString: String) : this (
+        id,
+        (nmeaString.split(",")[0]).toDoubleOrNull() ?: 0.0,
+        (nmeaString.split(",")[2]).toDoubleOrNull() ?: 0.0) {}
+}

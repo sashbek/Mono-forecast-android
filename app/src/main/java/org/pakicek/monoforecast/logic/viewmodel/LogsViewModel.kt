@@ -1,6 +1,8 @@
 package org.pakicek.monoforecast.logic.viewmodel
 
-import androidx.lifecycle.ViewModel
-import org.pakicek.monoforecast.domain.repositories.LogsRepository
+import org.pakicek.monoforecast.domain.model.dao.LogsDao
 
-class LogsViewModel(private val repository: LogsRepository) : ViewModel()
+class LogsViewModel (private val repository: LogsDao) {
+
+
+}
