@@ -8,23 +8,19 @@ import org.pakicek.monoforecast.domain.model.dto.logs.SettingsBlockEntity
 import kotlin.math.log
 
 class LogsRepository private constructor(private val dao: LogsDao) {
-    private var loggingActive = false
 
-    fun isLoggingActive(): Boolean {
-        return loggingActive
+    suspend fun isLoggingActive(): Boolean {
+        val last = dao.getLastFile() ?: return false
+        return last.end == null
     }
 
-    fun toggleLogging() {
-        loggingActive = !loggingActive
-    }
-
-    suspend fun insertSettings(setting: String, value: String) {
-        if (!loggingActive) {
+    suspend fun insertSetting(setting: String, value: String) {
+        if (!isLoggingActive()) {
             return
         }
 
         val log = LogFrameEntity(type = LogType.SETTINGS)
-        val settingBlock = SettingsBlockEntity(0, setting, value)
+        val settingBlock = SettingsBlockEntity(null, setting, value)
         dao.insertLogWithSettings(log, settingBlock)
     }
 
@@ -34,9 +30,11 @@ class LogsRepository private constructor(private val dao: LogsDao) {
     }
 
     suspend fun endLastFile() {
-        val file = dao.getLastFile()
-        file.end = System.currentTimeMillis()
-        dao.updateFile(file)
+        val file = dao.getLastFile() ?: return
+        if (file.end == null) {
+            file.end = System.currentTimeMillis()
+            dao.updateFile(file)
+        }
     }
 
     suspend fun getAllLogs(): List<LogFrameEntity> {

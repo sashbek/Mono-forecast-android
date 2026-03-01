@@ -29,7 +29,7 @@ interface LogsDao {
     suspend fun getAllFiles(): List<FileEntity>
 
     @Query("SELECT * FROM files ORDER BY id DESC LIMIT 1")
-    suspend fun getLastFile(): FileEntity
+    suspend fun getLastFile(): FileEntity?
 
     @Update
     suspend fun updateFile(file: FileEntity)
