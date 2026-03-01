@@ -8,32 +8,40 @@ import androidx.room.TypeConverters
 import org.pakicek.monoforecast.domain.model.dto.converters.LogTypeConverter
 import org.pakicek.monoforecast.domain.model.dto.logs.LogFrameEntity
 import org.pakicek.monoforecast.domain.model.dao.LogsDao
+import org.pakicek.monoforecast.domain.model.dto.logs.DeviceMetricsBlockEntity
+import org.pakicek.monoforecast.domain.model.dto.logs.FileEntity
+import org.pakicek.monoforecast.domain.model.dto.logs.LocationBlockEntity
+import org.pakicek.monoforecast.domain.model.dto.logs.SettingsBlockEntity
+import org.pakicek.monoforecast.domain.model.dto.logs.WeatherBlockEntity
 
-@Database(entities = [LogFrameEntity::class], version = 1)
+@Database(entities = [
+    LogFrameEntity::class,
+    SettingsBlockEntity::class,
+    DeviceMetricsBlockEntity::class,
+    LocationBlockEntity::class,
+    WeatherBlockEntity::class,
+    FileEntity::class],
+    version = 1)
 @TypeConverters(LogTypeConverter::class)
 abstract class LogsDb : RoomDatabase() {
-    abstract fun logsRepository(): LogsDao
+
+    abstract fun logsDao(): LogsDao
 
     companion object {
         @Volatile
         private var INSTANCE: LogsDb? = null
 
         fun getInstance(context: Context): LogsDb {
-            if (INSTANCE != null) {
-                return INSTANCE!!
-            }
-
-            synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    LogsDb::class.java,
-                    "logs_database"
-                )
-                    .fallbackToDestructiveMigration(dropAllTables = true)
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?:
+                    Room.databaseBuilder(
+                        context.applicationContext,
+                        LogsDb::class.java,
+                        "logs_database"
+                    )
+                    .fallbackToDestructiveMigration(false)
                     .build()
-
-                INSTANCE = instance
-                return instance
+                    .also { INSTANCE = it }
             }
         }
     }

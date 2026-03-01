@@ -6,6 +6,7 @@ import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
 
 @Entity(
+    tableName = "settings",
     foreignKeys = [
         ForeignKey(
             entity = LogFrameEntity::class,
@@ -17,7 +18,7 @@ import androidx.room.PrimaryKey
 )
 data class SettingsBlockEntity(
     @PrimaryKey
-    val logId: Long,
+    var logId: Long?,
     val setting: String,
     val value: String
 )

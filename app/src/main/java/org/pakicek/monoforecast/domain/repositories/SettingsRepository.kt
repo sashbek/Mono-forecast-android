@@ -5,6 +5,7 @@ import org.pakicek.monoforecast.domain.model.dto.enums.AppTheme
 import org.pakicek.monoforecast.domain.model.dto.enums.UserActivity
 import org.pakicek.monoforecast.domain.model.dto.enums.WeatherApi
 import androidx.core.content.edit
+import org.pakicek.monoforecast.domain.model.dto.logs.SettingsBlockEntity
 
 class SettingsRepository(context: Context) {
 
@@ -47,5 +48,13 @@ class SettingsRepository(context: Context) {
         prefs.edit {
             putString(KEY_ACTIVITY, activity.name)
         }
+    }
+
+    fun getAllSettings(): List<SettingsBlockEntity> {
+        val theme = SettingsBlockEntity(null, KEY_THEME, getTheme().name)
+        val api = SettingsBlockEntity(null, KEY_API, getApi().name)
+        val activity = SettingsBlockEntity(null, KEY_ACTIVITY, getActivity().name)
+
+        return listOf(theme, api, activity)
     }
 }
