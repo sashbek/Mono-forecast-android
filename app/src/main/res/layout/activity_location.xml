@@ -87,12 +87,10 @@
                     android:id="@+id/btnStartTracking"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Start Tracking"
+                    android:text="@string/start_tracking_button_text"
                     android:textColor="@color/color_tracking_button"
                     android:background="@drawable/bg_activatable_button"/>
             </androidx.cardview.widget.CardView>
-
-
 
             <TextView
                 android:id="@+id/tvTimer"

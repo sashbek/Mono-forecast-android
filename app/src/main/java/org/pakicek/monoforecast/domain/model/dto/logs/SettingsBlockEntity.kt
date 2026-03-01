@@ -18,7 +18,6 @@ import androidx.room.PrimaryKey
 data class SettingsBlockEntity(
     @PrimaryKey
     val logId: Long,
-
     val setting: String,
     val value: String
 )

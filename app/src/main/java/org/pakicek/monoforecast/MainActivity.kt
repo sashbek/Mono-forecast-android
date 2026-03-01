@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import org.pakicek.monoforecast.domain.model.RideDifficulty
 import org.pakicek.monoforecast.databinding.ActivityMainBinding
 import org.pakicek.monoforecast.domain.model.dto.enums.AppTheme
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
@@ -43,15 +42,6 @@ class MainActivity : AppCompatActivity() {
         binding.logsActivityButton.setOnClickListener {
             val intent = Intent(this, LogsActivity::class.java)
             startActivity(intent)
-        }
-    }
-
-    private fun formatDifficulty(diff: RideDifficulty): String {
-        return when(diff) {
-            is RideDifficulty.Easy -> "The weather is fine!"
-            is RideDifficulty.Moderate -> "Warning: ${diff.warnings}"
-            is RideDifficulty.Hard -> "Danger: ${diff.dangerReason}"
-            is RideDifficulty.Extreme -> "Maybe you should stay home?"
         }
     }
 

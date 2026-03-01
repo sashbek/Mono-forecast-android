@@ -18,9 +18,9 @@ import androidx.room.PrimaryKey
 data class WeatherBlockEntity(
     @PrimaryKey
     val logId: Long,
-
     val tempC: Double,
+    val visibilityMeters: Int,
     val windSpeedMs: Double,
-    val rainMm: Double,
-    val visibilityMeters: Int
+    val windDir: Int,
+    val rainMm: Double
 )

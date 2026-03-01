@@ -16,15 +16,14 @@ class LocationActivity : AppCompatActivity() {
         _binding = ActivityLocationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.btnBack.setOnClickListener {
-            finish()
-        }
-
         binding.btnStartTracking.setOnClickListener {
             isTracking = !isTracking
             binding.btnStartTracking.isSelected = isTracking
-
             binding.btnStartTracking.text = if (isTracking) "Stop Tracking" else "Start Tracking"
+        }
+
+        binding.btnBack.setOnClickListener {
+            finish()
         }
     }
 }

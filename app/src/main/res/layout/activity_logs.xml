@@ -25,7 +25,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="Logs"
+            android:text="@string/logs_header_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnBack"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,12 +39,11 @@
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_default="percent"
             app:tint="?android:attr/textColor"
             tools:ignore="TouchTargetSizeCheck" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Основная часть Activity -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
@@ -70,7 +69,7 @@
                 android:id="@+id/tvLogs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Logs will appear here..."
+                android:text="@string/logs_placeholder_text"
                 android:textColor="?android:attr/textColorPrimary"
                 android:padding="8dp"
                 android:scrollbars="vertical"
@@ -79,6 +78,7 @@
 
         <LinearLayout
             android:id="@+id/buttonsRow"
+            style="?android:attr/buttonBarStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -90,15 +90,17 @@
 
             <Button
                 android:id="@+id/btnCopy"
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:background="?attr/colorPrimaryDark"
                 android:text="@string/copy_button_text"
-                android:layout_marginEnd="8dp"/>
+                android:layout_marginEnd="8dp" />
 
             <Button
                 android:id="@+id/btnShare"
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
@@ -107,7 +109,6 @@
                 android:layout_marginStart="8dp"/>
         </LinearLayout>
 
-        <!-- Кнопка Start Logging как CardView -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardStartLogging"
             android:layout_width="0dp"
