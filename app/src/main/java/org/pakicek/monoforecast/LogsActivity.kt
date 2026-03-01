@@ -2,20 +2,16 @@ package org.pakicek.monoforecast
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
 import org.pakicek.monoforecast.databinding.ActivityLogsBinding
 import org.pakicek.monoforecast.domain.model.dao.LogsDb
 import org.pakicek.monoforecast.domain.repositories.LogsRepository
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
 import org.pakicek.monoforecast.logic.factories.LogsViewModelFactory
-import org.pakicek.monoforecast.logic.factories.SettingsViewModelFactory
 import org.pakicek.monoforecast.logic.viewmodel.LogsViewModel
-import org.pakicek.monoforecast.logic.viewmodel.SettingsViewModel
 
 class LogsActivity : AppCompatActivity() {
     private var _binding: ActivityLogsBinding? = null
@@ -39,17 +35,24 @@ class LogsActivity : AppCompatActivity() {
         val factory = LogsViewModelFactory(repository, settingsRepository)
         _viewModel = androidx.lifecycle.ViewModelProvider(this, factory)[LogsViewModel::class.java]
 
-        setLoggingButton(viewModel)
+        viewModel.isLogging.observe(this) { isLogging ->
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+            val logging = isLogging == true
+            binding.btnStartLogging.isSelected = logging
+            binding.btnStartLogging.text =
+                if (logging) "Stop Logging" else "Start Logging"
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.getLogs().collect { logsList ->
+                    binding.tvLogs.text = logsList.joinToString("\n") { "${it.id} ${it.type} ${it.timestamp}" }
+                }
+            }
         }
 
         binding.btnStartLogging.setOnClickListener {
             viewModel.toggleLogging()
-            setLoggingButton(viewModel)
         }
 
         binding.btnBack.setOnClickListener {
@@ -57,15 +60,8 @@ class LogsActivity : AppCompatActivity() {
         }
     }
 
-    private fun setLoggingButton(viewModel: LogsViewModel) {
-        val isLogging = viewModel.getLoggingStatus()
-        binding.btnStartLogging.isSelected = isLogging
-        binding.btnStartLogging.text = if (isLogging) "Stop Logging" else "Start Logging"
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-        _viewModel = null
     }
 }

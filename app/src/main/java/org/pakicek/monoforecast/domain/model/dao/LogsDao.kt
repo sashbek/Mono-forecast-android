@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 import org.pakicek.monoforecast.domain.model.dto.logs.FileEntity
 import org.pakicek.monoforecast.domain.model.dto.logs.LogFrameEntity
 import org.pakicek.monoforecast.domain.model.dto.logs.SettingsBlockEntity
@@ -16,7 +17,7 @@ interface LogsDao {
     suspend fun insertLog(log: LogFrameEntity): Long
 
     @Query("SELECT * FROM logs ORDER BY timestamp DESC")
-    suspend fun getAllLogs(): List<LogFrameEntity>
+    fun getAllLogs(): Flow<List<LogFrameEntity>>
 
     @Query("DELETE FROM logs")
     suspend fun clearLogs()

@@ -1,5 +1,6 @@
 package org.pakicek.monoforecast.domain.repositories
 
+import kotlinx.coroutines.flow.Flow
 import org.pakicek.monoforecast.domain.model.dao.LogsDao
 import org.pakicek.monoforecast.domain.model.dto.enums.LogType
 import org.pakicek.monoforecast.domain.model.dto.logs.FileEntity
@@ -37,7 +38,7 @@ class LogsRepository private constructor(private val dao: LogsDao) {
         }
     }
 
-    suspend fun getAllLogs(): List<LogFrameEntity> {
+    fun getAllLogs(): Flow<List<LogFrameEntity>> {
         return dao.getAllLogs()
     }
 

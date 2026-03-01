@@ -13,7 +13,6 @@
     <string name="bluetooth_button_icon">Bluetooth</string>
     <string name="location_button_icon">Location</string>
     <string name="logs_button_icon">Logs</string>
-    <string name="back_button_icon">Go back</string>
 
     <string name="settings_header_text">Settings</string>
     <string name="set_theme">Application theme</string>
@@ -29,9 +28,6 @@
     <string name="map_shut_text">Map preview</string>
     <string name="start_tracking_button_text">Start tracking</string>
     <string name="zeroes_timer">00:00:00</string>
-    <string name="share_button_text">Share</string>
-    <string name="copy_button_text">Copy</string>
-    <string name="logging_button_text">Start Logging</string>
 
     <string name="forecast_header_text">Forecast</string>
     <string name="current_weather_header_text">Current Weather</string>

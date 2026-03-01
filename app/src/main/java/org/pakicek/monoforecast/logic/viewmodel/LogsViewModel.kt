@@ -1,11 +1,12 @@
 package org.pakicek.monoforecast.logic.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import org.pakicek.monoforecast.domain.model.dto.logs.LogFrameEntity
 import org.pakicek.monoforecast.domain.repositories.LogsRepository
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
 
@@ -13,26 +14,29 @@ class LogsViewModel (
     private val repository: LogsRepository,
     private val settingsRepository: SettingsRepository
 ) : ViewModel() {
-    private val _isLogging = MutableStateFlow(false)
-    val isLogging = _isLogging.asStateFlow()
+    private val _isLogging = MutableLiveData(false)
+    val isLogging : LiveData<Boolean> = _isLogging
 
     init {
         viewModelScope.launch {
-            _isLogging.value = repository.isLoggingActive()
+            val active = repository.isLoggingActive()
+            _isLogging.postValue(active)
         }
     }
 
     fun toggleLogging() {
-        if (isLogging.value) {
-            viewModelScope.launch {
-                repository.endLastFile()
-                _isLogging.value = false
-            }
-        } else {
-            viewModelScope.launch {
-                repository.startNewFile()
-                logSettings()
-                _isLogging.value = true
+        viewModelScope.launch {
+            if (_isLogging.value == true) {
+                viewModelScope.launch {
+                    repository.endLastFile()
+                    _isLogging.postValue(false)
+                }
+            } else {
+                viewModelScope.launch {
+                    repository.startNewFile()
+                    logSettings()
+                    _isLogging.postValue(true)
+                }
             }
         }
     }
@@ -42,5 +46,9 @@ class LogsViewModel (
         settings.forEach {
             repository.insertSetting(it.setting, it.value)
         }
+    }
+
+    fun getLogs(): Flow<List<LogFrameEntity>> {
+        return repository.getAllLogs()
     }
 }
