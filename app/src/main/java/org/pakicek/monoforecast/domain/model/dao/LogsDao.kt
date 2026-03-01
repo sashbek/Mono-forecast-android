@@ -3,6 +3,7 @@ package org.pakicek.monoforecast.domain.model.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import org.pakicek.monoforecast.domain.model.dto.enums.LogType
 import org.pakicek.monoforecast.domain.model.dto.logs.LogFrameEntity
 
 @Dao
@@ -14,7 +15,7 @@ interface LogsDao {
     suspend fun getAllLogs(): List<LogFrameEntity>
 
     @Query("SELECT * FROM logs WHERE type = :type ORDER BY timestamp DESC")
-    suspend fun getLogsByType(type: Int): List<LogFrameEntity>
+    suspend fun getLogsByType(type: LogType): List<LogFrameEntity>
 
     @Query("DELETE FROM logs")
     suspend fun clearLogs()

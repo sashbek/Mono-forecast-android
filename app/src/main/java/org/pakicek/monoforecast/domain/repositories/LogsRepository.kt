@@ -13,7 +13,7 @@ class LogsRepository private constructor(private val dao: LogsDao) {
         return dao.getAllLogs()
     }
 
-    suspend fun getLogsByType(type: Int): List<LogFrameEntity> {
+    suspend fun getLogsByType(type: LogType): List<LogFrameEntity> {
         return dao.getLogsByType(type)
     }
 
