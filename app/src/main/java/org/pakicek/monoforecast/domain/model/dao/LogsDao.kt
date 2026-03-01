@@ -16,7 +16,7 @@ interface LogsDao {
     @Insert
     suspend fun insertLog(log: LogFrameEntity): Long
 
-    @Query("SELECT * FROM logs ORDER BY timestamp DESC")
+    @Query("SELECT * FROM logs ORDER BY timestamp ASC")
     fun getAllLogs(): Flow<List<LogFrameEntity>>
 
     @Query("DELETE FROM logs")
