@@ -9,6 +9,7 @@ import org.pakicek.monoforecast.domain.model.dto.converters.LogTypeConverter
 import org.pakicek.monoforecast.domain.model.dto.logs.LogFrameEntity
 import org.pakicek.monoforecast.domain.model.dao.LogsDao
 import org.pakicek.monoforecast.domain.model.dto.logs.DeviceMetricsBlockEntity
+import org.pakicek.monoforecast.domain.model.dto.logs.FileEntity
 import org.pakicek.monoforecast.domain.model.dto.logs.LocationBlockEntity
 import org.pakicek.monoforecast.domain.model.dto.logs.SettingsBlockEntity
 import org.pakicek.monoforecast.domain.model.dto.logs.WeatherBlockEntity
@@ -18,7 +19,8 @@ import org.pakicek.monoforecast.domain.model.dto.logs.WeatherBlockEntity
     SettingsBlockEntity::class,
     DeviceMetricsBlockEntity::class,
     LocationBlockEntity::class,
-    WeatherBlockEntity::class],
+    WeatherBlockEntity::class,
+    FileEntity::class],
     version = 1)
 @TypeConverters(LogTypeConverter::class)
 abstract class LogsDb : RoomDatabase() {

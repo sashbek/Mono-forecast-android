@@ -6,6 +6,7 @@ import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
 
 @Entity(
+    tableName = "settings",
     foreignKeys = [
         ForeignKey(
             entity = LogFrameEntity::class,
