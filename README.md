@@ -71,7 +71,6 @@ Build:
 
 <img src="./readmi_img/android-monoforecast.svg" alt="Arch" width="800"/>
 
-
 Source:
 
 ```plantuml
@@ -270,6 +269,60 @@ end note
 [MainActivity] --> [LogsActivity] : "startActivity"
 
 [LogsActivity] --> [LogDetailFragment] : "открывает в контейнере"
+
+@enduml
+```
+### SQLite Database Diagram
+
+Build: 
+
+<img src="./readmi_img/database-diagram.svg" alt="Diagram" width="800"/>
+
+Source:
+
+```plantuml
+@startuml
+entity logs {
+*id : Long
+timestamp : Long
+logType : LogType
+}
+
+entity settings {
+*logId : Long
+setting : String
+value : String
+}
+
+entity weather {
+*logId : Long
+tempC: Double,
+visibilityMeters: Int,
+windSpeedMs: Double,
+windDir: Int,
+rainMm: Double
+}
+
+entity location {
+*logId : Long
+latitude: Double,
+longitude: Double
+}
+
+entity files {
+*logId : Long
+start : Long
+end : Long
+}
+
+entity device_metrics {
+*logId : Long
+}
+
+logs ||--|| settings
+logs ||--|| weather
+logs ||--|| device_metrics
+logs ||--|| location
 
 @enduml
 ```
