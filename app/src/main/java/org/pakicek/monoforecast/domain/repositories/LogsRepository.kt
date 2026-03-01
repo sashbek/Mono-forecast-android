@@ -2,19 +2,45 @@ package org.pakicek.monoforecast.domain.repositories
 
 import org.pakicek.monoforecast.domain.model.dao.LogsDao
 import org.pakicek.monoforecast.domain.model.dto.enums.LogType
+import org.pakicek.monoforecast.domain.model.dto.logs.FileEntity
 import org.pakicek.monoforecast.domain.model.dto.logs.LogFrameEntity
+import org.pakicek.monoforecast.domain.model.dto.logs.SettingsBlockEntity
+import kotlin.math.log
 
 class LogsRepository private constructor(private val dao: LogsDao) {
-    suspend fun insertLog(type: LogType) {
-        dao.insertLog(LogFrameEntity(type = type, timestamp = System.currentTimeMillis()))
+    private var loggingActive = false
+
+    fun isLoggingActive(): Boolean {
+        return loggingActive
+    }
+
+    fun toggleLogging() {
+        loggingActive = !loggingActive
+    }
+
+    suspend fun insertSettings(setting: String, value: String) {
+        if (!loggingActive) {
+            return
+        }
+
+        val log = LogFrameEntity(type = LogType.SETTINGS)
+        val settingBlock = SettingsBlockEntity(0, setting, value)
+        dao.insertLogWithSettings(log, settingBlock)
+    }
+
+    suspend fun startNewFile() {
+        val file = FileEntity(start = System.currentTimeMillis())
+        dao.insertFile(file)
+    }
+
+    suspend fun endLastFile() {
+        val file = dao.getLastFile()
+        file.end = System.currentTimeMillis()
+        dao.updateFile(file)
     }
 
     suspend fun getAllLogs(): List<LogFrameEntity> {
         return dao.getAllLogs()
-    }
-
-    suspend fun getLogsByType(type: LogType): List<LogFrameEntity> {
-        return dao.getLogsByType(type)
     }
 
     suspend fun clearLogs() {
