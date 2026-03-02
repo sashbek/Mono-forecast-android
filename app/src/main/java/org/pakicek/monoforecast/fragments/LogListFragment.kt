@@ -27,8 +27,6 @@ class LogListFragment : Fragment(R.layout.fragment_log_list) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentLogListBinding.bind(view)
 
-        val files = viewModel.getFiles()
-
         adapter = FileAdapter(emptyList()) { file ->
             openDetails(file)
         }
@@ -36,7 +34,6 @@ class LogListFragment : Fragment(R.layout.fragment_log_list) {
         binding.recyclerViewFiles.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewFiles.adapter = adapter
 
-        // Собираем Flow<List<FileDto>> из ViewModel
         lifecycleScope.launch {
             viewModel.getFiles().collect { list ->
                 adapter.updateList(list)
