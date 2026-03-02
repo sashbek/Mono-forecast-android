@@ -31,10 +31,34 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/graph1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="TemporaryTextView" />
+                android:layout_height="400dp"
+                android:gravity="center"
+                android:background="?attr/colorPrimaryDark"
+                android:text="There will be graphics"
+                android:layout_marginTop="10dp"
+                />
+
+            <TextView
+                android:id="@+id/graph2"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:gravity="center"
+                android:background="?attr/colorPrimaryDark"
+                android:text="There will be graphics"
+                android:layout_marginTop="10dp"
+                />
+
+            <TextView
+                android:id="@+id/graph3"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:gravity="center"
+                android:background="?attr/colorPrimaryDark"
+                android:text="There will be graphics"
+                android:layout_marginTop="10dp"
+                />
 
         </LinearLayout>
     </ScrollView>

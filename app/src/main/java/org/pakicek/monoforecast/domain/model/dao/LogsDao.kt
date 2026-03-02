@@ -27,7 +27,7 @@ interface LogsDao {
     suspend fun insertFile(file: FileEntity)
 
     @Query("SELECT * FROM files")
-    suspend fun getAllFiles(): List<FileEntity>
+    fun getAllFiles(): Flow<List<FileEntity>>
 
     @Query("SELECT * FROM files ORDER BY id DESC LIMIT 1")
     suspend fun getLastFile(): FileEntity?

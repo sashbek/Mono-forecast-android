@@ -1,14 +1,19 @@
 package org.pakicek.monoforecast.logic.viewmodel
 
+import android.icu.text.SimpleDateFormat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.pakicek.monoforecast.domain.model.dto.FileDto
 import org.pakicek.monoforecast.domain.model.dto.logs.LogFrameEntity
 import org.pakicek.monoforecast.domain.repositories.LogsRepository
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
+import java.util.Date
+import java.util.Locale
 
 class LogsViewModel (
     private val repository: LogsRepository,
@@ -50,5 +55,29 @@ class LogsViewModel (
 
     fun getLogs(): Flow<List<LogFrameEntity>> {
         return repository.getAllLogs()
+    }
+
+    fun getFiles(): Flow<List<FileDto>> {
+        val rawFiles = repository.getAllFiles()
+        val files: Flow<List<FileDto>> = rawFiles.map { eList ->
+            eList.map { e ->
+                FileDto(
+                    id = e.id,
+                    startTime = formatTimestamp(e.start),
+                    endTime = formatTimestamp(e.end)
+                )
+            }
+        }
+
+        return files
+    }
+
+    private fun formatTimestamp(ts: Long?): String {
+        if (ts == null) {
+            return "now"
+        }
+
+        val sdf = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
+        return sdf.format(Date(ts))
     }
 }

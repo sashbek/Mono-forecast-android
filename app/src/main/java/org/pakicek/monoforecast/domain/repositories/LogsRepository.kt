@@ -38,6 +38,10 @@ class LogsRepository private constructor(private val dao: LogsDao) {
         }
     }
 
+    fun getAllFiles(): Flow<List<FileEntity>> {
+        return dao.getAllFiles()
+    }
+
     fun getAllLogs(): Flow<List<LogFrameEntity>> {
         return dao.getAllLogs()
     }
