@@ -2,13 +2,15 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="4dp"
     android:clickable="true"
-    android:foreground="?attr/selectableItemBackground">
+    android:focusable="true"
+    android:background="?attr/selectableItemBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,32 +19,42 @@
 
         <!-- Иконка файла слева -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/dateLayout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="4dp"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/startText"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="TemporaryText"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text = "@string/timestamps_divider"
-                android:layout_marginRight="5dp"
-                android:layout_marginLeft="5dp"/>
-
+                android:text="This text won't be displayed"
+                tools:ignore="HardcodedText" />
             <TextView
                 android:id="@+id/endText"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="TemporaryText"
-                />
+                android:text="This text won't be displayed"
+                tools:ignore="HardcodedText" />
         </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/nextBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="8dp"
+            android:background="?attr/selectableItemBackground"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_next"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="?android:attr/textColor"
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

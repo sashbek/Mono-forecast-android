@@ -79,15 +79,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
                     android:layout_weight="1"
-                    app:cardBackgroundColor="?attr/colorPrimary"
                     app:cardElevation="5dp"
-                    app:cardUseCompatPadding="true">
+                    app:cardUseCompatPadding="true"
+                    app:cardCornerRadius="10dp"
+                    app:cardBackgroundColor="?attr/selectableItemBackground">
 
                     <LinearLayout
                         android:id="@+id/forecastActivityButton"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="?attr/selectableItemBackground"
                         android:clickable="true"
                         android:focusable="true"
                         android:orientation="vertical"
@@ -119,15 +119,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_weight="1"
-                    app:cardBackgroundColor="?attr/colorPrimary"
                     app:cardElevation="5dp"
-                    app:cardUseCompatPadding="true">
+                    app:cardUseCompatPadding="true"
+                    app:cardCornerRadius="10dp">
 
                     <LinearLayout
                         android:id="@+id/bluetoothActivityButton"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="?attr/selectableItemBackground"
                         android:clickable="true"
                         android:focusable="true"
                         android:orientation="vertical"
@@ -167,15 +166,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
                     android:layout_weight="1"
-                    app:cardBackgroundColor="?attr/colorPrimary"
                     app:cardElevation="5dp"
-                    app:cardUseCompatPadding="true">
+                    app:cardUseCompatPadding="true"
+                    app:cardCornerRadius="10dp">
 
                     <LinearLayout
                         android:id="@+id/locationActivityButton"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="?attr/selectableItemBackground"
                         android:clickable="true"
                         android:focusable="true"
                         android:orientation="vertical"
@@ -206,15 +204,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_weight="1"
-                    app:cardBackgroundColor="?attr/colorPrimary"
                     app:cardElevation="5dp"
-                    app:cardUseCompatPadding="true">
+                    app:cardUseCompatPadding="true"
+                    app:cardCornerRadius="10dp">
 
                     <LinearLayout
                         android:id="@+id/logsActivityButton"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="?attr/selectableItemBackground"
                         android:clickable="true"
                         android:focusable="true"
                         android:orientation="vertical"

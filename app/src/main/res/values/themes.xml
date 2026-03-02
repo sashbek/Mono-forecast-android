@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/middle_gray</item>
         <item name="colorAccent">@color/purple_700</item>
+        <item name="selectableItemBackground">@color/white </item>
 
         <item name="android:textColor">@color/black</item>
 
