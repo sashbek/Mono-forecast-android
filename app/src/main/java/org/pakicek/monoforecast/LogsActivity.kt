@@ -2,14 +2,11 @@ package org.pakicek.monoforecast
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import kotlinx.coroutines.launch
 import org.pakicek.monoforecast.databinding.ActivityLogsBinding
 import org.pakicek.monoforecast.domain.model.dao.LogsDb
 import org.pakicek.monoforecast.domain.repositories.LogsRepository
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
+import org.pakicek.monoforecast.fragments.LogListFragment
 import org.pakicek.monoforecast.logic.factories.LogsViewModelFactory
 import org.pakicek.monoforecast.logic.viewmodel.LogsViewModel
 
@@ -43,12 +40,10 @@ class LogsActivity : AppCompatActivity() {
                 if (logging) "Stop Logging" else "Start Logging"
         }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getLogs().collect { logsList ->
-                    binding.tvLogs.text = logsList.joinToString("\n") { "${it.id} ${it.type} ${it.timestamp}" }
-                }
-            }
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(binding.logsFragmentContainer.id, LogListFragment())
+                .commit()
         }
 
         binding.btnStartLogging.setOnClickListener {
