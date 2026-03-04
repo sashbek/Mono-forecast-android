@@ -8,6 +8,7 @@ import org.pakicek.monoforecast.domain.model.dto.enums.LogType
 data class LogFrameEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    val timestamp : Long = System.currentTimeMillis(),
     val type : LogType,
+    val message : String,
+    val timestamp : Long = System.currentTimeMillis(),
 )

@@ -71,7 +71,7 @@ class LogDetailsFragment : Fragment(R.layout.fragment_log_details) {
 
         logs.forEach { log ->
             val time = sdf.format(Date(log.timestamp))
-            sb.append("[$time] ${log.type.name}\n")
+            sb.append("[$time] ${log.type.name} ${log.message}\n")
         }
 
         binding.textView.text = sb.toString()

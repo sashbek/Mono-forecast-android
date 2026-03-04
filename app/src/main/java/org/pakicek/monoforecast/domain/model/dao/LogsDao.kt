@@ -21,11 +21,39 @@ interface LogsDao {
     @Query("DELETE FROM logs")
     suspend fun clearLogsTable()
 
+    @Insert
+    suspend fun insertFile(file: FileEntity)
+
+    @Update
+    suspend fun updateFile(file: FileEntity)
+
+    @Query("SELECT * FROM files ORDER BY id DESC LIMIT 1")
+    suspend fun getLastFile(): FileEntity?
+
+    @Query("SELECT * FROM files ORDER BY id DESC")
+    fun getAllFilesFlow(): Flow<List<FileEntity>>
+
     @Query("DELETE FROM files")
     suspend fun clearFilesTable()
 
+    @Insert
+    suspend fun insertSettings(settings: SettingsBlockEntity)
+
+    @Query("SELECT * FROM settings")
+    suspend fun getAllSettings(): List<SettingsBlockEntity>
+
+    @Query("SELECT s.* FROM settings AS s JOIN logs AS l ON s.logId = l.id WHERE l.timestamp BETWEEN :start AND :end")
+    suspend fun getSettingsByTime(start: Long, end: Long): List<SettingsBlockEntity>
+
     @Query("DELETE FROM settings")
     suspend fun clearSettingsTable()
+
+    @Transaction
+    suspend fun insertLogWithSettings(log: LogFrameEntity, settings: SettingsBlockEntity) {
+        val logId = insertLog(log)
+        settings.logId = logId
+        insertSettings(settings)
+    }
 
     @Transaction
     suspend fun clearAllData() {
@@ -33,35 +61,4 @@ interface LogsDao {
         clearLogsTable()
         clearFilesTable()
     }
-
-    @Insert
-    suspend fun insertFile(file: FileEntity)
-
-    @Query("SELECT * FROM files ORDER BY id DESC")
-    fun getAllFilesFlow(): Flow<List<FileEntity>>
-
-    @Query("SELECT * FROM files ORDER BY id DESC LIMIT 1")
-    suspend fun getLastFile(): FileEntity?
-
-    @Update
-    suspend fun updateFile(file: FileEntity)
-
-    @Insert
-    suspend fun insertSettings(log: SettingsBlockEntity)
-
-    @Transaction
-    suspend fun insertLogWithSettings(
-        log: LogFrameEntity,
-        settings: SettingsBlockEntity
-    ) {
-        val logId = insertLog(log)
-        settings.logId = logId
-        insertSettings(settings)
-    }
-
-    @Query("SELECT * FROM settings")
-    suspend fun getAllSettings(): List<SettingsBlockEntity>
-
-    @Query("SELECT s.* FROM settings AS s " + "JOIN logs AS l ON s.logId = l.id " + "WHERE l.timestamp BETWEEN :start AND :end")
-    suspend fun getSettingsByTime(start: Long, end: Long): List<SettingsBlockEntity>
 }
