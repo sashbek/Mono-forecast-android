@@ -12,7 +12,6 @@ import org.pakicek.monoforecast.domain.model.dto.logs.SettingsBlockEntity
 
 @Dao
 interface LogsDao {
-    // Logs
     @Insert
     suspend fun insertLog(log: LogFrameEntity): Long
 
@@ -22,7 +21,6 @@ interface LogsDao {
     @Query("DELETE FROM logs")
     suspend fun clearLogs()
 
-    // Files
     @Insert
     suspend fun insertFile(file: FileEntity)
 
@@ -35,7 +33,6 @@ interface LogsDao {
     @Update
     suspend fun updateFile(file: FileEntity)
 
-    // Settings
     @Insert
     suspend fun insertSettings(log: SettingsBlockEntity)
 
