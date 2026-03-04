@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimaryDark"
         android:padding="4dp"
+        android:elevation="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -56,8 +57,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
-
-            <!-- Карточка с данными погоды -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -65,13 +64,11 @@
                 app:cardBackgroundColor="?attr/colorPrimary"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="16dp">
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -79,43 +76,37 @@
                         android:text="@string/current_weather_header_text"
                         android:textSize="18sp"
                         android:textStyle="bold" />
-
                     <TextView
                         android:id="@+id/tvTemp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Temp: --"
+                        android:text="@string/placeholder_temp"
                         android:textSize="16sp" />
-
                     <TextView
                         android:id="@+id/tvWind"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Wind: --"
+                        android:text="@string/placeholder_wind"
                         android:textSize="16sp" />
-
                     <TextView
                         android:id="@+id/tvHumidity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Humidity: --"
+                        android:text="@string/placeholder_humidity"
                         android:textSize="16sp" />
-
                     <TextView
                         android:id="@+id/tvClouds"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Clouds: --"
+                        android:text="@string/placeholder_clouds"
                         android:textSize="16sp" />
-
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Карточка статуса (Результат анализа) -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/statusCard"
                 android:layout_width="match_parent"
@@ -124,14 +115,12 @@
                 app:cardBackgroundColor="#E0E0E0"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
                     android:padding="24dp">
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -139,7 +128,6 @@
                         android:textAllCaps="true"
                         android:textSize="14sp"
                         android:textStyle="bold" />
-
                     <TextView
                         android:id="@+id/tvStatusTitle"
                         android:layout_width="wrap_content"
@@ -149,7 +137,6 @@
                         android:textAllCaps="true"
                         android:textSize="28sp"
                         android:textStyle="bold" />
-
                     <TextView
                         android:id="@+id/tvStatusDescription"
                         android:layout_width="wrap_content"
@@ -157,11 +144,9 @@
                         android:gravity="center"
                         android:text="@string/ride_status_refresh_text"
                         android:textSize="16sp" />
-
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Кнопка обновления -->
             <Button
                 android:id="@+id/btnRefresh"
                 android:layout_width="match_parent"
@@ -170,8 +155,17 @@
                 android:padding="12dp"
                 android:text="@string/weather_refresh_button_text"
                 android:textSize="16sp" />
-
         </LinearLayout>
     </ScrollView>
+
+    <org.pakicek.monoforecast.ui.view.WeatherAnimationView
+        android:id="@+id/weatherView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:elevation="5dp"
+        app:layout_constraintTop_toBottomOf="@id/header"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
