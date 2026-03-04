@@ -5,9 +5,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object RetrofitClient {
-    private const val BASE_URL = "https://api.api-ninjas.com/"
-
+object RetrofitClients {
     private val logging = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
@@ -16,12 +14,21 @@ object RetrofitClient {
         .addInterceptor(logging)
         .build()
 
-    val api: WeatherApiInterface by lazy {
+    val ninjaApi: WeatherApiInterface by lazy {
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl("https://api.api-ninjas.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(httpClient)
             .build()
             .create(WeatherApiInterface::class.java)
+    }
+
+    val openMeteoApi: OpenMeteoApiInterface by lazy {
+        Retrofit.Builder()
+            .baseUrl("https://api.open-meteo.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(httpClient)
+            .build()
+            .create(OpenMeteoApiInterface::class.java)
     }
 }

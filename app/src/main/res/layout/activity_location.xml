@@ -89,7 +89,8 @@
                     android:layout_height="match_parent"
                     android:text="@string/start_tracking_button_text"
                     android:textColor="@color/color_tracking_button"
-                    android:background="@drawable/bg_activatable_button"/>
+                    android:background="@drawable/bg_activatable_button"
+                    app:backgroundTint="@null"/>
             </androidx.cardview.widget.CardView>
 
             <TextView

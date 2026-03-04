@@ -63,8 +63,8 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun setupApiSpinner() {
-        val items = listOf(WeatherApi.NINJA_API, WeatherApi.MOCK)
-        val displayNames = listOf("NinjaAPI", "Mock (Random)")
+        val items = listOf(WeatherApi.NINJA_API, WeatherApi.OPEN_METEO, WeatherApi.MOCK)
+        val displayNames = listOf("NinjaAPI", "Open-Meteo", "Mock (Random)")
 
         val current = viewModel.getApi()
         val selectedIndex = items.indexOf(current).takeIf { it >= 0 } ?: 0

@@ -5,12 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.snackbar.Snackbar
 import org.pakicek.monoforecast.databinding.ActivityForecastBinding
 import org.pakicek.monoforecast.domain.model.RideDifficulty
 import org.pakicek.monoforecast.domain.model.dto.WeatherResponseDto
@@ -28,7 +28,7 @@ class ForecastActivity : AppCompatActivity() {
     private val weatherReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == WeatherSyncService.ACTION_WEATHER_UPDATED) {
-                Toast.makeText(context, "Data has been updated!", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Data has been updated!", Snackbar.LENGTH_SHORT).show()
                 viewModel.refreshData()
             }
         }
@@ -58,7 +58,7 @@ class ForecastActivity : AppCompatActivity() {
     }
 
     private fun startWeatherSync() {
-        Toast.makeText(this, "Syncing weather...", Toast.LENGTH_SHORT).show()
+        Snackbar.make(binding.root, "Syncing weather...", Snackbar.LENGTH_SHORT).show()
         val intent = Intent(this, WeatherSyncService::class.java)
         startService(intent)
     }

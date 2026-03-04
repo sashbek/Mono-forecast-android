@@ -2,9 +2,9 @@ package org.pakicek.monoforecast
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import com.google.android.material.snackbar.Snackbar
 import org.pakicek.monoforecast.databinding.ActivityMainBinding
 import org.pakicek.monoforecast.domain.model.dto.enums.AppTheme
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             locationActivityButton.setOnClickListener { navigateTo(LocationActivity::class.java) }
 
             bluetoothActivityButton.setOnClickListener {
-                Toast.makeText(this@MainActivity, "BLE Connect: Not implemented", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "BLE Connect: Not implemented", Snackbar.LENGTH_SHORT).show()
             }
         }
     }
