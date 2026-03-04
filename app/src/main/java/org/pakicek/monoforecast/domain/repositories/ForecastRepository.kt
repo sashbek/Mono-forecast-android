@@ -129,8 +129,8 @@ class ForecastRepository(context: Context) {
     private fun generateMockDto(): WeatherResponseDto {
         return WeatherResponseDto(
             main = MainDto(
-                temp = Random.nextDouble(5.0, 30.0),
-                humidity = Random.nextInt(30, 90)
+                temp = Random.nextDouble(-10.0, 30.0),
+                humidity = Random.nextInt(10, 90)
             ),
             wind = WindDto(
                 speed = Random.nextDouble(1.0, 15.0),

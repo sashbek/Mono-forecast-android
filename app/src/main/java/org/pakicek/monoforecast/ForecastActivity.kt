@@ -48,6 +48,7 @@ class ForecastActivity : AppCompatActivity() {
     private fun setupObservers() {
         viewModel.weatherState.observe(this) { state ->
             updateUI(state.weather, state.difficulty)
+            binding.weatherView.setWeatherCondition(state.condition)
         }
     }
 

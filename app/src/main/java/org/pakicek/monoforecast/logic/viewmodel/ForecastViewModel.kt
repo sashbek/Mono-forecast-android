@@ -7,8 +7,10 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.pakicek.monoforecast.domain.model.RideDifficulty
 import org.pakicek.monoforecast.domain.model.dto.WeatherResponseDto
+import org.pakicek.monoforecast.domain.model.dto.enums.WeatherCondition
 import org.pakicek.monoforecast.domain.repositories.ForecastRepository
 import org.pakicek.monoforecast.logic.ForecastAnalyzer
+import org.pakicek.monoforecast.logic.WeatherConditionMapper
 
 class ForecastViewModel(private val repository: ForecastRepository) : ViewModel() {
 
@@ -25,12 +27,14 @@ class ForecastViewModel(private val repository: ForecastRepository) : ViewModel(
         viewModelScope.launch {
             val weatherDto = repository.getLastKnownWeather()
             val difficulty = analyzer.analyzeDifficulty(weatherDto)
-            _weatherState.value = WeatherState(weatherDto, difficulty)
+            val condition = WeatherConditionMapper.map(weatherDto)
+            _weatherState.value = WeatherState(weatherDto, difficulty, condition)
         }
     }
 
     data class WeatherState(
         val weather: WeatherResponseDto,
-        val difficulty: RideDifficulty
+        val difficulty: RideDifficulty,
+        val condition: WeatherCondition
     )
 }

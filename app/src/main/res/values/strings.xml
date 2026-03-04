@@ -39,7 +39,8 @@
 
     <string name="placeholder_temp">Temp: —</string>
     <string name="placeholder_wind">Wind: —</string>
-    <string name="placeholder_rain">Rain: —</string>
+    <string name="placeholder_humidity">Humidity: —</string>
+    <string name="placeholder_clouds">Clouds: —</string>
     <string name="ride_status_refresh_text">Press refresh to check</string>
 
     <string name="fmt_temp">Temp: %1$.1f °C</string>
