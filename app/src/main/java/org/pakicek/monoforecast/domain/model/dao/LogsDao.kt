@@ -19,13 +19,26 @@ interface LogsDao {
     fun getAllLogs(): Flow<List<LogFrameEntity>>
 
     @Query("DELETE FROM logs")
-    suspend fun clearLogs()
+    suspend fun clearLogsTable()
+
+    @Query("DELETE FROM files")
+    suspend fun clearFilesTable()
+
+    @Query("DELETE FROM settings")
+    suspend fun clearSettingsTable()
+
+    @Transaction
+    suspend fun clearAllData() {
+        clearSettingsTable()
+        clearLogsTable()
+        clearFilesTable()
+    }
 
     @Insert
     suspend fun insertFile(file: FileEntity)
 
-    @Query("SELECT * FROM files")
-    suspend fun getAllFiles(): List<FileEntity>
+    @Query("SELECT * FROM files ORDER BY id DESC")
+    fun getAllFilesFlow(): Flow<List<FileEntity>>
 
     @Query("SELECT * FROM files ORDER BY id DESC LIMIT 1")
     suspend fun getLastFile(): FileEntity?

@@ -1,14 +1,16 @@
 package org.pakicek.monoforecast.domain.repositories
 
+import android.content.Context
 import kotlinx.coroutines.flow.Flow
-import org.pakicek.monoforecast.domain.model.dao.LogsDao
+import org.pakicek.monoforecast.domain.model.dao.LogsDb
 import org.pakicek.monoforecast.domain.model.dto.enums.LogType
 import org.pakicek.monoforecast.domain.model.dto.logs.FileEntity
 import org.pakicek.monoforecast.domain.model.dto.logs.LogFrameEntity
 import org.pakicek.monoforecast.domain.model.dto.logs.SettingsBlockEntity
-import kotlin.math.log
 
-class LogsRepository private constructor(private val dao: LogsDao) {
+class LogsRepository(context: Context) {
+
+    private val dao = LogsDb.getInstance(context).logsDao()
 
     suspend fun isLoggingActive(): Boolean {
         val last = dao.getLastFile() ?: return false
@@ -16,10 +18,7 @@ class LogsRepository private constructor(private val dao: LogsDao) {
     }
 
     suspend fun insertSetting(setting: String, value: String) {
-        if (!isLoggingActive()) {
-            return
-        }
-
+        if (!isLoggingActive()) return
         val log = LogFrameEntity(type = LogType.SETTINGS)
         val settingBlock = SettingsBlockEntity(null, setting, value)
         dao.insertLogWithSettings(log, settingBlock)
@@ -38,22 +37,11 @@ class LogsRepository private constructor(private val dao: LogsDao) {
         }
     }
 
-    fun getAllLogs(): Flow<List<LogFrameEntity>> {
-        return dao.getAllLogs()
-    }
+    fun getAllLogs(): Flow<List<LogFrameEntity>> = dao.getAllLogs()
 
-    suspend fun clearLogs() {
-        dao.clearLogs()
-    }
+    fun getAllFiles(): Flow<List<FileEntity>> = dao.getAllFilesFlow()
 
-    companion object {
-        @Volatile
-        private var INSTANCE: LogsRepository? = null
-
-        fun getInstance(dao: LogsDao): LogsRepository {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: LogsRepository(dao).also { INSTANCE = it }
-            }
-        }
+    suspend fun clearAll() {
+        dao.clearAllData()
     }
 }

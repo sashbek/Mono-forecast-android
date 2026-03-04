@@ -94,7 +94,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun setupCacheSpinner() {
         val items = CacheDuration.entries
-        val displayNames = listOf("Always Update", "15 Minutes", "1 Hour", "3 Hours")
+        val displayNames = listOf("Always update", "15 minutes", "1 hour", "3 hours")
 
         val current = viewModel.getCacheDuration()
         val selectedIndex = items.indexOf(current).takeIf { it >= 0 } ?: 1

@@ -1,32 +1,24 @@
 package org.pakicek.monoforecast
 
 import android.os.Bundle
-import android.text.method.ScrollingMovementMethod
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import kotlinx.coroutines.launch
 import org.pakicek.monoforecast.databinding.ActivityLogsBinding
-import org.pakicek.monoforecast.domain.model.dao.LogsDb
 import org.pakicek.monoforecast.domain.repositories.LogsRepository
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
+import org.pakicek.monoforecast.fragments.LogListFragment
 import org.pakicek.monoforecast.logic.factories.LogsViewModelFactory
 import org.pakicek.monoforecast.logic.viewmodel.LogsViewModel
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class LogsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLogsBinding
 
     private val viewModel: LogsViewModel by viewModels {
-        val db = LogsDb.getInstance(applicationContext)
-        val logsRepo = LogsRepository.getInstance(db.logsDao())
+        val logsRepo = LogsRepository(this)
         val settingsRepo = SettingsRepository(this)
         LogsViewModelFactory(logsRepo, settingsRepo)
     }
@@ -37,61 +29,36 @@ class LogsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupInsets()
-        setupUI()
-        observeData()
-    }
+        setupListeners()
+        setupFragmentNavigation()
 
-    private fun setupUI() {
-        binding.tvLogs.movementMethod = ScrollingMovementMethod()
-
-        binding.btnStartLogging.setOnClickListener {
-            viewModel.toggleLogging()
-        }
-
-        binding.btnBack.setOnClickListener { finish() }
-
-        binding.btnCopy.setOnClickListener {
-            Toast.makeText(this, "Log copy not implemented yet", Toast.LENGTH_SHORT).show()
-        }
-
-        binding.btnShare.setOnClickListener {
-            Toast.makeText(this, "Log share not implemented yet", Toast.LENGTH_SHORT).show()
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.logsFragmentContainer, LogListFragment())
+                .commit()
         }
     }
 
-    private fun observeData() {
-        viewModel.isLogging.observe(this) { isLogging ->
-            val logging = isLogging == true
-            binding.btnStartLogging.isSelected = logging
-            binding.btnStartLogging.text = getString(
-                if (logging) R.string.stop_logging_button_text else R.string.start_logging_button_text
-            )
-        }
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getLogs().collect { logsList ->
-                    displayLogs(logsList)
-                }
+    private fun setupListeners() {
+        binding.btnBack.setOnClickListener {
+            if (supportFragmentManager.backStackEntryCount > 0) {
+                supportFragmentManager.popBackStack()
+            } else {
+                finish()
             }
         }
+
+        binding.btnClear.setOnClickListener {
+            viewModel.clearLogs()
+            Toast.makeText(this, "All logs deleted", Toast.LENGTH_SHORT).show()
+        }
     }
 
-    private fun displayLogs(logs: List<org.pakicek.monoforecast.domain.model.dto.logs.LogFrameEntity>) {
-        if (logs.isEmpty()) {
-            binding.tvLogs.text = getString(R.string.logs_placeholder_text)
-            return
+    private fun setupFragmentNavigation() {
+        supportFragmentManager.addOnBackStackChangedListener {
+            val isDetailsOpen = supportFragmentManager.backStackEntryCount > 0
+            binding.btnClear.visibility = if (isDetailsOpen) View.GONE else View.VISIBLE
         }
-
-        val sb = StringBuilder()
-        val sdf = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-
-        logs.forEach { log ->
-            val time = sdf.format(Date(log.timestamp))
-            sb.append("[$time] ${log.type.name}\n")
-        }
-
-        binding.tvLogs.text = sb.toString()
     }
 
     private fun setupInsets() {

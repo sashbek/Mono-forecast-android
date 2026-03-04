@@ -23,8 +23,15 @@
     <string name="logs_header_text">Logs</string>
     <string name="share_button_text">Share</string>
     <string name="copy_button_text">Copy</string>
+    <string name="clear_logs_desc">Delete all logs</string>
     <string name="start_logging_button_text">Start Logging</string>
     <string name="stop_logging_button_text">Stop Logging</string>
+    <string name="log_file_session_fmt">Session: %1$s</string>
+    <string name="log_file_finished_fmt">Finished: %1$s</string>
+    <string name="log_file_active">Active…</string>
+    <string name="close_details">Close details</string>
+    <string name="log_details_header_fmt">Logs for File ID: %1$d\n\n</string>
+    <string name="log_details_empty">No logs recorded for this session.</string>
 
     <string name="location_header_text">Location</string>
     <string name="map_shut_text">Map preview</string>

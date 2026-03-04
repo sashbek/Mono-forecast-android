@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import org.pakicek.monoforecast.domain.model.dto.logs.FileEntity
 import org.pakicek.monoforecast.domain.model.dto.logs.LogFrameEntity
 import org.pakicek.monoforecast.domain.repositories.LogsRepository
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
@@ -59,7 +60,19 @@ class LogsViewModel(
         }
     }
 
-    fun getLogs(): Flow<List<LogFrameEntity>> {
+    fun getAllFiles(): Flow<List<FileEntity>> {
+        return repository.getAllFiles()
+    }
+
+    fun getLogsForFile(fileId: Long): Flow<List<LogFrameEntity>> {
+        // TODO: Потом реализуем фильтрацию по fileId
         return repository.getAllLogs()
+    }
+
+    fun clearLogs() {
+        viewModelScope.launch {
+            if (_isLogging.value == true) toggleLogging()
+            repository.clearAll()
+        }
     }
 }
