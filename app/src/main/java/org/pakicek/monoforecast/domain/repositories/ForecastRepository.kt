@@ -20,11 +20,12 @@ class ForecastRepository(context: Context) {
         private const val KEY_HUMIDITY = "humidity"
         private const val KEY_WIND_SPEED = "wind_speed"
         private const val KEY_WIND_DIRECTION = "wind_direction"
-        private const val KEY_CLOUD_PCT = "cloud_pct" // Новый ключ
+        private const val KEY_CLOUD_PCT = "cloud_pct"
         private const val KEY_HAS_DATA = "has_data"
         private const val KEY_API_SETTING = "KEY_API"
         private const val API_KEY = "mqccZREuuaHTZxfWv51DCSArwrekGpmoeOzQMN6A"
-        private const val DEFAULT_CITY = "London"
+        private const val DEFAULT_LAT = 51.5074
+        private const val DEFAULT_LON = 0.1278
     }
 
     fun getLastKnownWeather(): WeatherResponseDto {
@@ -67,7 +68,7 @@ class ForecastRepository(context: Context) {
     private suspend fun fetchFromNetwork() {
         try {
             Log.d("ForecastRepo", "Fetching from NinjaAPI...")
-            val response = RetrofitClient.api.getWeather(DEFAULT_CITY, API_KEY)
+            val response = RetrofitClient.api.getWeather(DEFAULT_LAT, DEFAULT_LON, API_KEY)
 
             if (response.isSuccessful && response.body() != null) {
                 val ninjaDto = response.body()!!

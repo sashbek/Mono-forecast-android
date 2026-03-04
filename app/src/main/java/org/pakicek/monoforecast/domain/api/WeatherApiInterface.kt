@@ -10,7 +10,8 @@ interface WeatherApiInterface {
     // Документация: https://api-ninjas.com/api/weather
     @GET("v1/weather")
     suspend fun getWeather(
-        @Query("city") city: String,
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double,
         @Header("X-Api-Key") apiKey: String
     ): Response<NinjaWeatherDto>
 }
