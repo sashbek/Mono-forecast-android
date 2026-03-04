@@ -10,54 +10,43 @@ import org.pakicek.monoforecast.domain.model.dto.enums.AppTheme
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
 
 class MainActivity : AppCompatActivity() {
-    private var _binding: ActivityMainBinding? = null
-    private val binding
-        get() = _binding ?: throw IllegalStateException("Binding must not be null")
+    private lateinit var binding: ActivityMainBinding
+    private val settingsRepository by lazy { SettingsRepository(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        _binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
         setupTheme()
+        super.onCreate(savedInstanceState)
 
-        binding.btnSettings.setOnClickListener {
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
-        }
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        binding.forecastActivityButton.setOnClickListener {
-            val intent = Intent(this, ForecastActivity::class.java)
-            startActivity(intent)
-        }
-
-        binding.bluetoothActivityButton.setOnClickListener {
-            Toast.makeText(this, "BLE Connect: not implemented", Toast.LENGTH_SHORT).show()
-        }
-
-        binding.locationActivityButton.setOnClickListener {
-            val intent = Intent(this, LocationActivity::class.java)
-            startActivity(intent)
-        }
-
-        binding.logsActivityButton.setOnClickListener {
-            val intent = Intent(this, LogsActivity::class.java)
-            startActivity(intent)
-        }
+        setupClickListeners()
     }
 
     private fun setupTheme() {
-        val settingsRepository = SettingsRepository(this)
         val theme = settingsRepository.getTheme()
+        val mode = when (theme) {
+            AppTheme.LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
+            AppTheme.DARK -> AppCompatDelegate.MODE_NIGHT_YES
+            AppTheme.SYSTEM -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
+        AppCompatDelegate.setDefaultNightMode(mode)
+    }
 
-        when (theme) {
-            AppTheme.LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            AppTheme.DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+    private fun setupClickListeners() {
+        with(binding) {
+            btnSettings.setOnClickListener { navigateTo(SettingsActivity::class.java) }
+            forecastActivityButton.setOnClickListener { navigateTo(ForecastActivity::class.java) }
+            logsActivityButton.setOnClickListener { navigateTo(LogsActivity::class.java) }
+            locationActivityButton.setOnClickListener { navigateTo(LocationActivity::class.java) }
+
+            bluetoothActivityButton.setOnClickListener {
+                Toast.makeText(this@MainActivity, "BLE Connect: Not implemented", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
+    private fun navigateTo(clazz: Class<*>) {
+        startActivity(Intent(this, clazz))
     }
 }

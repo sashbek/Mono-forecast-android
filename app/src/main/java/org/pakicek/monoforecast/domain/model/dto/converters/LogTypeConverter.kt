@@ -7,11 +7,11 @@ class LogTypeConverter {
 
     @TypeConverter
     fun fromLogType(type: LogType): Int {
-        return type.code
+        return type.ordinal
     }
 
     @TypeConverter
     fun toLogType(code: Int): LogType {
-        return LogType.fromCode(code)
+        return LogType.entries.getOrElse(code) { LogType.DEVICE_METRICS }
     }
 }

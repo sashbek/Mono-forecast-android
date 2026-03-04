@@ -22,11 +22,13 @@
     <string name="logs_header_text">Logs</string>
     <string name="share_button_text">Share</string>
     <string name="copy_button_text">Copy</string>
-    <string name="logging_button_text">Start Logging</string>
+    <string name="start_logging_button_text">Start Logging</string>
+    <string name="stop_logging_button_text">Stop Logging</string>
 
     <string name="location_header_text">Location</string>
     <string name="map_shut_text">Map preview</string>
     <string name="start_tracking_button_text">Start tracking</string>
+    <string name="stop_tracking_button_text">Stop Tracking</string>
     <string name="zeroes_timer">00:00:00</string>
 
     <string name="forecast_header_text">Forecast</string>
