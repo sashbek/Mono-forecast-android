@@ -10,38 +10,49 @@ import org.pakicek.monoforecast.domain.model.dto.logs.LogFrameEntity
 import org.pakicek.monoforecast.domain.repositories.LogsRepository
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
 
-class LogsViewModel (
+class LogsViewModel(
     private val repository: LogsRepository,
     private val settingsRepository: SettingsRepository
 ) : ViewModel() {
+
     private val _isLogging = MutableLiveData(false)
-    val isLogging : LiveData<Boolean> = _isLogging
+    val isLogging: LiveData<Boolean> = _isLogging
 
     init {
+        checkLoggingStatus()
+    }
+
+    private fun checkLoggingStatus() {
         viewModelScope.launch {
             val active = repository.isLoggingActive()
-            _isLogging.postValue(active)
+            _isLogging.value = active
         }
     }
 
     fun toggleLogging() {
         viewModelScope.launch {
-            if (_isLogging.value == true) {
-                viewModelScope.launch {
-                    repository.endLastFile()
-                    _isLogging.postValue(false)
-                }
+            val currentlyActive = repository.isLoggingActive()
+
+            if (currentlyActive) {
+                stopLogging()
             } else {
-                viewModelScope.launch {
-                    repository.startNewFile()
-                    logSettings()
-                    _isLogging.postValue(true)
-                }
+                startLogging()
             }
         }
     }
 
-    private suspend fun logSettings() {
+    private suspend fun startLogging() {
+        repository.startNewFile()
+        logCurrentSettings()
+        _isLogging.value = true
+    }
+
+    private suspend fun stopLogging() {
+        repository.endLastFile()
+        _isLogging.value = false
+    }
+
+    private suspend fun logCurrentSettings() {
         val settings = settingsRepository.getAllSettings()
         settings.forEach {
             repository.insertSetting(it.setting, it.value)

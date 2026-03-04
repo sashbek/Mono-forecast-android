@@ -12,7 +12,6 @@ import org.pakicek.monoforecast.domain.model.dto.logs.SettingsBlockEntity
 
 @Dao
 interface LogsDao {
-    // Logs
     @Insert
     suspend fun insertLog(log: LogFrameEntity): Long
 
@@ -22,7 +21,6 @@ interface LogsDao {
     @Query("DELETE FROM logs")
     suspend fun clearLogs()
 
-    // Files
     @Insert
     suspend fun insertFile(file: FileEntity)
 
@@ -35,7 +33,6 @@ interface LogsDao {
     @Update
     suspend fun updateFile(file: FileEntity)
 
-    // Settings
     @Insert
     suspend fun insertSettings(log: SettingsBlockEntity)
 
@@ -52,8 +49,6 @@ interface LogsDao {
     @Query("SELECT * FROM settings")
     suspend fun getAllSettings(): List<SettingsBlockEntity>
 
-    @Query("SELECT s.* FROM settings AS s " +
-            "JOIN logs AS l ON s.logId = l.id " +
-            "WHERE l.timestamp BETWEEN :start AND :end")
+    @Query("SELECT s.* FROM settings AS s " + "JOIN logs AS l ON s.logId = l.id " + "WHERE l.timestamp BETWEEN :start AND :end")
     suspend fun getSettingsByTime(start: Long, end: Long): List<SettingsBlockEntity>
 }

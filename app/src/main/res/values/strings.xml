@@ -18,15 +18,18 @@
     <string name="set_theme">Application theme</string>
     <string name="choose_forecast_api">Choose forecast API</string>
     <string name="choose_activity_type">Choose activity type</string>
+    <string name="cache_duration_label">Cache duration</string>
 
     <string name="logs_header_text">Logs</string>
     <string name="share_button_text">Share</string>
     <string name="copy_button_text">Copy</string>
-    <string name="logging_button_text">Start Logging</string>
+    <string name="start_logging_button_text">Start Logging</string>
+    <string name="stop_logging_button_text">Stop Logging</string>
 
     <string name="location_header_text">Location</string>
     <string name="map_shut_text">Map preview</string>
     <string name="start_tracking_button_text">Start tracking</string>
+    <string name="stop_tracking_button_text">Stop Tracking</string>
     <string name="zeroes_timer">00:00:00</string>
 
     <string name="forecast_header_text">Forecast</string>
@@ -41,7 +44,8 @@
 
     <string name="fmt_temp">Temp: %1$.1f °C</string>
     <string name="fmt_wind">Wind: %1$.1f m/s</string>
-    <string name="fmt_rain">Rain: %1$.1f mm</string>
+    <string name="fmt_humidity">Humidity: %1$d%%</string>
+    <string name="fmt_clouds">Clouds: %1$d%%</string>
 
     <string name="status_title_unknown">Unknown</string>
     <string name="status_title_easy">GO RIDE!</string>

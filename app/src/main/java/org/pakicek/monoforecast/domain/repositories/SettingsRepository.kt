@@ -5,6 +5,7 @@ import org.pakicek.monoforecast.domain.model.dto.enums.AppTheme
 import org.pakicek.monoforecast.domain.model.dto.enums.UserActivity
 import org.pakicek.monoforecast.domain.model.dto.enums.WeatherApi
 import androidx.core.content.edit
+import org.pakicek.monoforecast.domain.model.dto.enums.CacheDuration
 import org.pakicek.monoforecast.domain.model.dto.logs.SettingsBlockEntity
 
 class SettingsRepository(context: Context) {
@@ -15,6 +16,7 @@ class SettingsRepository(context: Context) {
         private const val KEY_THEME = "KEY_THEME"
         private const val KEY_API = "KEY_API"
         private const val KEY_ACTIVITY = "KEY_ACTIVITY"
+        private const val KEY_CACHE = "KEY_CACHE"
     }
 
     fun getTheme(): AppTheme {
@@ -47,6 +49,21 @@ class SettingsRepository(context: Context) {
     fun saveActivity(activity: UserActivity) {
         prefs.edit {
             putString(KEY_ACTIVITY, activity.name)
+        }
+    }
+
+    fun getCacheDuration(): CacheDuration {
+        val stored = prefs.getString(KEY_CACHE, CacheDuration.MIN_15.name)
+        return try {
+            CacheDuration.valueOf(stored ?: CacheDuration.MIN_15.name)
+        } catch (e: Exception) {
+            CacheDuration.MIN_15
+        }
+    }
+
+    fun saveCacheDuration(duration: CacheDuration) {
+        prefs.edit {
+            putString(KEY_CACHE, duration.name)
         }
     }
 

@@ -76,29 +76,40 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:minHeight="60dp"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp">
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guidelineTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.65" />
 
                 <TextView
                     android:id="@+id/themeLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:ellipsize="end"
-                    android:singleLine="true"
+                    android:gravity="center_vertical"
                     android:text="@string/set_theme"
                     style="@style/TextAppearance.AppCompat.BaseText"
-                    app:layout_constraintEnd_toStartOf="@id/themeSpinner"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/guidelineTheme"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Spinner
                     android:id="@+id/themeSpinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:spinnerMode="dropdown"
+                    android:textAlignment="viewEnd"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/themeLabel"
-                    app:layout_constraintBottom_toBottomOf="@+id/themeLabel"
+                    app:layout_constraintStart_toEndOf="@id/guidelineTheme"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="TouchTargetSizeCheck" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -112,29 +123,40 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:minHeight="60dp"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp">
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guidelineApi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.65" />
 
                 <TextView
                     android:id="@+id/apiLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:ellipsize="end"
-                    android:singleLine="true"
+                    android:gravity="center_vertical"
                     android:text="@string/choose_forecast_api"
                     style="@style/TextAppearance.AppCompat.BaseText"
-                    app:layout_constraintEnd_toStartOf="@id/apiSpinner"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/guidelineApi"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Spinner
                     android:id="@+id/apiSpinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:spinnerMode="dropdown"
+                    android:textAlignment="viewEnd"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/apiLabel"
-                    app:layout_constraintBottom_toBottomOf="@+id/apiLabel"
+                    app:layout_constraintStart_toEndOf="@id/guidelineApi"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="TouchTargetSizeCheck" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -148,35 +170,93 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:minHeight="60dp"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp">
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guidelineActivity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.65" />
 
                 <TextView
                     android:id="@+id/activityLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:ellipsize="end"
-                    android:singleLine="true"
+                    android:gravity="center_vertical"
                     android:text="@string/choose_activity_type"
                     style="@style/TextAppearance.AppCompat.BaseText"
-                    app:layout_constraintEnd_toStartOf="@id/activitySpinner"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/guidelineActivity"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Spinner
                     android:id="@+id/activitySpinner"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:spinnerMode="dropdown"
+                    android:textAlignment="viewEnd"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/guidelineActivity"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginHorizontal="16dp"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="60dp"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp">
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guidelineCache"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.65" />
+
+                <TextView
+                    android:id="@+id/cacheLabel"
+                    style="@style/TextAppearance.AppCompat.BaseText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/cache_duration_label"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/guidelineCache"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Spinner
+                    android:id="@+id/cacheSpinner"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:spinnerMode="dropdown"
+                    android:textAlignment="viewEnd"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/activityLabel"
-                    app:layout_constraintBottom_toBottomOf="@+id/activityLabel"
+                    app:layout_constraintStart_toEndOf="@id/guidelineCache"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="TouchTargetSizeCheck" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
     </ScrollView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

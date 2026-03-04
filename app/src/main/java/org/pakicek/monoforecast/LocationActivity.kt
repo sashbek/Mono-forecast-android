@@ -5,25 +5,29 @@ import androidx.appcompat.app.AppCompatActivity
 import org.pakicek.monoforecast.databinding.ActivityLocationBinding
 
 class LocationActivity : AppCompatActivity() {
-    private var _binding: ActivityLocationBinding? = null
-    private val binding
-        get() = _binding ?: throw IllegalStateException("Binding must not be null")
+    private lateinit var binding: ActivityLocationBinding
 
     private var isTracking = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityLocationBinding.inflate(layoutInflater)
+        binding = ActivityLocationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.btnStartTracking.setOnClickListener {
-            isTracking = !isTracking
-            binding.btnStartTracking.isSelected = isTracking
-            binding.btnStartTracking.text = if (isTracking) "Stop Tracking" else "Start Tracking"
+            toggleTracking()
         }
 
         binding.btnBack.setOnClickListener {
             finish()
         }
+    }
+
+    private fun toggleTracking() {
+        isTracking = !isTracking
+        binding.btnStartTracking.isSelected = isTracking
+
+        val textRes = if (isTracking) R.string.stop_tracking_button_text else R.string.start_tracking_button_text
+        binding.btnStartTracking.setText(textRes)
     }
 }
