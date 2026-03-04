@@ -69,8 +69,8 @@ class ForecastActivity : AppCompatActivity() {
     private fun updateUI(weather: WeatherResponseDto, difficulty: RideDifficulty) {
         binding.tvTemp.text = getString(R.string.fmt_temp, weather.main.temp)
         binding.tvWind.text = getString(R.string.fmt_wind, weather.wind.speed)
-        binding.tvRain.text = getString(R.string.fmt_rain, weather.main.rain)
-
+        binding.tvHumidity.text = getString(R.string.fmt_humidity, weather.main.humidity)
+        binding.tvClouds.text = getString(R.string.fmt_clouds, weather.cloudPct)
         updateStatusCard(difficulty)
     }
 

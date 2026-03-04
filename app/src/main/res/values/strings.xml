@@ -41,7 +41,8 @@
 
     <string name="fmt_temp">Temp: %1$.1f °C</string>
     <string name="fmt_wind">Wind: %1$.1f m/s</string>
-    <string name="fmt_rain">Rain: %1$.1f mm</string>
+    <string name="fmt_humidity">Humidity: %1$d%%</string>
+    <string name="fmt_clouds">Clouds: %1$d%%</string>
 
     <string name="status_title_unknown">Unknown</string>
     <string name="status_title_easy">GO RIDE!</string>

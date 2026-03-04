@@ -52,8 +52,6 @@ interface LogsDao {
     @Query("SELECT * FROM settings")
     suspend fun getAllSettings(): List<SettingsBlockEntity>
 
-    @Query("SELECT s.* FROM settings AS s " +
-            "JOIN logs AS l ON s.logId = l.id " +
-            "WHERE l.timestamp BETWEEN :start AND :end")
+    @Query("SELECT s.* FROM settings AS s " + "JOIN logs AS l ON s.logId = l.id " + "WHERE l.timestamp BETWEEN :start AND :end")
     suspend fun getSettingsByTime(start: Long, end: Long): List<SettingsBlockEntity>
 }

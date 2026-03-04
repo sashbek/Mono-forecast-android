@@ -85,7 +85,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="@string/placeholder_temp"
+                        android:text="Temp: --"
                         android:textSize="16sp" />
 
                     <TextView
@@ -93,16 +93,25 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="@string/placeholder_wind"
+                        android:text="Wind: --"
                         android:textSize="16sp" />
 
                     <TextView
-                        android:id="@+id/tvRain"
+                        android:id="@+id/tvHumidity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="@string/placeholder_rain"
+                        android:text="Humidity: --"
                         android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tvClouds"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Clouds: --"
+                        android:textSize="16sp" />
+
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

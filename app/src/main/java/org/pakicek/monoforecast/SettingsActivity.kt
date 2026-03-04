@@ -132,8 +132,9 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun setupApiSpinner(viewModel: SettingsViewModel){
-        // Задаем элементы выпадающего списка тем
-        val options = listOf("NinjaAPI")
+        // 1. Обновляем список опций
+        val options = listOf("NinjaAPI", "Mock (Random)")
+
         val adapter = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_item,
@@ -142,13 +143,14 @@ class SettingsActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.apiSpinner.adapter = adapter
 
-        // Выставляем в выпадающий список актуальный элемент
+        // 2. Выставляем текущее значение
         val api = viewModel.getApi()
         when(api) {
             WeatherApi.NINJA_API -> binding.apiSpinner.setSelection(options.indexOf("NinjaAPI"))
+            WeatherApi.MOCK -> binding.apiSpinner.setSelection(options.indexOf("Mock (Random)"))
         }
 
-        // Добавляем обработчик для выбора из выпадающего списка
+        // 3. Обработка выбора
         binding.apiSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
@@ -160,6 +162,7 @@ class SettingsActivity : AppCompatActivity() {
 
                 when(selected) {
                     "NinjaAPI" -> viewModel.saveApi(WeatherApi.NINJA_API)
+                    "Mock (Random)" -> viewModel.saveApi(WeatherApi.MOCK)
                 }
             }
 
