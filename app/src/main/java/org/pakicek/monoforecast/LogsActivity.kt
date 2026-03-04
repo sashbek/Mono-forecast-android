@@ -2,11 +2,11 @@ package org.pakicek.monoforecast
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.snackbar.Snackbar
 import org.pakicek.monoforecast.databinding.ActivityLogsBinding
 import org.pakicek.monoforecast.domain.repositories.LogsRepository
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
@@ -50,7 +50,7 @@ class LogsActivity : AppCompatActivity() {
 
         binding.btnClear.setOnClickListener {
             viewModel.clearLogs()
-            Toast.makeText(this, "All logs deleted", Toast.LENGTH_SHORT).show()
+            Snackbar.make(binding.root, "All logs have been deleted", Snackbar.LENGTH_SHORT).show()
         }
     }
 

@@ -3,8 +3,8 @@ package org.pakicek.monoforecast.domain.repositories
 import android.content.Context
 import android.util.Log
 import androidx.core.content.edit
-import kotlinx.coroutines.delay
-import org.pakicek.monoforecast.domain.api.RetrofitClient
+import org.pakicek.monoforecast.domain.api.providers.NinjaWeatherProvider
+import org.pakicek.monoforecast.domain.api.providers.OpenMeteoWeatherProvider
 import org.pakicek.monoforecast.domain.model.dto.MainDto
 import org.pakicek.monoforecast.domain.model.dto.WeatherResponseDto
 import org.pakicek.monoforecast.domain.model.dto.WindDto
@@ -23,10 +23,13 @@ class ForecastRepository(context: Context) {
         private const val KEY_CLOUD_PCT = "cloud_pct"
         private const val KEY_HAS_DATA = "has_data"
         private const val KEY_LAST_UPDATE = "last_update_time"
-        private const val API_KEY = "mqccZREuuaHTZxfWv51DCSArwrekGpmoeOzQMN6A"
+        private const val API_KEY_NINJA = "mqccZREuuaHTZxfWv51DCSArwrekGpmoeOzQMN6A"
         private const val DEFAULT_LAT = 51.5074
         private const val DEFAULT_LON = 0.1278
     }
+
+    private val ninjaProvider = NinjaWeatherProvider(API_KEY_NINJA)
+    private val openMeteoProvider = OpenMeteoWeatherProvider()
 
     fun getLastKnownWeather(): WeatherResponseDto {
         if (!prefs.contains(KEY_HAS_DATA)) {
@@ -54,64 +57,31 @@ class ForecastRepository(context: Context) {
 
     suspend fun fetchAndSaveNewWeather(): Boolean {
         if (isCacheValid()) {
-            Log.d("ForecastRepo", "Cache is valid. Skipping network request.")
+            Log.d("ForecastRepo", "Cache is valid, skipping network request")
             return false
         }
 
         val selectedApi = settingsRepo.getApi()
 
-        when (selectedApi) {
-            WeatherApi.NINJA_API -> fetchFromNetwork()
-            WeatherApi.MOCK -> fetchFromMock()
+        val newData = when (selectedApi) {
+            WeatherApi.NINJA_API -> ninjaProvider.fetchWeather(DEFAULT_LAT, DEFAULT_LON)
+            WeatherApi.OPEN_METEO -> openMeteoProvider.fetchWeather(DEFAULT_LAT, DEFAULT_LON)
+            WeatherApi.MOCK -> generateMockDto()
         }
-        return true
+
+        if (newData != null) {
+            saveToCache(newData)
+            Log.d("ForecastRepo", "Updated from $selectedApi")
+            return true
+        }
+        return false
     }
 
     private fun isCacheValid(): Boolean {
         val lastUpdate = prefs.getLong(KEY_LAST_UPDATE, 0)
         val currentTime = System.currentTimeMillis()
         val cacheDuration = settingsRepo.getCacheDuration().milliseconds
-
         return (currentTime - lastUpdate) < cacheDuration
-    }
-
-    private suspend fun fetchFromNetwork() {
-        try {
-            Log.d("ForecastRepo", "Fetching from NinjaAPI...")
-            val response = RetrofitClient.api.getWeather(DEFAULT_LAT, DEFAULT_LON, API_KEY)
-
-            if (response.isSuccessful && response.body() != null) {
-                val ninjaDto = response.body()!!
-
-                val appDto = WeatherResponseDto(
-                    main = MainDto(
-                        temp = ninjaDto.temp,
-                        humidity = ninjaDto.humidity
-                    ),
-                    wind = WindDto(
-                        speed = ninjaDto.windSpeed,
-                        direction = ninjaDto.windDegrees
-                    ),
-                    cloudPct = ninjaDto.cloudPct,
-                    timestamp = System.currentTimeMillis()
-                )
-
-                saveToCache(appDto)
-                Log.d("ForecastRepo", "Success from Network: ${appDto.main.temp}C")
-            } else {
-                Log.e("ForecastRepo", "API Error: ${response.code()} ${response.message()}")
-            }
-        } catch (e: Exception) {
-            Log.e("ForecastRepo", "Network Error", e)
-        }
-    }
-
-    private suspend fun fetchFromMock() {
-        Log.d("ForecastRepo", "Generating Mock Data...")
-        delay(1000)
-        val mockDto = generateMockDto()
-        saveToCache(mockDto)
-        Log.d("ForecastRepo", "Mock data saved: ${mockDto.main.temp}C")
     }
 
     private fun saveToCache(dto: WeatherResponseDto) {

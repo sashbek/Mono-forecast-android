@@ -29,7 +29,8 @@
             android:layout_height="match_parent"
             android:background="@drawable/bg_activatable_button"
             android:text="@string/start_logging_button_text"
-            android:textColor="@color/color_tracking_button" />
+            android:textColor="@color/color_tracking_button"
+            app:backgroundTint="@null" />
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
