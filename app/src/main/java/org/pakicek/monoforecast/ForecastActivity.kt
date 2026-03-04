@@ -43,7 +43,7 @@ class ForecastActivity : AppCompatActivity() {
 
         val repo = ForecastRepository(this)
         val factory = ForecastViewModelFactory(repo)
-        val viewModel = ViewModelProvider(this, factory)[ForecastViewModel::class.java]
+        viewModel = ViewModelProvider(this, factory)[ForecastViewModel::class.java]
 
         viewModel.weatherState.observe(this) { state ->
             updateUI(state.weather, state.difficulty)
