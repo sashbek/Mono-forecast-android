@@ -1,18 +1,32 @@
 package org.pakicek.monoforecast.domain.api
 
+import android.content.Context
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClients {
-    private val logging = HttpLoggingInterceptor().apply {
+    private var appContext: Context? = null
+
+    fun init(context: Context) {
+        appContext = context.applicationContext
+    }
+
+    private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
-    private val httpClient = OkHttpClient.Builder()
-        .addInterceptor(logging)
-        .build()
+    private val httpClient: OkHttpClient by lazy {
+        val builder = OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+
+        appContext?.let {
+            builder.addInterceptor(WeatherLogInterceptor(it))
+        }
+
+        builder.build()
+    }
 
     val ninjaApi: WeatherApiInterface by lazy {
         Retrofit.Builder()

@@ -40,7 +40,6 @@ class LogListFragment : Fragment(R.layout.fragment_log_list) {
 
     private fun setupRecyclerView() {
         val adapter = LogFilesAdapter { file ->
-            // Навигация к деталям
             parentFragmentManager.beginTransaction()
                 .replace(R.id.logsFragmentContainer, newInstance(file.id))
                 .addToBackStack(null)

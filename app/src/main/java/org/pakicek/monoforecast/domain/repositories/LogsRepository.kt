@@ -19,9 +19,14 @@ class LogsRepository(context: Context) {
 
     suspend fun insertSetting(setting: String, value: String) {
         if (!isLoggingActive()) return
-        val log = LogFrameEntity(type = LogType.SETTINGS)
+        val log = LogFrameEntity(type = LogType.SETTINGS, message = "$setting = $value")
         val settingBlock = SettingsBlockEntity(null, setting, value)
         dao.insertLogWithSettings(log, settingBlock)
+    }
+
+    suspend fun addLog(type: LogType, message: String) {
+        val log = LogFrameEntity(type = type, message = message)
+        dao.insertLog(log)
     }
 
     suspend fun startNewFile() {
