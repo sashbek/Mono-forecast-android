@@ -12,6 +12,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import org.pakicek.monoforecast.databinding.ActivitySettingsBinding
 import org.pakicek.monoforecast.domain.model.dto.enums.AppTheme
+import org.pakicek.monoforecast.domain.model.dto.enums.CacheDuration
 import org.pakicek.monoforecast.domain.model.dto.enums.UserActivity
 import org.pakicek.monoforecast.domain.model.dto.enums.WeatherApi
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
@@ -42,6 +43,7 @@ class SettingsActivity : AppCompatActivity() {
         setupThemeSpinner()
         setupApiSpinner()
         setupActivitySpinner()
+        setupCacheSpinner()
     }
 
     private fun setupThemeSpinner() {
@@ -86,6 +88,21 @@ class SettingsActivity : AppCompatActivity() {
             val selectedActivity = items[index]
             if (selectedActivity != viewModel.getActivity()) {
                 viewModel.saveActivity(selectedActivity)
+            }
+        }
+    }
+
+    private fun setupCacheSpinner() {
+        val items = CacheDuration.entries
+        val displayNames = listOf("Always Update", "15 Minutes", "1 Hour", "3 Hours")
+
+        val current = viewModel.getCacheDuration()
+        val selectedIndex = items.indexOf(current).takeIf { it >= 0 } ?: 1
+
+        setupSpinner(binding.cacheSpinner, displayNames, selectedIndex) { index ->
+            val selectedCache = items[index]
+            if (selectedCache != viewModel.getCacheDuration()) {
+                viewModel.saveCacheDuration(selectedCache)
             }
         }
     }

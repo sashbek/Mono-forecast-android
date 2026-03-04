@@ -2,6 +2,7 @@ package org.pakicek.monoforecast.logic.viewmodel
 
 import androidx.lifecycle.ViewModel
 import org.pakicek.monoforecast.domain.model.dto.enums.AppTheme
+import org.pakicek.monoforecast.domain.model.dto.enums.CacheDuration
 import org.pakicek.monoforecast.domain.model.dto.enums.UserActivity
 import org.pakicek.monoforecast.domain.model.dto.enums.WeatherApi
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
@@ -24,5 +25,11 @@ class SettingsViewModel(private val repository: SettingsRepository) : ViewModel(
 
     fun saveActivity(activity: UserActivity) {
         repository.saveActivity(activity)
+    }
+
+    fun getCacheDuration(): CacheDuration = repository.getCacheDuration()
+
+    fun saveCacheDuration(duration: CacheDuration) {
+        repository.saveCacheDuration(duration)
     }
 }

@@ -27,8 +27,14 @@ class WeatherSyncService : Service() {
         Log.d(TAG, "Service Started (ID: $startId). Fetching weather...")
         serviceScope.launch {
             try {
-                repository.fetchAndSaveNewWeather()
-                Log.d(TAG, "Weather updated successfully.")
+                val isUpdated = repository.fetchAndSaveNewWeather()
+
+                if (isUpdated) {
+                    Log.d(TAG, "Weather updated from API/Mock.")
+                } else {
+                    Log.d(TAG, "Cache is still valid. No update needed.")
+                }
+
                 val broadcastIntent = Intent(ACTION_WEATHER_UPDATED)
                 broadcastIntent.setPackage(packageName)
                 sendBroadcast(broadcastIntent)

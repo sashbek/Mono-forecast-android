@@ -13,7 +13,7 @@ import kotlin.random.Random
 
 class ForecastRepository(context: Context) {
     private val prefs = context.getSharedPreferences("weather_cache", Context.MODE_PRIVATE)
-    private val settingsPrefs = context.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+    private val settingsRepo = SettingsRepository(context)
 
     companion object {
         private const val KEY_TEMP = "temp"
@@ -22,7 +22,7 @@ class ForecastRepository(context: Context) {
         private const val KEY_WIND_DIRECTION = "wind_direction"
         private const val KEY_CLOUD_PCT = "cloud_pct"
         private const val KEY_HAS_DATA = "has_data"
-        private const val KEY_API_SETTING = "KEY_API"
+        private const val KEY_LAST_UPDATE = "last_update_time"
         private const val API_KEY = "mqccZREuuaHTZxfWv51DCSArwrekGpmoeOzQMN6A"
         private const val DEFAULT_LAT = 51.5074
         private const val DEFAULT_LON = 0.1278
@@ -52,17 +52,27 @@ class ForecastRepository(context: Context) {
         )
     }
 
-    suspend fun fetchAndSaveNewWeather() {
-        val apiName = settingsPrefs.getString(KEY_API_SETTING, WeatherApi.MOCK.name)
-        val selectedApi = try {
-            WeatherApi.valueOf(apiName ?: WeatherApi.NINJA_API.name)
-        } catch (e: Exception) {
-            WeatherApi.MOCK
+    suspend fun fetchAndSaveNewWeather(): Boolean {
+        if (isCacheValid()) {
+            Log.d("ForecastRepo", "Cache is valid. Skipping network request.")
+            return false
         }
+
+        val selectedApi = settingsRepo.getApi()
+
         when (selectedApi) {
             WeatherApi.NINJA_API -> fetchFromNetwork()
             WeatherApi.MOCK -> fetchFromMock()
         }
+        return true
+    }
+
+    private fun isCacheValid(): Boolean {
+        val lastUpdate = prefs.getLong(KEY_LAST_UPDATE, 0)
+        val currentTime = System.currentTimeMillis()
+        val cacheDuration = settingsRepo.getCacheDuration().milliseconds
+
+        return (currentTime - lastUpdate) < cacheDuration
     }
 
     private suspend fun fetchFromNetwork() {
@@ -111,6 +121,7 @@ class ForecastRepository(context: Context) {
             putFloat(KEY_WIND_SPEED, dto.wind.speed.toFloat())
             putInt(KEY_WIND_DIRECTION, dto.wind.direction)
             putInt(KEY_CLOUD_PCT, dto.cloudPct)
+            putLong(KEY_LAST_UPDATE, System.currentTimeMillis())
             putBoolean(KEY_HAS_DATA, true)
         }
     }
