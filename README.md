@@ -11,6 +11,21 @@ Mono forecast is an android app to predict weather for EUC, motocycle and bike r
 
 # Development
 
+## Sprint 3 (6.02 to 13.03)
+
+### Result
+
+* Custom view must be added - for example ghaphical view for tempereture from logs (in log view fragment) or smth like that. Ref:
+  
+<img src="./readmi_img\image3.jpg" alt="Wheellog logs page" width="200"/>
+
+* Veiw must be upgraded to be more modern and beautifull.
+* Fix: network layer must be fixed - try-catch construction must be reduced.
+* Fix: retrofit2.Response usage must be redused somehow.
+* BLE connection must have realisation with demo mode and real connection mode
+* GNSS connection service must be created and log location correctly.
+* Map must be integrated to Location page and to log view fragment.
+
 ## Sprint 2 (19.02 to 5.03)
 
 ### Result
