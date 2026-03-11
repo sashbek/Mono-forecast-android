@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.google.android.material.snackbar.Snackbar
 import org.pakicek.monoforecast.databinding.ActivityForecastBinding
 import org.pakicek.monoforecast.domain.model.RideDifficulty
 import org.pakicek.monoforecast.domain.model.dto.WeatherResponseDto
@@ -18,6 +17,7 @@ import org.pakicek.monoforecast.domain.repositories.ForecastRepository
 import org.pakicek.monoforecast.logic.factories.ForecastViewModelFactory
 import org.pakicek.monoforecast.logic.services.WeatherSyncService
 import org.pakicek.monoforecast.logic.viewmodel.ForecastViewModel
+import org.pakicek.monoforecast.utils.showSnackbar
 
 class ForecastActivity : AppCompatActivity() {
     private lateinit var binding: ActivityForecastBinding
@@ -28,8 +28,16 @@ class ForecastActivity : AppCompatActivity() {
     private val weatherReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == WeatherSyncService.ACTION_WEATHER_UPDATED) {
-                Snackbar.make(binding.root, "Data has been updated!", Snackbar.LENGTH_SHORT).show()
-                viewModel.refreshData()
+                val isSuccess = intent.getBooleanExtra(WeatherSyncService.EXTRA_IS_SUCCESS, true)
+                val errorMessage = intent.getStringExtra(WeatherSyncService.EXTRA_ERROR_MESSAGE)
+
+                if (isSuccess) {
+                    viewModel.refreshData()
+                    binding.root.showSnackbar("Data updated!", R.color.status_easy, android.R.color.white)
+                } else {
+                    val msg = "Update failed: $errorMessage"
+                    binding.root.showSnackbar(msg, R.color.status_hard, android.R.color.white)
+                }
             }
         }
     }
@@ -58,7 +66,7 @@ class ForecastActivity : AppCompatActivity() {
     }
 
     private fun startWeatherSync() {
-        Snackbar.make(binding.root, "Syncing weather...", Snackbar.LENGTH_SHORT).show()
+        binding.root.showSnackbar("Syncing weather...")
         val intent = Intent(this, WeatherSyncService::class.java)
         startService(intent)
     }

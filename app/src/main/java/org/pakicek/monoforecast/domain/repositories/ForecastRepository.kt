@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.core.content.edit
 import org.pakicek.monoforecast.domain.api.providers.NinjaWeatherProvider
 import org.pakicek.monoforecast.domain.api.providers.OpenMeteoWeatherProvider
+import org.pakicek.monoforecast.domain.model.NetworkResult
 import org.pakicek.monoforecast.domain.model.dto.MainDto
 import org.pakicek.monoforecast.domain.model.dto.WeatherResponseDto
 import org.pakicek.monoforecast.domain.model.dto.WindDto
@@ -55,26 +56,29 @@ class ForecastRepository(context: Context) {
         )
     }
 
-    suspend fun fetchAndSaveNewWeather(): Boolean {
+    suspend fun fetchAndSaveNewWeather(): NetworkResult<Unit> {
         if (isCacheValid()) {
-            Log.d("ForecastRepo", "Cache is valid, skipping network request")
-            return false
+            return NetworkResult.Success(Unit)
         }
 
         val selectedApi = settingsRepo.getApi()
 
-        val newData = when (selectedApi) {
+        val result = when (selectedApi) {
             WeatherApi.NINJA_API -> ninjaProvider.fetchWeather(DEFAULT_LAT, DEFAULT_LON)
             WeatherApi.OPEN_METEO -> openMeteoProvider.fetchWeather(DEFAULT_LAT, DEFAULT_LON)
-            WeatherApi.MOCK -> generateMockDto()
+            WeatherApi.MOCK -> NetworkResult.Success(generateMockDto())
         }
 
-        if (newData != null) {
-            saveToCache(newData)
-            Log.d("ForecastRepo", "Updated from $selectedApi")
-            return true
+        return when (result) {
+            is NetworkResult.Success -> {
+                saveToCache(result.data)
+                NetworkResult.Success(Unit)
+            }
+            is NetworkResult.Error -> {
+                Log.e("ForecastRepo", "Update failed: ${result.message}")
+                NetworkResult.Error(result.code, result.message, result.exception)
+            }
         }
-        return false
     }
 
     private fun isCacheValid(): Boolean {

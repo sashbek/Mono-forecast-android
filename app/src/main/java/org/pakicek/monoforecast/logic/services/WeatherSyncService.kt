@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import org.pakicek.monoforecast.domain.model.NetworkResult
 import org.pakicek.monoforecast.domain.repositories.ForecastRepository
 
 class WeatherSyncService : Service() {
@@ -18,6 +19,8 @@ class WeatherSyncService : Service() {
 
     companion object {
         const val ACTION_WEATHER_UPDATED = "org.pakicek.monoforecast.WEATHER_UPDATED"
+        const val EXTRA_IS_SUCCESS = "is_success"
+        const val EXTRA_ERROR_MESSAGE = "error_message"
         private const val TAG = "WeatherSyncService"
     }
 
@@ -27,17 +30,22 @@ class WeatherSyncService : Service() {
         Log.d(TAG, "Service Started (ID: $startId). Fetching weather...")
         serviceScope.launch {
             try {
-                val isUpdated = repository.fetchAndSaveNewWeather()
-
-                if (isUpdated) {
-                    Log.d(TAG, "Weather updated from API/Mock.")
-                } else {
-                    Log.d(TAG, "Cache is still valid. No update needed.")
+                val result = repository.fetchAndSaveNewWeather()
+                val intent = Intent(ACTION_WEATHER_UPDATED).apply {
+                    setPackage(packageName)
+                    when (result) {
+                        is NetworkResult.Success -> {
+                            putExtra(EXTRA_IS_SUCCESS, true)
+                            Log.d(TAG, "Success")
+                        }
+                        is NetworkResult.Error -> {
+                            putExtra(EXTRA_IS_SUCCESS, false)
+                            putExtra(EXTRA_ERROR_MESSAGE, result.message ?: "Unknown error")
+                            Log.e(TAG, "Failed: ${result.message}")
+                        }
+                    }
                 }
-
-                val broadcastIntent = Intent(ACTION_WEATHER_UPDATED)
-                broadcastIntent.setPackage(packageName)
-                sendBroadcast(broadcastIntent)
+                sendBroadcast(intent)
             } catch (e: Exception) {
                 Log.e(TAG, "Error updating weather: ${e.message}", e)
             } finally {
