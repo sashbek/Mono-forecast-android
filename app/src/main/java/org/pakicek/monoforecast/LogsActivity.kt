@@ -6,13 +6,13 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.google.android.material.snackbar.Snackbar
 import org.pakicek.monoforecast.databinding.ActivityLogsBinding
 import org.pakicek.monoforecast.domain.repositories.LogsRepository
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
 import org.pakicek.monoforecast.fragments.LogListFragment
 import org.pakicek.monoforecast.logic.factories.LogsViewModelFactory
 import org.pakicek.monoforecast.logic.viewmodel.LogsViewModel
+import org.pakicek.monoforecast.utils.showSnackbar
 
 class LogsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLogsBinding
@@ -50,7 +50,7 @@ class LogsActivity : AppCompatActivity() {
 
         binding.btnClear.setOnClickListener {
             viewModel.clearLogs()
-            Snackbar.make(binding.root, "All logs have been deleted", Snackbar.LENGTH_SHORT).show()
+            binding.root.showSnackbar("All logs have been deleted")
         }
     }
 
