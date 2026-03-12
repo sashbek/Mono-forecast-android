@@ -10,11 +10,13 @@ import org.pakicek.monoforecast.domain.model.dto.MainDto
 import org.pakicek.monoforecast.domain.model.dto.WeatherResponseDto
 import org.pakicek.monoforecast.domain.model.dto.WindDto
 import org.pakicek.monoforecast.domain.model.dto.enums.WeatherApi
+import org.pakicek.monoforecast.utils.LocationProvider
 import kotlin.random.Random
 
 class ForecastRepository(context: Context) {
     private val prefs = context.getSharedPreferences("weather_cache", Context.MODE_PRIVATE)
     private val settingsRepo = SettingsRepository(context)
+    private val locationProvider = LocationProvider(context)
 
     companion object {
         private const val KEY_TEMP = "temp"
@@ -25,8 +27,8 @@ class ForecastRepository(context: Context) {
         private const val KEY_HAS_DATA = "has_data"
         private const val KEY_LAST_UPDATE = "last_update_time"
         private const val API_KEY_NINJA = "mqccZREuuaHTZxfWv51DCSArwrekGpmoeOzQMN6A"
-        private const val DEFAULT_LAT = 51.5074
-        private const val DEFAULT_LON = 0.1278
+        private const val FALLBACK_LAT = 51.5074
+        private const val FALLBACK_LON = 0.1278
     }
 
     private val ninjaProvider = NinjaWeatherProvider(API_KEY_NINJA)
@@ -62,10 +64,13 @@ class ForecastRepository(context: Context) {
         }
 
         val selectedApi = settingsRepo.getApi()
+        val coords = locationProvider.getCurrentLocation()
+        val lat = coords?.lat ?: FALLBACK_LAT
+        val lon = coords?.lon ?: FALLBACK_LON
 
         val result = when (selectedApi) {
-            WeatherApi.NINJA_API -> ninjaProvider.fetchWeather(DEFAULT_LAT, DEFAULT_LON)
-            WeatherApi.OPEN_METEO -> openMeteoProvider.fetchWeather(DEFAULT_LAT, DEFAULT_LON)
+            WeatherApi.NINJA_API -> ninjaProvider.fetchWeather(lat, lon)
+            WeatherApi.OPEN_METEO -> openMeteoProvider.fetchWeather(lat, lon)
             WeatherApi.MOCK -> NetworkResult.Success(generateMockDto())
         }
 

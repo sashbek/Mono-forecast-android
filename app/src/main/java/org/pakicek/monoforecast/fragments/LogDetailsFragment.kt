@@ -1,35 +1,45 @@
 package org.pakicek.monoforecast.fragments
 
+import android.graphics.Color
 import android.os.Bundle
-import android.text.method.ScrollingMovementMethod
 import android.view.View
+import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.pakicek.monoforecast.R
 import org.pakicek.monoforecast.databinding.FragmentLogDetailsBinding
-import org.pakicek.monoforecast.domain.model.dto.logs.LogFrameEntity
+import org.pakicek.monoforecast.domain.model.dto.enums.LogType
+import org.pakicek.monoforecast.domain.model.dto.logs.LogWithDetails
 import org.pakicek.monoforecast.domain.repositories.LogsRepository
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
 import org.pakicek.monoforecast.logic.factories.LogsViewModelFactory
 import org.pakicek.monoforecast.logic.viewmodel.LogsViewModel
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import org.pakicek.monoforecast.ui.adapter.LogDetailsAdapter
 
 class LogDetailsFragment : Fragment(R.layout.fragment_log_details) {
 
     private var _binding: FragmentLogDetailsBinding? = null
     private val binding get() = _binding!!
+
     private val viewModel: LogsViewModel by activityViewModels {
         val context = requireContext().applicationContext
         val logsRepo = LogsRepository(context)
         val settingsRepo = SettingsRepository(context)
         LogsViewModelFactory(logsRepo, settingsRepo)
     }
+
+    private val listAdapter = LogDetailsAdapter()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,11 +50,18 @@ class LogDetailsFragment : Fragment(R.layout.fragment_log_details) {
     }
 
     private fun setupUI() {
-        binding.textView.movementMethod = ScrollingMovementMethod()
-
         binding.closeButton.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
+
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = listAdapter
+            setHasFixedSize(true)
+            setItemViewCacheSize(20)
+        }
+
+        setupChartStyle()
     }
 
     private fun observeData() {
@@ -52,29 +69,88 @@ class LogDetailsFragment : Fragment(R.layout.fragment_log_details) {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getLogsForFile(fileId).collect { logs ->
-                    updateLogsText(logs, fileId)
+                viewModel.getLogsForFile(fileId).collect { logsList ->
+                    listAdapter.submitList(logsList)
+
+                    updateChartDataAsync(logsList)
                 }
             }
         }
     }
 
-    private fun updateLogsText(logs: List<LogFrameEntity>, fileId: Long) {
-        if (logs.isEmpty()) {
-            binding.textView.text = getString(R.string.log_details_empty)
-            return
+    private fun setupChartStyle() {
+        with(binding.chartTemp) {
+            description.isEnabled = false
+            axisRight.isEnabled = false
+            xAxis.position = XAxis.XAxisPosition.BOTTOM
+            xAxis.setDrawGridLines(false)
+            xAxis.textColor = Color.WHITE
+            axisLeft.textColor = Color.WHITE
+            axisLeft.setDrawGridLines(true)
+            legend.isEnabled = false
+            setNoDataText("Loading data...")
+            setNoDataTextColor(Color.WHITE)
+
+            isDragEnabled = true
+            setScaleEnabled(true)
+            setPinchZoom(true)
         }
+    }
 
-        val sb = StringBuilder()
-        val sdf = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-        sb.append(getString(R.string.log_details_header_fmt, fileId))
+    private fun updateChartDataAsync(logs: List<LogWithDetails>) {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
+            if (logs.isEmpty()) {
+                withContext(Dispatchers.Main) { binding.chartTemp.clear() }
+                return@launch
+            }
 
-        logs.forEach { log ->
-            val time = sdf.format(Date(log.timestamp))
-            sb.append("[$time] ${log.type.name} ${log.message}\n")
+            val entries = ArrayList<Entry>()
+            val startTime = logs.first().log.timestamp
+
+            val weatherLogs = logs.filter {
+                it.log.type == LogType.WEATHER && it.weather != null
+            }
+
+            if (weatherLogs.isEmpty()) {
+                withContext(Dispatchers.Main) { binding.chartTemp.clear() }
+                return@launch
+            }
+
+            val maxPoints = 300
+            val step = if (weatherLogs.size > maxPoints) weatherLogs.size / maxPoints else 1
+
+            for (i in weatherLogs.indices step step) {
+                val item = weatherLogs[i]
+                val xValue = (item.log.timestamp - startTime) / 1000f
+                val yValue = item.weather!!.tempC.toFloat()
+                entries.add(Entry(xValue, yValue))
+            }
+
+            withContext(Dispatchers.Main) {
+                if (_binding == null) return@withContext
+
+                if (entries.isNotEmpty()) {
+                    val dataSet = LineDataSet(entries, "Temperature").apply {
+                        color = "#FF9800".toColorInt()
+                        valueTextColor = Color.WHITE
+                        lineWidth = 2f
+                        setDrawCircles(false)
+                        setDrawValues(false)
+                        mode = LineDataSet.Mode.CUBIC_BEZIER
+                        setDrawFilled(true)
+                        fillColor = "#FF9800".toColorInt()
+                        fillAlpha = 50
+                    }
+
+                    val lineData = LineData(dataSet)
+                    binding.chartTemp.data = lineData
+                    binding.chartTemp.invalidate()
+                    binding.chartTemp.animateX(500)
+                } else {
+                    binding.chartTemp.clear()
+                }
+            }
         }
-
-        binding.textView.text = sb.toString()
     }
 
     override fun onDestroyView() {

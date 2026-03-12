@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import org.pakicek.monoforecast.databinding.ActivityMainBinding
 import org.pakicek.monoforecast.domain.model.dto.enums.AppTheme
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
-import org.pakicek.monoforecast.utils.showSnackbar
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -39,10 +38,7 @@ class MainActivity : AppCompatActivity() {
             forecastActivityButton.setOnClickListener { navigateTo(ForecastActivity::class.java) }
             logsActivityButton.setOnClickListener { navigateTo(LogsActivity::class.java) }
             locationActivityButton.setOnClickListener { navigateTo(LocationActivity::class.java) }
-
-            bluetoothActivityButton.setOnClickListener {
-                binding.root.showSnackbar("BLE Connect: Not implemented")
-            }
+            bluetoothActivityButton.setOnClickListener { navigateTo(BluetoothActivity::class.java) }
         }
     }
 

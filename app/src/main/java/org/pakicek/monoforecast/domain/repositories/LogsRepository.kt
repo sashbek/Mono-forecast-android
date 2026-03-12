@@ -3,10 +3,13 @@ package org.pakicek.monoforecast.domain.repositories
 import android.content.Context
 import kotlinx.coroutines.flow.Flow
 import org.pakicek.monoforecast.domain.model.dao.LogsDb
+import org.pakicek.monoforecast.domain.model.dto.WeatherResponseDto
 import org.pakicek.monoforecast.domain.model.dto.enums.LogType
 import org.pakicek.monoforecast.domain.model.dto.logs.FileEntity
 import org.pakicek.monoforecast.domain.model.dto.logs.LogFrameEntity
+import org.pakicek.monoforecast.domain.model.dto.logs.LogWithDetails
 import org.pakicek.monoforecast.domain.model.dto.logs.SettingsBlockEntity
+import org.pakicek.monoforecast.domain.model.dto.logs.WeatherBlockEntity
 
 class LogsRepository(context: Context) {
 
@@ -24,11 +27,25 @@ class LogsRepository(context: Context) {
         dao.insertLogWithSettings(log, settingBlock)
     }
 
-    suspend fun addLog(type: LogType, message: String) {
-        val log = LogFrameEntity(type = type, message = message)
-        dao.insertLog(log)
-    }
+    suspend fun saveWeatherLog(dto: WeatherResponseDto) {
+        if (!isLoggingActive()) return
 
+        val logFrame = LogFrameEntity(
+            type = LogType.WEATHER,
+            message = ""
+        )
+
+        val weatherBlock = WeatherBlockEntity(
+            logId = 0,
+            tempC = dto.main.temp,
+            windSpeedMs = dto.wind.speed,
+            windDir = dto.wind.direction,
+            rainMm = 0.0,
+            visibilityMeters = 10000
+        )
+
+        dao.insertWeatherLog(logFrame, weatherBlock)
+    }
     suspend fun startNewFile() {
         val file = FileEntity(start = System.currentTimeMillis())
         dao.insertFile(file)
@@ -42,7 +59,7 @@ class LogsRepository(context: Context) {
         }
     }
 
-    fun getAllLogs(): Flow<List<LogFrameEntity>> = dao.getAllLogs()
+    fun getAllLogsWithDetails(): Flow<List<LogWithDetails>> = dao.getLogsWithDetailsFlow()
 
     fun getAllFiles(): Flow<List<FileEntity>> = dao.getAllFilesFlow()
 

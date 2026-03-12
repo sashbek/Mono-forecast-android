@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import org.pakicek.monoforecast.domain.model.dto.logs.FileEntity
-import org.pakicek.monoforecast.domain.model.dto.logs.LogFrameEntity
+import org.pakicek.monoforecast.domain.model.dto.logs.LogWithDetails
 import org.pakicek.monoforecast.domain.repositories.LogsRepository
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
 
@@ -64,9 +64,8 @@ class LogsViewModel(
         return repository.getAllFiles()
     }
 
-    fun getLogsForFile(fileId: Long): Flow<List<LogFrameEntity>> {
-        // TODO: Потом реализуем фильтрацию по fileId
-        return repository.getAllLogs()
+    fun getLogsForFile(fileId: Long): Flow<List<LogWithDetails>> {
+        return repository.getAllLogsWithDetails()
     }
 
     fun clearLogs() {

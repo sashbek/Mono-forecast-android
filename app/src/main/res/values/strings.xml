@@ -67,4 +67,8 @@
     <string name="status_desc_warnings">Warnings: %1$s</string>
     <string name="status_desc_reason">Reason: %1$s</string>
     <string name="logs_placeholder_text">Logs will appear here…</string>
+    <string name="bluetooth_header_text">Connection</string>
+    <string name="temperature_graph">Temperature Graph</string>
+    <string name="logs_raw_data">Raw Data</string>
+    <string name="item_log_icon">item_log_icon</string>
 </resources>
