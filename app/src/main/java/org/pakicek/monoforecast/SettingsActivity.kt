@@ -15,6 +15,7 @@ import org.pakicek.monoforecast.domain.model.dto.enums.AppTheme
 import org.pakicek.monoforecast.domain.model.dto.enums.CacheDuration
 import org.pakicek.monoforecast.domain.model.dto.enums.UserActivity
 import org.pakicek.monoforecast.domain.model.dto.enums.WeatherApi
+import org.pakicek.monoforecast.domain.repositories.LogsRepository
 import org.pakicek.monoforecast.domain.repositories.SettingsRepository
 import org.pakicek.monoforecast.logic.factories.SettingsViewModelFactory
 import org.pakicek.monoforecast.logic.viewmodel.SettingsViewModel
@@ -23,7 +24,9 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySettingsBinding
 
     private val viewModel: SettingsViewModel by viewModels {
-        SettingsViewModelFactory(SettingsRepository(this))
+        val settingsRepo = SettingsRepository(this)
+        val logsRepo = LogsRepository(this)
+        SettingsViewModelFactory(settingsRepo, logsRepo)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -29,7 +29,6 @@ class LogFilesAdapter(private val onItemClicked: (FileEntity) -> Unit) :
                 context.getString(R.string.log_file_active)
             }
 
-            // Используем ресурсы с параметрами
             binding.tvFileName.text = context.getString(R.string.log_file_session_fmt, startText)
             binding.tvFileDuration.text = endText
 

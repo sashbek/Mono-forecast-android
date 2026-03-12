@@ -8,7 +8,9 @@ import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 import org.pakicek.monoforecast.domain.model.dto.logs.FileEntity
 import org.pakicek.monoforecast.domain.model.dto.logs.LogFrameEntity
+import org.pakicek.monoforecast.domain.model.dto.logs.LogWithDetails
 import org.pakicek.monoforecast.domain.model.dto.logs.SettingsBlockEntity
+import org.pakicek.monoforecast.domain.model.dto.logs.WeatherBlockEntity
 
 @Dao
 interface LogsDao {
@@ -18,8 +20,26 @@ interface LogsDao {
     @Query("SELECT * FROM logs ORDER BY timestamp ASC")
     fun getAllLogs(): Flow<List<LogFrameEntity>>
 
+    @Transaction
+    @Query("SELECT * FROM logs WHERE id IN (SELECT id FROM logs) ORDER BY timestamp ASC")
+    fun getAllLogsWithDetails(): Flow<List<LogWithDetails>>
+
+    @Transaction
+    @Query("SELECT * FROM logs ORDER BY timestamp ASC")
+    fun getLogsWithDetailsFlow(): Flow<List<LogWithDetails>>
+
     @Query("DELETE FROM logs")
     suspend fun clearLogsTable()
+
+    @Insert
+    suspend fun insertWeatherBlock(block: WeatherBlockEntity)
+
+    @Transaction
+    suspend fun insertWeatherLog(log: LogFrameEntity, weather: WeatherBlockEntity) {
+        val id = insertLog(log)
+        val blockWithId = weather.copy(logId = id)
+        insertWeatherBlock(blockWithId)
+    }
 
     @Insert
     suspend fun insertFile(file: FileEntity)

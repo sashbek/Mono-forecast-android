@@ -1,12 +1,17 @@
 package org.pakicek.monoforecast
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -42,6 +47,15 @@ class ForecastActivity : AppCompatActivity() {
         }
     }
 
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            if (permissions.containsValue(true)) {
+                startWeatherSync()
+            } else {
+                Toast.makeText(this, "Location permission needed", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityForecastBinding.inflate(layoutInflater)
@@ -62,6 +76,7 @@ class ForecastActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         binding.btnBack.setOnClickListener { finish() }
+        binding.btnRefresh.setOnClickListener { checkPermissionsAndStart() }
         binding.btnRefresh.setOnClickListener { startWeatherSync() }
     }
 
@@ -109,6 +124,16 @@ class ForecastActivity : AppCompatActivity() {
             statusCard.setCardBackgroundColor(ContextCompat.getColor(this@ForecastActivity, colorRes))
             tvStatusTitle.setText(titleRes)
             tvStatusDescription.text = description
+        }
+    }
+
+    private fun checkPermissionsAndStart() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissionLauncher.launch(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+            )
+        } else {
+            startWeatherSync()
         }
     }
 

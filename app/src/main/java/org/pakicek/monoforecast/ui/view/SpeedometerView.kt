@@ -1,0 +1,74 @@
+package org.pakicek.monoforecast.ui.view
+
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.RectF
+import android.util.AttributeSet
+import android.view.View
+import androidx.core.content.ContextCompat
+import org.pakicek.monoforecast.R
+import kotlin.math.min
+import androidx.core.graphics.toColorInt
+
+class SpeedometerView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr) {
+
+    private var maxSpeed = 60f
+    private var currentSpeed = 0f
+
+    // Цвета
+    private val arcColor = ContextCompat.getColor(context, R.color.purple_200)
+    private val bgColor = "#404040".toColorInt()
+    private val textColor = ContextCompat.getColor(context, android.R.color.white)
+
+    private val paint = Paint().apply {
+        isAntiAlias = true
+        strokeCap = Paint.Cap.ROUND
+        style = Paint.Style.STROKE
+    }
+
+    private val textPaint = Paint().apply {
+        isAntiAlias = true
+        color = textColor
+        textAlign = Paint.Align.CENTER
+    }
+
+    private val rect = RectF()
+
+    fun setSpeed(speed: Float) {
+        this.currentSpeed = speed.coerceIn(0f, maxSpeed)
+        invalidate()
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+
+        val w = width.toFloat()
+        val h = height.toFloat()
+        val size = min(w, h)
+        val strokeWidth = size * 0.08f
+        val padding = strokeWidth / 2 + 10f
+
+        rect.set(padding, padding, w - padding, h - padding)
+
+        paint.color = bgColor
+        paint.strokeWidth = strokeWidth
+        canvas.drawArc(rect, 150f, 240f, false, paint)
+
+        paint.color = arcColor
+        val sweepAngle = (currentSpeed / maxSpeed) * 240f
+        canvas.drawArc(rect, 150f, sweepAngle, false, paint)
+
+        textPaint.textSize = size * 0.25f
+        textPaint.isFakeBoldText = true
+        canvas.drawText(currentSpeed.toInt().toString(), w / 2, h / 2 + (textPaint.textSize / 3), textPaint)
+
+        textPaint.textSize = size * 0.08f
+        textPaint.isFakeBoldText = false
+        canvas.drawText("km/h", w / 2, h / 2 + (size * 0.2f), textPaint)
+    }
+}

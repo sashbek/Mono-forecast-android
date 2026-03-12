@@ -1,0 +1,20 @@
+package org.pakicek.monoforecast.domain.model.dto.logs
+
+import androidx.room.Embedded
+import androidx.room.Relation
+
+data class LogWithDetails(
+    @Embedded val log: LogFrameEntity,
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "logId"
+    )
+    val weather: WeatherBlockEntity? = null,
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "logId"
+    )
+    val settings: SettingsBlockEntity? = null
+)
