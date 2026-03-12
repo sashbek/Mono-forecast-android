@@ -4,7 +4,7 @@
     <style name="Theme.MonoForecast" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color -->
         <item name="colorPrimary">@color/white</item>
-        <item name="colorPrimaryDark">@color/middle_gray</item>
+        <item name="colorPrimaryDark">@color/gray_500</item>
         <item name="colorOnPrimary">@color/black</item>
 
         <item name="colorSecondary">@color/purple_700</item>
@@ -12,15 +12,17 @@
 
         <item name="android:textColor">@color/black</item>
 
+        <item name="colorSurface">@color/white</item>
+
         <!-- Window background -->
         <item name="android:windowBackground">@color/white</item>
-        <item name="android:statusBarColor">@color/middle_gray</item>
+        <item name="android:statusBarColor">@color/gray_500</item>
 
         <item name="snackbarStyle">@style/Widget.App.Snackbar</item>
     </style>
 
     <style name="Widget.App.Snackbar" parent="Widget.MaterialComponents.Snackbar">
-        <item name="backgroundTint">@color/dark_gray</item>
+        <item name="backgroundTint">@color/gray_900</item>
         <item name="android:textAppearance">@style/TextAppearance.App.Snackbar</item>
     </style>
 
