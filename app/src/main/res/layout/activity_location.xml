@@ -59,21 +59,10 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <FrameLayout
-                android:id="@+id/mapPlaceholder"
+            <com.yandex.mapkit.mapview.MapView
+                android:id="@+id/mapview"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:background="?attr/colorPrimaryDark"
-                android:layout_marginBottom="24dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/map_shut_text"
-                    android:textSize="22sp"
-                    android:textColor="?attr/colorAccent"
-                    android:layout_gravity="center"/>
-            </FrameLayout>
+                android:layout_height="400dp"/>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
