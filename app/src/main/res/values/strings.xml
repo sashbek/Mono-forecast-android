@@ -38,6 +38,8 @@
     <string name="start_tracking_button_text">Start tracking</string>
     <string name="stop_tracking_button_text">Stop Tracking</string>
     <string name="zeroes_timer">00:00:00</string>
+    <string name="center_button_text">Center</string>
+    <string name="clear_track_button_text">Clear</string>
 
     <string name="forecast_header_text">Forecast</string>
     <string name="current_weather_header_text">Current Weather</string>
