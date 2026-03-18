@@ -1,3 +1,20 @@
+import java.util.Properties
+import com.android.build.api.dsl.ApplicationExtension
+
+fun loadLocalProperties(): Properties {
+    val properties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+
+    if (localPropertiesFile.exists()) {
+        properties.load(localPropertiesFile.inputStream())
+    } else {
+        throw GradleException("local.properties file not found in project root!")
+    }
+    return properties
+}
+
+val localProperties = loadLocalProperties()
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -18,6 +35,14 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val mapApiKey: String = localProperties.getProperty("MAPKIT_API_KEY")?.trim()
+            ?: throw GradleException("no api key in local.properties!")
+        buildConfigField(
+            "String",
+            "MAPKIT_API_KEY",
+            "\"$mapApiKey\""
+        )
     }
 
     buildTypes {
@@ -37,6 +62,7 @@ android {
     buildFeatures {
         compose = true
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -56,6 +82,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.maps.mobile)
     implementation(libs.androidx.fragment.ktx)
     ksp(libs.androidx.room.compiler)
     implementation(libs.retrofit)

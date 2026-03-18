@@ -25,8 +25,7 @@
             android:layout_margin="10dp"
             android:text="@string/location_header_text"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnBack"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnBack"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
@@ -35,7 +34,7 @@
             android:contentDescription="@string/back_button_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="?android:attr/textColor"
             tools:ignore="TouchTargetSizeCheck" />
@@ -60,25 +59,14 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <FrameLayout
-                android:id="@+id/mapPlaceholder"
+            <com.yandex.mapkit.mapview.MapView
+                android:id="@+id/mapview"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:background="?attr/colorPrimaryDark"
-                android:layout_marginBottom="24dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/map_shut_text"
-                    android:textSize="22sp"
-                    android:textColor="?attr/colorAccent"
-                    android:layout_gravity="center"/>
-            </FrameLayout>
+                android:layout_height="400dp"/>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="76dp"
+                android:layout_height="80dp"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="8dp"
                 app:cardUseCompatPadding="true">
