@@ -3,6 +3,7 @@
     <!-- Темная тема приложения (обязательно наследуется от MaterialComponents) -->
     <style name="Theme.MonoForecast" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color -->
+        <item name="fontFamily">@font/funnel_display</item>
         <item name="colorPrimary">@color/gray_900</item>
         <item name="colorPrimaryDark">@color/black</item>
         <item name="colorOnPrimary">@color/white</item>
