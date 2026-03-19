@@ -20,8 +20,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        MapKitFactory.setApiKey(BuildConfig.MAPKIT_API_KEY)
-
         setupClickListeners()
     }
 
