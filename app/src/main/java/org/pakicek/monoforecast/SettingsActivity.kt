@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat
 import org.pakicek.monoforecast.databinding.ActivitySettingsBinding
 import org.pakicek.monoforecast.domain.model.dto.enums.AppTheme
 import org.pakicek.monoforecast.domain.model.dto.enums.CacheDuration
+import org.pakicek.monoforecast.domain.model.dto.enums.GnssInterval
 import org.pakicek.monoforecast.domain.model.dto.enums.UserActivity
 import org.pakicek.monoforecast.domain.model.dto.enums.WeatherApi
 import org.pakicek.monoforecast.domain.repositories.LogsRepository
@@ -47,6 +48,7 @@ class SettingsActivity : AppCompatActivity() {
         setupApiSpinner()
         setupActivitySpinner()
         setupCacheSpinner()
+        setupGnssSpinner()
     }
 
     private fun setupThemeSpinner() {
@@ -107,6 +109,18 @@ class SettingsActivity : AppCompatActivity() {
             if (selectedCache != viewModel.getCacheDuration()) {
                 viewModel.saveCacheDuration(selectedCache)
             }
+        }
+    }
+
+    private fun setupGnssSpinner() {
+        val items = GnssInterval.entries.toList()
+        val names = items.map { it.displayName }
+
+        val current = viewModel.getGnssInterval()
+        val index = items.indexOf(current).takeIf { it >= 0 } ?: 1
+
+        setupSpinner(binding.gnssSpinner, names, index) { pos ->
+            viewModel.saveGnssInterval(items[pos])
         }
     }
 

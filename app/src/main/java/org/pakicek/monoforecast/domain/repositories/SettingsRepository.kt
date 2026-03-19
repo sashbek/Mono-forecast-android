@@ -6,6 +6,7 @@ import org.pakicek.monoforecast.domain.model.dto.enums.UserActivity
 import org.pakicek.monoforecast.domain.model.dto.enums.WeatherApi
 import androidx.core.content.edit
 import org.pakicek.monoforecast.domain.model.dto.enums.CacheDuration
+import org.pakicek.monoforecast.domain.model.dto.enums.GnssInterval
 import org.pakicek.monoforecast.domain.model.dto.logs.SettingsBlockEntity
 
 class SettingsRepository(context: Context) {
@@ -17,6 +18,9 @@ class SettingsRepository(context: Context) {
         private const val KEY_API = "KEY_API"
         private const val KEY_ACTIVITY = "KEY_ACTIVITY"
         private const val KEY_CACHE = "KEY_CACHE"
+        private const val KEY_GNSS_INTERVAL = "KEY_GNSS_INTERVAL"
+        private const val KEY_IS_TRACKING = "KEY_IS_TRACKING"
+        private const val KEY_TRACKING_START_TIME = "KEY_TRACKING_START_TIME"
     }
 
     fun getTheme(): AppTheme {
@@ -73,5 +77,34 @@ class SettingsRepository(context: Context) {
         val activity = SettingsBlockEntity(null, KEY_ACTIVITY, getActivity().name)
 
         return listOf(theme, api, activity)
+    }
+
+    fun getGnssInterval(): GnssInterval {
+        val name = prefs.getString(KEY_GNSS_INTERVAL, GnssInterval.NORMAL.name)
+        return try {
+            GnssInterval.valueOf(name ?: GnssInterval.NORMAL.name)
+        } catch (e: Exception) {
+            GnssInterval.NORMAL
+        }
+    }
+
+    fun saveGnssInterval(interval: GnssInterval) {
+        prefs.edit { putString(KEY_GNSS_INTERVAL, interval.name) }
+    }
+
+    fun setTrackingState(isTracking: Boolean) {
+        prefs.edit { putBoolean(KEY_IS_TRACKING, isTracking) }
+    }
+
+    fun isTracking(): Boolean {
+        return prefs.getBoolean(KEY_IS_TRACKING, false)
+    }
+
+    fun setTrackingStartTime(timestamp: Long) {
+        prefs.edit { putLong(KEY_TRACKING_START_TIME, timestamp) }
+    }
+
+    fun getTrackingStartTime(): Long {
+        return prefs.getLong(KEY_TRACKING_START_TIME, 0L)
     }
 }

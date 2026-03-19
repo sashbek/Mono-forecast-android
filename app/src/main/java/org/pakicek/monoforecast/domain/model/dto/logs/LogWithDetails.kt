@@ -10,6 +10,12 @@ data class LogWithDetails(
         parentColumn = "id",
         entityColumn = "logId"
     )
+    val location: LocationBlockEntity? = null,
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "logId"
+    )
     val weather: WeatherBlockEntity? = null,
 
     @Relation(
