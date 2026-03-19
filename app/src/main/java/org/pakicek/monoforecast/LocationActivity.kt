@@ -41,6 +41,7 @@ class LocationActivity : AppCompatActivity() {
     private var userMarker: PlacemarkMapObject? = null
     private val trackPoints = mutableListOf<Point>()
     private var timerJob: Job? = null
+    private var isMapReady = false
 
     private val locationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -78,17 +79,20 @@ class LocationActivity : AppCompatActivity() {
         restoreUiState()
         val filter = IntentFilter(LocationTrackingService.ACTION_LOCATION_UPDATE)
         ContextCompat.registerReceiver(this, locationReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
+        isMapReady = true
     }
 
     override fun onPause() {
         super.onPause()
         stopTimer()
         unregisterReceiver(locationReceiver)
+        isMapReady = false
     }
 
     private fun setupMap() {
         mapView = binding.mapview
         mapObjects = mapView.mapWindow.map.mapObjects.addCollection()
+        isMapReady = true
 
         mapView.mapWindow.map.move(
             CameraPosition(Point(59.935493, 30.327392), 14.0f, 0.0f, 0.0f)
@@ -100,6 +104,15 @@ class LocationActivity : AppCompatActivity() {
             toggleTracking()
         }
         binding.btnBack.setOnClickListener { finish() }
+
+        // Добавленные кнопки
+        binding.btnCenter.setOnClickListener {
+            centerOnCurrentLocation()
+        }
+
+        binding.btnClearTrack.setOnClickListener {
+            clearTrack()
+        }
     }
 
     private fun restoreUiState() {
@@ -168,9 +181,7 @@ class LocationActivity : AppCompatActivity() {
         updateButtonState(false)
         stopTimer()
         binding.tvTimer.text = getString(R.string.zeroes_timer)
-        trackPoints.clear()
-        mapObjects?.clear()
-        userMarker = null
+        clearTrack()
     }
 
     private fun updateButtonState(isTracking: Boolean) {
@@ -205,40 +216,72 @@ class LocationActivity : AppCompatActivity() {
     }
 
     private fun updateMap(point: Point) {
-        trackPoints.add(point)
-        mapObjects?.clear()
+        if (!isMapReady) return
 
-        if (trackPoints.size >= 2) {
-            val polyline = Polyline(trackPoints)
-            mapObjects?.addPolyline(polyline)?.apply {
-                setStrokeColor(Color.BLUE)
-                setStrokeWidth(5f)
+        try {
+            trackPoints.add(point)
+
+            // Очищаем и перерисовываем всё
+            mapObjects?.clear()
+            userMarker = null
+
+            // Рисуем трек если есть достаточно точек
+            if (trackPoints.size >= 2) {
+                val polyline = Polyline(trackPoints)
+                mapObjects?.addPolyline(polyline)?.apply {
+                    setStrokeColor(Color.BLUE)
+                    setStrokeWidth(5f)
+                }
             }
-        }
 
-        if (userMarker == null) {
+            // Добавляем маркер пользователя
             userMarker = mapObjects?.addPlacemark(
                 point,
                 ImageProvider.fromResource(this, android.R.drawable.ic_menu_mylocation)
             )
-        } else {
-            userMarker?.geometry = point
-        }
 
-        mapView.mapWindow.map.move(
-            CameraPosition(point, 17.0f, 0.0f, 0.0f),
-            com.yandex.mapkit.Animation(com.yandex.mapkit.Animation.Type.SMOOTH, 0.5f),
-            null
-        )
+            // Центрируем карту на новой точке
+            mapView.mapWindow.map.move(
+                CameraPosition(point, 17.0f, 0.0f, 0.0f)
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun centerOnCurrentLocation() {
+        if (trackPoints.isNotEmpty()) {
+            val lastPoint = trackPoints.last()
+            try {
+                mapView.mapWindow.map.move(
+                    CameraPosition(lastPoint, 17.0f, 0.0f, 0.0f),
+                    com.yandex.mapkit.Animation(com.yandex.mapkit.Animation.Type.SMOOTH, 0.5f),
+                    null
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        } else {
+            Toast.makeText(this, "Нет данных о местоположении", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun clearTrack() {
+        trackPoints.clear()
+        mapObjects?.clear()
+        userMarker = null
+        Toast.makeText(this, "Трек очищен", Toast.LENGTH_SHORT).show()
     }
 
     override fun onStart() {
         super.onStart()
         MapKitFactory.getInstance().onStart()
         mapView.onStart()
+        isMapReady = true
     }
 
     override fun onStop() {
+        isMapReady = false
         mapView.onStop()
         MapKitFactory.getInstance().onStop()
         super.onStop()

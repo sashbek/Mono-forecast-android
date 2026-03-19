@@ -44,7 +44,7 @@ android {
         )
 
         val ninjaApiKey: String = localProperties.getProperty("NINJA_API_KEY")?.trim()
-            ?: throw GradleException("No NINJA_API_KEY in local.properties!")
+                ?: throw GradleException("No NINJA_API_KEY in local.properties!")
         buildConfigField(
             "String",
             "NINJA_API_KEY",
