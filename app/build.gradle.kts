@@ -1,5 +1,4 @@
 import java.util.Properties
-import com.android.build.api.dsl.ApplicationExtension
 
 fun loadLocalProperties(): Properties {
     val properties = Properties()
@@ -37,11 +36,19 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         val mapApiKey: String = localProperties.getProperty("MAPKIT_API_KEY")?.trim()
-            ?: throw GradleException("no api key in local.properties!")
+            ?: throw GradleException("No MAPKIT_API_KEY in local.properties!")
         buildConfigField(
             "String",
             "MAPKIT_API_KEY",
             "\"$mapApiKey\""
+        )
+
+        val ninjaApiKey: String = localProperties.getProperty("NINJA_API_KEY")?.trim()
+            ?: throw GradleException("No NINJA_API_KEY in local.properties!")
+        buildConfigField(
+            "String",
+            "NINJA_API_KEY",
+            "\"$ninjaApiKey\""
         )
     }
 

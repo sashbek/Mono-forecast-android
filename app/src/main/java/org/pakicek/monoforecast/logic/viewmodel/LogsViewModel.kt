@@ -44,20 +44,12 @@ class LogsViewModel(
 
     private suspend fun startLogging() {
         repository.startNewFile()
-        logCurrentSettings()
         _isLogging.value = true
     }
 
     private suspend fun stopLogging() {
         repository.endLastFile()
         _isLogging.value = false
-    }
-
-    private suspend fun logCurrentSettings() {
-        val settings = settingsRepository.getAllSettings()
-        settings.forEach {
-            repository.insertSetting(it.setting, it.value)
-        }
     }
 
     fun getAllFiles(): Flow<List<FileEntity>> {
