@@ -95,4 +95,16 @@ interface LogsDao {
         clearLogsTable()
         clearFilesTable()
     }
+
+    @Query("SELECT * FROM files WHERE id = :fileId LIMIT 1")
+    suspend fun getFileById(fileId: Long): FileEntity?
+
+    @Transaction
+    @Query("""
+        SELECT * FROM logs 
+        WHERE timestamp >= :start 
+        AND (:end IS NULL OR timestamp <= :end) 
+        ORDER BY timestamp ASC
+    """)
+    fun getLogsByTimeRange(start: Long, end: Long?): Flow<List<LogWithDetails>>
 }

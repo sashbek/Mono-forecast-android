@@ -1,8 +1,5 @@
-package org.pakicek.monoforecast.domain.api.network.providers
+package org.pakicek.monoforecast.domain.api.network
 
-import org.pakicek.monoforecast.domain.api.network.RetrofitClients
-import org.pakicek.monoforecast.domain.api.network.WeatherProvider
-import org.pakicek.monoforecast.domain.api.network.safeApiCall
 import org.pakicek.monoforecast.domain.model.NetworkResult
 import org.pakicek.monoforecast.domain.model.dto.MainDto
 import org.pakicek.monoforecast.domain.model.dto.WeatherResponseDto

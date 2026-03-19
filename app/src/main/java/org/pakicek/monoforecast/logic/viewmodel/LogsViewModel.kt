@@ -5,15 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.launch
 import org.pakicek.monoforecast.domain.model.dto.logs.FileEntity
 import org.pakicek.monoforecast.domain.model.dto.logs.LogWithDetails
 import org.pakicek.monoforecast.domain.repositories.LogsRepository
-import org.pakicek.monoforecast.domain.repositories.SettingsRepository
 
 class LogsViewModel(
-    private val repository: LogsRepository,
-    private val settingsRepository: SettingsRepository
+    private val repository: LogsRepository
 ) : ViewModel() {
 
     private val _isLogging = MutableLiveData(false)
@@ -56,8 +56,9 @@ class LogsViewModel(
         return repository.getAllFiles()
     }
 
-    fun getLogsForFile(fileId: Long): Flow<List<LogWithDetails>> {
-        return repository.getAllLogsWithDetails()
+    fun getLogsForFile(fileId: Long): Flow<List<LogWithDetails>> = flow {
+        val logsFlow = repository.getLogsForSession(fileId)
+        emitAll(logsFlow)
     }
 
     fun clearLogs() {
