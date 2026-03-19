@@ -20,7 +20,7 @@ class LogsActivity : AppCompatActivity() {
     private val viewModel: LogsViewModel by viewModels {
         val logsRepo = LogsRepository(this)
         val settingsRepo = SettingsRepository(this)
-        LogsViewModelFactory(logsRepo, settingsRepo)
+        LogsViewModelFactory(logsRepo)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

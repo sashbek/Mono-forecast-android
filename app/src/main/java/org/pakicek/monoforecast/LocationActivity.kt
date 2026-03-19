@@ -217,10 +217,11 @@ class LocationActivity : AppCompatActivity() {
         }
 
         if (userMarker == null) {
-            userMarker = mapObjects?.addPlacemark(
-                point,
-                ImageProvider.fromResource(this, android.R.drawable.ic_menu_mylocation)
-            )
+            val imageProvider = ImageProvider.fromResource(this, android.R.drawable.ic_menu_mylocation)
+            mapObjects!!.addPlacemark().apply {
+                geometry = point
+                setIcon(imageProvider)
+            }
         } else {
             userMarker?.geometry = point
         }
