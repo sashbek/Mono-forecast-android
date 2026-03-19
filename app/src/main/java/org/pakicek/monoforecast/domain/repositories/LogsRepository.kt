@@ -2,6 +2,7 @@ package org.pakicek.monoforecast.domain.repositories
 
 import android.content.Context
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import org.pakicek.monoforecast.domain.model.dao.LogsDb
 import org.pakicek.monoforecast.domain.model.dto.WeatherResponseDto
 import org.pakicek.monoforecast.domain.model.dto.enums.LogType
@@ -18,6 +19,11 @@ class LogsRepository(context: Context) {
     suspend fun isLoggingActive(): Boolean {
         val last = dao.getLastFile() ?: return false
         return last.end == null
+    }
+
+    suspend fun getLogsForSession(fileId: Long): Flow<List<LogWithDetails>> {
+        val file = dao.getFileById(fileId) ?: return emptyFlow()
+        return dao.getLogsByTimeRange(file.start, file.end)
     }
 
     suspend fun insertSetting(setting: String, value: String) {
@@ -75,8 +81,6 @@ class LogsRepository(context: Context) {
             dao.updateFile(file)
         }
     }
-
-    fun getAllLogsWithDetails(): Flow<List<LogWithDetails>> = dao.getLogsWithDetailsFlow()
 
     fun getAllFiles(): Flow<List<FileEntity>> = dao.getAllFilesFlow()
 

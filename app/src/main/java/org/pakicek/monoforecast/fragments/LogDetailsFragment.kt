@@ -36,7 +36,7 @@ class LogDetailsFragment : Fragment(R.layout.fragment_log_details) {
         val context = requireContext().applicationContext
         val logsRepo = LogsRepository(context)
         val settingsRepo = SettingsRepository(context)
-        LogsViewModelFactory(logsRepo, settingsRepo)
+        LogsViewModelFactory(logsRepo)
     }
 
     private val listAdapter = LogDetailsAdapter()

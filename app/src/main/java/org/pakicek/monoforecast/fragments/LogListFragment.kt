@@ -25,8 +25,7 @@ class LogListFragment : Fragment(R.layout.fragment_log_list) {
     private val viewModel: LogsViewModel by activityViewModels {
         val context = requireContext().applicationContext
         val logsRepo = LogsRepository(context)
-        val settingsRepo = SettingsRepository(context)
-        LogsViewModelFactory(logsRepo, settingsRepo)
+        LogsViewModelFactory(logsRepo)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
