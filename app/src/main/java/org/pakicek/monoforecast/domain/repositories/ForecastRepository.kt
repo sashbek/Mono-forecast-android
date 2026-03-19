@@ -3,8 +3,9 @@ package org.pakicek.monoforecast.domain.repositories
 import android.content.Context
 import android.util.Log
 import androidx.core.content.edit
-import org.pakicek.monoforecast.domain.api.network.providers.NinjaWeatherProvider
-import org.pakicek.monoforecast.domain.api.network.providers.OpenMeteoWeatherProvider
+import org.pakicek.monoforecast.BuildConfig
+import org.pakicek.monoforecast.domain.api.providers.NinjaWeatherProvider
+import org.pakicek.monoforecast.domain.api.providers.OpenMeteoWeatherProvider
 import org.pakicek.monoforecast.domain.model.NetworkResult
 import org.pakicek.monoforecast.domain.model.dto.MainDto
 import org.pakicek.monoforecast.domain.model.dto.WeatherResponseDto
@@ -26,9 +27,9 @@ class ForecastRepository(context: Context) {
         private const val KEY_CLOUD_PCT = "cloud_pct"
         private const val KEY_HAS_DATA = "has_data"
         private const val KEY_LAST_UPDATE = "last_update_time"
-        private const val API_KEY_NINJA = "mqccZREuuaHTZxfWv51DCSArwrekGpmoeOzQMN6A"
         private const val FALLBACK_LAT = 51.5074
         private const val FALLBACK_LON = 0.1278
+        private const val API_KEY_NINJA = BuildConfig.NINJA_API_KEY
     }
 
     private val ninjaProvider = NinjaWeatherProvider(API_KEY_NINJA)
