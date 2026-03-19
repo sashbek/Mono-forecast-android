@@ -1,4 +1,4 @@
-package org.pakicek.monoforecast.domain.api
+package org.pakicek.monoforecast.domain.api.network
 
 import org.pakicek.monoforecast.domain.model.NetworkResult
 import org.pakicek.monoforecast.domain.model.dto.WeatherResponseDto

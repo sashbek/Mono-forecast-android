@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.pakicek.monoforecast.domain.model.dto.enums.AppTheme
 import org.pakicek.monoforecast.domain.model.dto.enums.CacheDuration
+import org.pakicek.monoforecast.domain.model.dto.enums.GnssInterval
 import org.pakicek.monoforecast.domain.model.dto.enums.UserActivity
 import org.pakicek.monoforecast.domain.model.dto.enums.WeatherApi
 import org.pakicek.monoforecast.domain.repositories.LogsRepository
@@ -49,4 +50,10 @@ class SettingsViewModel(
         logSettingChange("Cache Duration", duration.name)
     }
 
+    fun getGnssInterval() = repository.getGnssInterval()
+
+    fun saveGnssInterval(interval: GnssInterval) {
+        repository.saveGnssInterval(interval)
+        logSettingChange("GNSS Interval", interval.displayName)
+    }
 }

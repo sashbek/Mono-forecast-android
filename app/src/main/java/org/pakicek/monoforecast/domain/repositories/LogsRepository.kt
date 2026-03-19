@@ -27,6 +27,23 @@ class LogsRepository(context: Context) {
         dao.insertLogWithSettings(log, settingBlock)
     }
 
+    suspend fun saveLocationLog(lat: Double, lon: Double) {
+        if (!isLoggingActive()) return
+
+        val logFrame = LogFrameEntity(
+            type = LogType.LOCATION,
+            message = ""
+        )
+
+        val locationBlock = org.pakicek.monoforecast.domain.model.dto.logs.LocationBlockEntity(
+            logId = 0,
+            latitude = lat,
+            longitude = lon
+        )
+
+        dao.insertLocationLog(logFrame, locationBlock)
+    }
+
     suspend fun saveWeatherLog(dto: WeatherResponseDto) {
         if (!isLoggingActive()) return
 

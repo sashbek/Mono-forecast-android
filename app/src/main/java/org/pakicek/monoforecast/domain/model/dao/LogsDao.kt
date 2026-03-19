@@ -7,6 +7,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 import org.pakicek.monoforecast.domain.model.dto.logs.FileEntity
+import org.pakicek.monoforecast.domain.model.dto.logs.LocationBlockEntity
 import org.pakicek.monoforecast.domain.model.dto.logs.LogFrameEntity
 import org.pakicek.monoforecast.domain.model.dto.logs.LogWithDetails
 import org.pakicek.monoforecast.domain.model.dto.logs.SettingsBlockEntity
@@ -30,6 +31,19 @@ interface LogsDao {
 
     @Query("DELETE FROM logs")
     suspend fun clearLogsTable()
+
+    @Insert
+    suspend fun insertLocationBlock(block: LocationBlockEntity)
+
+    @Transaction
+    suspend fun insertLocationLog(
+        log: LogFrameEntity,
+        location: LocationBlockEntity
+    ) {
+        val id = insertLog(log)
+        val locationWithId = location.copy(logId = id)
+        insertLocationBlock(locationWithId)
+    }
 
     @Insert
     suspend fun insertWeatherBlock(block: WeatherBlockEntity)

@@ -17,7 +17,7 @@ import java.util.Locale
 class LogDetailsAdapter : ListAdapter<LogWithDetails, LogDetailsAdapter.ViewHolder>(DiffCallback) {
 
     class ViewHolder(private val binding: ItemLogDetailBinding) : RecyclerView.ViewHolder(binding.root) {
-        @SuppressLint("SetTextI18n")
+        @SuppressLint("SetTextI18n", "DefaultLocale")
         fun bind(item: LogWithDetails) {
             val sdf = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
             val time = sdf.format(Date(item.log.timestamp))
@@ -45,7 +45,14 @@ class LogDetailsAdapter : ListAdapter<LogWithDetails, LogDetailsAdapter.ViewHold
                 }
                 LogType.LOCATION -> {
                     binding.ivIcon.setImageResource(R.drawable.ic_location_button)
-                    binding.tvContent.text = item.log.message
+                    val loc = item.location
+                    if (loc != null) {
+                        val lat = String.format("%.6f", loc.latitude)
+                        val lon = String.format("%.6f", loc.longitude)
+                        binding.tvContent.text = "Lat: $lat, Lon: $lon"
+                    } else {
+                        binding.tvContent.text = "No coordinates data"
+                    }
                 }
                 else -> {
                     binding.ivIcon.setImageResource(R.drawable.ic_logs_button)

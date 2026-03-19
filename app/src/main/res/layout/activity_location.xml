@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/main"
     android:background="?android:attr/statusBarColor"
     android:fitsSystemWindows="true">
 
@@ -51,18 +51,45 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
-            android:background="?attr/colorPrimary"
-            app:layout_constraintTop_toBottomOf="@id/header"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            android:background="?attr/colorPrimary">
 
             <com.yandex.mapkit.mapview.MapView
                 android:id="@+id/mapview"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"/>
+
+            <!-- Добавлена горизонтальная панель с двумя кнопками -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:weightSum="2">
+
+                <Button
+                    android:id="@+id/btnCenter"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/center_button_text"
+                    android:background="@drawable/bg_activatable_button"
+                    android:textColor="@color/color_tracking_button"/>
+
+                <Button
+                    android:id="@+id/btnClearTrack"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/clear_track_button_text"
+                    android:background="@drawable/bg_activatable_button"
+                    android:textColor="@color/color_tracking_button"/>
+            </LinearLayout>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -88,7 +115,8 @@
                 android:text="@string/zeroes_timer"
                 android:textSize="32sp"
                 android:textStyle="bold"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"/>
 
         </LinearLayout>
 
