@@ -1,4 +1,4 @@
-package org.pakicek.monoforecast.data.api.network
+package org.pakicek.monoforecast.data.api
 
 import org.pakicek.monoforecast.domain.model.dto.OpenMeteoDto
 import retrofit2.Response

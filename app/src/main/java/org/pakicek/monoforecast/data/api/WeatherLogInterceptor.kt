@@ -1,4 +1,4 @@
-package org.pakicek.monoforecast.data.api.network
+package org.pakicek.monoforecast.data.api
 
 import android.content.Context
 import android.util.Log

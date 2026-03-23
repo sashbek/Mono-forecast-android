@@ -1,4 +1,4 @@
-package org.pakicek.monoforecast.data.api.network
+package org.pakicek.monoforecast.data.api
 
 import android.content.Context
 import okhttp3.OkHttpClient

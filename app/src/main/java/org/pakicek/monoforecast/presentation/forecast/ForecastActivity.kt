@@ -29,9 +29,9 @@ class ForecastActivity : AppCompatActivity() {
 
     private val weatherReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == WeatherSyncService.Companion.ACTION_WEATHER_UPDATED) {
-                val isSuccess = intent.getBooleanExtra(WeatherSyncService.Companion.EXTRA_IS_SUCCESS, true)
-                val errorMessage = intent.getStringExtra(WeatherSyncService.Companion.EXTRA_ERROR_MESSAGE)
+            if (intent?.action == WeatherSyncService.ACTION_WEATHER_UPDATED) {
+                val isSuccess = intent.getBooleanExtra(WeatherSyncService.EXTRA_IS_SUCCESS, true)
+                val errorMessage = intent.getStringExtra(WeatherSyncService.EXTRA_ERROR_MESSAGE)
 
                 if (isSuccess) {
                     viewModel.refreshData()

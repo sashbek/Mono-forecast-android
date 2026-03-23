@@ -4,8 +4,8 @@ import android.content.Context
 import android.util.Log
 import androidx.core.content.edit
 import org.pakicek.monoforecast.BuildConfig
-import org.pakicek.monoforecast.data.api.network.NinjaWeatherProvider
-import org.pakicek.monoforecast.data.api.network.OpenMeteoWeatherProvider
+import org.pakicek.monoforecast.data.api.NinjaWeatherProvider
+import org.pakicek.monoforecast.data.api.OpenMeteoWeatherProvider
 import org.pakicek.monoforecast.domain.model.NetworkResult
 import org.pakicek.monoforecast.domain.model.dto.MainDto
 import org.pakicek.monoforecast.domain.model.dto.WeatherResponseDto

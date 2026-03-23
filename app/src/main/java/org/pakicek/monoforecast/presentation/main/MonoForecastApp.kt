@@ -1,7 +1,7 @@
 package org.pakicek.monoforecast.presentation.main
 
 import android.app.Application
-import org.pakicek.monoforecast.data.api.network.RetrofitClients
+import org.pakicek.monoforecast.data.api.RetrofitClients
 
 class MonoForecastApp : Application() {
     override fun onCreate() {

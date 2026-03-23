@@ -1,27 +1,29 @@
-package org.pakicek.monoforecast.data.api.network
+package org.pakicek.monoforecast.data.api
 
 import org.pakicek.monoforecast.domain.model.NetworkResult
 import org.pakicek.monoforecast.domain.model.dto.MainDto
 import org.pakicek.monoforecast.domain.model.dto.WeatherResponseDto
 import org.pakicek.monoforecast.domain.model.dto.WindDto
 
-class OpenMeteoWeatherProvider : WeatherProvider {
+class NinjaWeatherProvider(private val apiKey: String) : WeatherProvider {
 
     override suspend fun fetchWeather(lat: Double, lon: Double): NetworkResult<WeatherResponseDto> {
-        val result = safeApiCall { RetrofitClients.openMeteoApi.getWeather(lat, lon) }
+        val result = safeApiCall { RetrofitClients.ninjaApi.getWeather(lat, lon, apiKey) }
 
         return when (result) {
             is NetworkResult.Success -> {
-                val current = result.data.current
+                val ninjaDto = result.data
                 val mapped = WeatherResponseDto(
-                    main = MainDto(current.temperature, current.humidity),
-                    wind = WindDto(current.windSpeed, current.windDirection),
-                    cloudPct = current.cloudCover,
+                    main = MainDto(ninjaDto.temp, ninjaDto.humidity),
+                    wind = WindDto(ninjaDto.windSpeed, ninjaDto.windDegrees),
+                    cloudPct = ninjaDto.cloudPct,
                     timestamp = System.currentTimeMillis()
                 )
                 NetworkResult.Success(mapped)
             }
-            is NetworkResult.Error -> result
+            is NetworkResult.Error -> {
+                result
+            }
         }
     }
 }
