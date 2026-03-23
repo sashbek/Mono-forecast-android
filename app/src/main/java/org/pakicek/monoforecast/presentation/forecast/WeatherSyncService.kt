@@ -11,11 +11,12 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.pakicek.monoforecast.domain.model.NetworkResult
 import org.pakicek.monoforecast.data.repositories.ForecastRepository
+import org.pakicek.monoforecast.domain.repository.IForecastRepository
 
 class WeatherSyncService : Service() {
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
-    private val repository by lazy { ForecastRepository(applicationContext) }
+    private val repository : IForecastRepository by lazy { ForecastRepository(applicationContext) }
 
     companion object {
         const val ACTION_WEATHER_UPDATED = "org.pakicek.monoforecast.WEATHER_UPDATED"

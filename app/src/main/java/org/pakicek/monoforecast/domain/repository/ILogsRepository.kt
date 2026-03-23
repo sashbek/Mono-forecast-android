@@ -14,4 +14,6 @@ interface ILogsRepository {
     suspend fun getLogsForSession(fileId: Long): Flow<List<LogWithDetails>>
 
     suspend fun clearAll()
+    suspend fun insertSetting(setting: String, value: String)
+    suspend fun saveLocationLog(lat: Double, lon: Double)
 }

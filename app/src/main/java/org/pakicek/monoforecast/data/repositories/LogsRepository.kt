@@ -28,14 +28,14 @@ class LogsRepository(context: Context): ILogsRepository{
         return dao.getLogsByTimeRange(file.start, file.end)
     }
 
-    suspend fun insertSetting(setting: String, value: String) {
+    override suspend fun insertSetting(setting: String, value: String) {
         if (!isLoggingActive()) return
         val log = LogFrameEntity(type = LogType.SETTINGS, message = "$setting = $value")
         val settingBlock = SettingsBlockEntity(null, setting, value)
         dao.insertLogWithSettings(log, settingBlock)
     }
 
-    suspend fun saveLocationLog(lat: Double, lon: Double) {
+    override suspend fun saveLocationLog(lat: Double, lon: Double) {
         if (!isLoggingActive()) return
 
         val logFrame = LogFrameEntity(

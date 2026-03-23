@@ -8,12 +8,12 @@ import org.pakicek.monoforecast.domain.model.dto.enums.CacheDuration
 import org.pakicek.monoforecast.domain.model.dto.enums.GnssInterval
 import org.pakicek.monoforecast.domain.model.dto.enums.UserActivity
 import org.pakicek.monoforecast.domain.model.dto.enums.WeatherApi
-import org.pakicek.monoforecast.data.repositories.LogsRepository
-import org.pakicek.monoforecast.data.repositories.SettingsRepository
+import org.pakicek.monoforecast.domain.repository.ILogsRepository
+import org.pakicek.monoforecast.domain.repository.ISettingsRepository
 
 class SettingsViewModel(
-    private val repository: SettingsRepository,
-    private val logsRepository: LogsRepository
+    private val repository: ISettingsRepository,
+    private val logsRepository: ILogsRepository
 ) : ViewModel() {
 
     private fun logSettingChange(key: String, value: String) {

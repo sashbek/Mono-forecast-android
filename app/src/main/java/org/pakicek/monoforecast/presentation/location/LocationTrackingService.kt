@@ -28,13 +28,15 @@ import kotlinx.coroutines.launch
 import org.pakicek.monoforecast.R
 import org.pakicek.monoforecast.data.repositories.LogsRepository
 import org.pakicek.monoforecast.data.repositories.SettingsRepository
+import org.pakicek.monoforecast.domain.repository.ILogsRepository
+import org.pakicek.monoforecast.domain.repository.ISettingsRepository
 
 class LocationTrackingService : Service() {
 
     private val serviceScope = CoroutineScope(Dispatchers.IO + Job())
-    private val repository by lazy { LogsRepository(applicationContext) }
+    private val repository: ILogsRepository by lazy { LogsRepository(applicationContext) }
 
-    private val settingsRepository by lazy { SettingsRepository(applicationContext) }
+    private val settingsRepository: ISettingsRepository by lazy { SettingsRepository(applicationContext) }
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
 

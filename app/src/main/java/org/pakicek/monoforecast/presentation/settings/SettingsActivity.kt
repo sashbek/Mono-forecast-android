@@ -1,6 +1,5 @@
 package org.pakicek.monoforecast.presentation.settings
 
-import android.R
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -17,16 +16,12 @@ import org.pakicek.monoforecast.domain.model.dto.enums.CacheDuration
 import org.pakicek.monoforecast.domain.model.dto.enums.GnssInterval
 import org.pakicek.monoforecast.domain.model.dto.enums.UserActivity
 import org.pakicek.monoforecast.domain.model.dto.enums.WeatherApi
-import org.pakicek.monoforecast.data.repositories.LogsRepository
-import org.pakicek.monoforecast.data.repositories.SettingsRepository
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySettingsBinding
 
     private val viewModel: SettingsViewModel by viewModels {
-        val settingsRepo = SettingsRepository(this)
-        val logsRepo = LogsRepository(this)
-        SettingsViewModelFactory(settingsRepo, logsRepo)
+        SettingsViewModelFactory(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,8 +124,8 @@ class SettingsActivity : AppCompatActivity() {
         selectedIndex: Int,
         onSelect: (Int) -> Unit
     ) {
-        val adapter = ArrayAdapter(this, R.layout.simple_spinner_item, items)
-        adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, items)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
         spinner.adapter = adapter
         spinner.setSelection(selectedIndex)
 

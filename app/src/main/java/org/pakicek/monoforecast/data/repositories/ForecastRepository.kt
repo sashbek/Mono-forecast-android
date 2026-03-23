@@ -60,7 +60,7 @@ class ForecastRepository(context: Context) : IForecastRepository {
         )
     }
 
-    suspend fun fetchAndSaveNewWeather(): NetworkResult<Unit> {
+    override suspend fun fetchAndSaveNewWeather(): NetworkResult<Unit> {
         if (isCacheValid()) {
             return NetworkResult.Success(Unit)
         }

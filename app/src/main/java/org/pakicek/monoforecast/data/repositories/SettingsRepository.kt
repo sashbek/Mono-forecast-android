@@ -24,40 +24,40 @@ class SettingsRepository(context: Context) : ISettingsRepository {
         private const val KEY_TRACKING_START_TIME = "KEY_TRACKING_START_TIME"
     }
 
-    fun getTheme(): AppTheme {
+    override fun getTheme(): AppTheme {
         val stored = prefs.getString(KEY_THEME, "SYSTEM")
         return AppTheme.valueOf(stored ?: "SYSTEM")
     }
 
-    fun saveTheme(theme: AppTheme) {
+    override fun saveTheme(theme: AppTheme) {
         prefs.edit {
             putString(KEY_THEME, theme.name)
         }
     }
 
-    fun getApi(): WeatherApi {
+    override fun getApi(): WeatherApi {
         val stored = prefs.getString(KEY_API, "NINJA_API")
         return WeatherApi.valueOf(stored ?: "NINJA_API")
     }
 
-    fun saveApi(api: WeatherApi) {
+    override fun saveApi(api: WeatherApi) {
         prefs.edit {
             putString(KEY_API, api.name)
         }
     }
 
-    fun getActivity(): UserActivity {
+    override fun getActivity(): UserActivity {
         val stored = prefs.getString(KEY_ACTIVITY, "BIKE")
         return UserActivity.valueOf(stored ?: "BIKE")
     }
 
-    fun saveActivity(activity: UserActivity) {
+    override fun saveActivity(activity: UserActivity) {
         prefs.edit {
             putString(KEY_ACTIVITY, activity.name)
         }
     }
 
-    fun getCacheDuration(): CacheDuration {
+    override fun getCacheDuration(): CacheDuration {
         val stored = prefs.getString(KEY_CACHE, CacheDuration.MIN_15.name)
         return try {
             CacheDuration.valueOf(stored ?: CacheDuration.MIN_15.name)
@@ -66,13 +66,13 @@ class SettingsRepository(context: Context) : ISettingsRepository {
         }
     }
 
-    fun saveCacheDuration(duration: CacheDuration) {
+    override fun saveCacheDuration(duration: CacheDuration) {
         prefs.edit {
             putString(KEY_CACHE, duration.name)
         }
     }
 
-    fun getAllSettings(): List<SettingsBlockEntity> {
+    override fun getAllSettings(): List<SettingsBlockEntity> {
         val theme = SettingsBlockEntity(null, KEY_THEME, getTheme().name)
         val api = SettingsBlockEntity(null, KEY_API, getApi().name)
         val activity = SettingsBlockEntity(null, KEY_ACTIVITY, getActivity().name)
@@ -80,7 +80,7 @@ class SettingsRepository(context: Context) : ISettingsRepository {
         return listOf(theme, api, activity)
     }
 
-    fun getGnssInterval(): GnssInterval {
+    override fun getGnssInterval(): GnssInterval {
         val name = prefs.getString(KEY_GNSS_INTERVAL, GnssInterval.NORMAL.name)
         return try {
             GnssInterval.valueOf(name ?: GnssInterval.NORMAL.name)
@@ -89,11 +89,11 @@ class SettingsRepository(context: Context) : ISettingsRepository {
         }
     }
 
-    fun saveGnssInterval(interval: GnssInterval) {
+    override fun saveGnssInterval(interval: GnssInterval) {
         prefs.edit { putString(KEY_GNSS_INTERVAL, interval.name) }
     }
 
-    fun setTrackingState(isTracking: Boolean) {
+    override fun setTrackingState(isTracking: Boolean) {
         prefs.edit { putBoolean(KEY_IS_TRACKING, isTracking) }
     }
 

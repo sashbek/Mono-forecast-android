@@ -47,7 +47,7 @@ class LocationActivity : AppCompatActivity() {
 
     private val locationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == LocationTrackingService.Companion.ACTION_LOCATION_UPDATE) {
+            if (intent?.action == LocationTrackingService.ACTION_LOCATION_UPDATE) {
                 val lat = intent.getDoubleExtra("lat", 0.0)
                 val lon = intent.getDoubleExtra("lon", 0.0)
                 updateMap(Point(lat, lon))
@@ -79,7 +79,7 @@ class LocationActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         restoreUiState()
-        val filter = IntentFilter(LocationTrackingService.Companion.ACTION_LOCATION_UPDATE)
+        val filter = IntentFilter(LocationTrackingService.ACTION_LOCATION_UPDATE)
         ContextCompat.registerReceiver(this, locationReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
         isMapReady = true
     }
@@ -159,7 +159,7 @@ class LocationActivity : AppCompatActivity() {
 
     private fun startTrackingService() {
         val intent = Intent(this, LocationTrackingService::class.java).apply {
-            action = LocationTrackingService.Companion.ACTION_START
+            action = LocationTrackingService.ACTION_START
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent)
@@ -176,7 +176,7 @@ class LocationActivity : AppCompatActivity() {
 
     private fun stopTrackingService() {
         val intent = Intent(this, LocationTrackingService::class.java).apply {
-            action = LocationTrackingService.Companion.ACTION_STOP
+            action = LocationTrackingService.ACTION_STOP
         }
         startService(intent)
 
