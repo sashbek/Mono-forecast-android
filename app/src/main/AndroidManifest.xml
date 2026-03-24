@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
-        android:name=".MonoForecastApp"
+        android:name=".presentation.main.MonoForecastApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -21,22 +21,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MonoForecast">
         <activity
-            android:name=".ForecastActivity"
+            android:name=".presentation.forecast.ForecastActivity"
             android:exported="false" />
         <activity
-            android:name=".LogsActivity"
+            android:name=".presentation.logs.LogsActivity"
             android:exported="false" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".presentation.settings.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".LocationActivity"
+            android:name=".presentation.location.LocationActivity"
             android:exported="false" />
         <activity
-            android:name=".BluetoothActivity"
+            android:name=".presentation.ble.BluetoothActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.main.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.MonoForecast">
             <intent-filter>
@@ -45,8 +45,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".logic.services.WeatherSyncService" />
-        <service android:name=".logic.services.LocationTrackingService" android:foregroundServiceType="location" />
+        <service android:name=".presentation.forecast.WeatherSyncService" />
+        <service android:name=".presentation.location.LocationTrackingService" android:foregroundServiceType="location" />
     </application>
 
 </manifest>
