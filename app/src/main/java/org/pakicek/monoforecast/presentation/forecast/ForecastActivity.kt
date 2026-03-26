@@ -16,9 +16,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import org.pakicek.monoforecast.MonoForecastApp
 import org.pakicek.monoforecast.R
+import org.pakicek.monoforecast.data.features.WeatherFeature
 import org.pakicek.monoforecast.databinding.ActivityForecastBinding
 import org.pakicek.monoforecast.domain.model.RideDifficulty
 import org.pakicek.monoforecast.domain.model.dto.WeatherResponseDto
+import org.pakicek.monoforecast.presentation.services.AppNotificationManager
+import org.pakicek.monoforecast.presentation.services.NotificationActionReceiver
 import org.pakicek.monoforecast.presentation.utils.showSnackbar
 
 class ForecastActivity : AppCompatActivity() {
@@ -31,8 +34,14 @@ class ForecastActivity : AppCompatActivity() {
 
     private val weatherReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == WeatherSyncService.ACTION_WEATHER_UPDATED) {
-                handleWeatherUpdate(intent)
+            if (intent?.action == WeatherFeature.ACTION_WEATHER_UPDATED) {
+                val success = intent.getBooleanExtra("is_success", false)
+                if (success) {
+                    viewModel.refreshData()
+                    binding.root.showSnackbar("Weather updated!", R.color.status_easy, android.R.color.white)
+                } else {
+                    binding.root.showSnackbar("Update failed", R.color.status_hard, android.R.color.white)
+                }
             }
         }
     }
@@ -40,7 +49,7 @@ class ForecastActivity : AppCompatActivity() {
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             if (permissions.containsValue(true)) {
-                startWeatherSync()
+                sendRefreshCommand()
             } else {
                 binding.root.showSnackbar("Location permission needed", R.color.status_hard, android.R.color.white)
             }
@@ -53,7 +62,10 @@ class ForecastActivity : AppCompatActivity() {
 
         setupInsets()
         setupObservers()
-        setupListeners()
+
+        binding.btnBack.setOnClickListener { finish() }
+        binding.btnRefresh.setOnClickListener { checkPermissionsAndStart() }
+
         registerWeatherReceiver()
         viewModel.refreshData()
     }
@@ -64,11 +76,6 @@ class ForecastActivity : AppCompatActivity() {
             updateStatusCard(state.difficulty)
             binding.weatherView.setWeatherCondition(state.condition)
         }
-    }
-
-    private fun setupListeners() {
-        binding.btnBack.setOnClickListener { finish() }
-        binding.btnRefresh.setOnClickListener { checkPermissionsAndStart() }
     }
 
     private fun updateUI(weather: WeatherResponseDto) {
@@ -98,26 +105,19 @@ class ForecastActivity : AppCompatActivity() {
     private fun checkPermissionsAndStart() {
         val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
         val hasPermission = permissions.any { ActivityCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED }
-        if (!hasPermission) requestPermissionLauncher.launch(permissions) else startWeatherSync()
+        if (!hasPermission) requestPermissionLauncher.launch(permissions) else sendRefreshCommand()
     }
 
-    private fun startWeatherSync() {
+    private fun sendRefreshCommand() {
         binding.root.showSnackbar("Syncing weather...")
-        startService(Intent(this, WeatherSyncService::class.java))
-    }
-
-    private fun handleWeatherUpdate(intent: Intent) {
-        if (intent.getBooleanExtra(WeatherSyncService.EXTRA_IS_SUCCESS, false)) {
-            viewModel.refreshData()
-            binding.root.showSnackbar("Weather updated!", R.color.status_easy, android.R.color.white)
-        } else {
-            val msg = intent.getStringExtra(WeatherSyncService.EXTRA_ERROR_MESSAGE) ?: "Unknown error"
-            binding.root.showSnackbar("Update failed: $msg", R.color.status_hard, android.R.color.white)
+        val intent = Intent(this, NotificationActionReceiver::class.java).apply {
+            action = AppNotificationManager.ACTION_REFRESH_WEATHER
         }
+        sendBroadcast(intent)
     }
 
     private fun registerWeatherReceiver() {
-        ContextCompat.registerReceiver(this, weatherReceiver, IntentFilter(WeatherSyncService.ACTION_WEATHER_UPDATED), ContextCompat.RECEIVER_NOT_EXPORTED)
+        ContextCompat.registerReceiver(this, weatherReceiver, IntentFilter(WeatherFeature.ACTION_WEATHER_UPDATED), ContextCompat.RECEIVER_NOT_EXPORTED)
     }
 
     private fun setupInsets() {

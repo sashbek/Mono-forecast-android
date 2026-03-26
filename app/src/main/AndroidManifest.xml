@@ -44,14 +44,17 @@
 
         <activity android:name=".presentation.ble.BluetoothActivity" android:exported="false" />
 
-        <service
-            android:name=".presentation.forecast.WeatherSyncService"
+        <service android:name=".presentation.services.MainService"
+            android:foregroundServiceType="location"
             android:exported="false"/>
 
-        <service
-            android:name=".presentation.location.LocationTrackingService"
-            android:foregroundServiceType="location"
-            android:exported="false" />
+        <receiver android:name=".presentation.services.NotificationActionReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="org.pakicek.monoforecast.ACTION_TOGGLE_GNSS" />
+                <action android:name="org.pakicek.monoforecast.ACTION_REFRESH_WEATHER" />
+                <action android:name="org.pakicek.monoforecast.ACTION_TOGGLE_BLE" />
+            </intent-filter>
+        </receiver>
 
     </application>
 
