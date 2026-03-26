@@ -5,5 +5,5 @@ import org.pakicek.monoforecast.domain.model.dto.WeatherResponseDto
 
 interface IForecastRepository {
     fun getLastKnownWeather(): WeatherResponseDto
-    suspend fun fetchAndSaveNewWeather():  NetworkResult<Unit>
+    suspend fun fetchAndSaveNewWeather(): NetworkResult<Unit>
 }

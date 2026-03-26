@@ -1,4 +1,4 @@
-package org.pakicek.monoforecast.data
+package org.pakicek.monoforecast.data.repositories
 
 import android.annotation.SuppressLint
 import android.content.Context

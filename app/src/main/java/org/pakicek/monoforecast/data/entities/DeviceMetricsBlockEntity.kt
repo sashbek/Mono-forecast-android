@@ -2,7 +2,6 @@ package org.pakicek.monoforecast.data.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
 
 @Entity(
@@ -11,7 +10,7 @@ import androidx.room.PrimaryKey
             entity = LogFrameEntity::class,
             parentColumns = ["id"],
             childColumns = ["logId"],
-            onDelete = CASCADE,
+            onDelete = ForeignKey.CASCADE
         )
     ]
 )

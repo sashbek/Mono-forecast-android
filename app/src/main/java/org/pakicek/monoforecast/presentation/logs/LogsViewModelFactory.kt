@@ -1,19 +1,12 @@
 package org.pakicek.monoforecast.presentation.logs
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import org.pakicek.monoforecast.data.repositories.LogsRepository
+import org.pakicek.monoforecast.domain.repository.ILogsRepository
 
-class LogsViewModelFactory(ctx: Context) : ViewModelProvider.Factory {
-    private val repository: LogsRepository = LogsRepository(ctx)
-
+class LogsViewModelFactory(private val repository: ILogsRepository) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(LogsViewModel::class.java)) {
-            return LogsViewModel(repository) as T
-        }
-
-        throw IllegalArgumentException("Unknown ViewModel class")
+        return LogsViewModel(repository) as T
     }
 }

@@ -1,8 +1,9 @@
 <resources>
-    <string name="app_name">Mono-forecast-android</string>
+    <string name="app_name">Mono Forecast</string>
     <string name="back_button_icon">Go back</string>
-    <string name="main_header">Mono forecast</string>
 
+    <!-- Main -->
+    <string name="main_header">Mono Forecast</string>
     <string name="forecast_button_text">Forecast</string>
     <string name="bluetooth_button_text">Bluetooth</string>
     <string name="location_button_text">Location</string>
@@ -14,64 +15,63 @@
     <string name="location_button_icon">Location</string>
     <string name="logs_button_icon">Logs</string>
 
+    <!-- Settings -->
     <string name="settings_header_text">Settings</string>
     <string name="set_theme">Application theme</string>
     <string name="choose_forecast_api">Choose forecast API</string>
     <string name="choose_activity_type">Choose activity type</string>
     <string name="cache_duration_label">Cache duration</string>
-
-    <string name="logs_header_text">Logs</string>
-    <string name="share_button_text">Share</string>
-    <string name="copy_button_text">Copy</string>
-    <string name="clear_logs_desc">Delete all logs</string>
-    <string name="start_logging_button_text">Start Logging</string>
-    <string name="stop_logging_button_text">Stop Logging</string>
-    <string name="log_file_session_fmt">Session: %1$s</string>
-    <string name="log_file_finished_fmt">Finished: %1$s</string>
-    <string name="log_file_active">Active…</string>
-    <string name="close_details">Close details</string>
-    <string name="log_details_header_fmt">Logs for File ID: %1$d\n\n</string>
-    <string name="log_details_empty">No logs recorded for this session.</string>
     <string name="gnss_interval_label">GPS update interval</string>
 
-    <string name="location_header_text">Location</string>
-    <string name="map_shut_text">Map preview</string>
-    <string name="start_tracking_button_text">Start tracking</string>
-    <string name="stop_tracking_button_text">Stop Tracking</string>
-    <string name="zeroes_timer">00:00:00</string>
-    <string name="center_button_text">Center</string>
-    <string name="clear_track_button_text">Clear</string>
-
+    <!-- Forecast -->
     <string name="forecast_header_text">Forecast</string>
     <string name="current_weather_header_text">Current Weather</string>
     <string name="ride_status_header_text">Ride Status</string>
-    <string name="weather_refresh_button_text">Update via Service</string>
+    <string name="weather_refresh_button_text">Update Weather</string>
 
     <string name="placeholder_temp">Temp: —</string>
     <string name="placeholder_wind">Wind: —</string>
     <string name="placeholder_humidity">Humidity: —</string>
     <string name="placeholder_clouds">Clouds: —</string>
-    <string name="ride_status_refresh_text">Press refresh to check</string>
 
     <string name="fmt_temp">Temp: %1$.1f °C</string>
     <string name="fmt_wind">Wind: %1$.1f m/s</string>
     <string name="fmt_humidity">Humidity: %1$d%%</string>
     <string name="fmt_clouds">Clouds: %1$d%%</string>
 
-    <string name="status_title_unknown">Unknown</string>
+    <string name="ride_status_refresh_text">Loading…</string>
+    <string name="status_title_unknown">Unknown Status</string>
     <string name="status_title_easy">GO RIDE!</string>
     <string name="status_title_moderate">CAREFUL</string>
     <string name="status_title_hard">DANGEROUS</string>
     <string name="status_title_extreme">STAY HOME</string>
-
     <string name="status_desc_easy">Conditions are perfect.</string>
-    <string name="status_desc_extreme">Extreme weather conditions.</string>
-
     <string name="status_desc_warnings">Warnings: %1$s</string>
     <string name="status_desc_reason">Reason: %1$s</string>
-    <string name="logs_placeholder_text">Logs will appear here…</string>
-    <string name="bluetooth_header_text">Connection</string>
+
+    <!-- Logs -->
+    <string name="logs_header_text">Logs</string>
+    <string name="clear_logs_desc">Delete all logs</string>
+    <string name="start_logging_button_text">Start Logging</string>
+    <string name="stop_logging_button_text">Stop Logging</string>
+    <string name="log_file_session_fmt">Session: %1$s</string>
+    <string name="log_file_finished_fmt">Finished: %1$s</string>
+    <string name="log_file_active">Active…</string>
+    <string name="close_details">Close</string>
     <string name="temperature_graph">Temperature Graph</string>
     <string name="logs_raw_data">Raw Data</string>
-    <string name="item_log_icon">item_log_icon</string>
+    <string name="item_log_icon">Log Icon</string>
+
+    <!-- Location -->
+    <string name="location_header_text">Location</string>
+    <string name="start_tracking_button_text">Start Tracking</string>
+    <string name="stop_tracking_button_text">Stop Tracking</string>
+    <string name="zeroes_timer">00:00:00</string>
+    <string name="center_button_text">Center</string>
+    <string name="clear_track_button_text">Clear</string>
+    <string name="notification_tracking_title">Mono Forecast Tracking</string>
+    <string name="notification_tracking_desc">Recording your location…</string>
+
+    <!-- Bluetooth -->
+    <string name="bluetooth_header_text">Connection</string>
 </resources>

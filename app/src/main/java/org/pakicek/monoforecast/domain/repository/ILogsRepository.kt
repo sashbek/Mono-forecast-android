@@ -3,6 +3,7 @@ package org.pakicek.monoforecast.domain.repository
 import kotlinx.coroutines.flow.Flow
 import org.pakicek.monoforecast.data.entities.FileEntity
 import org.pakicek.monoforecast.data.entities.LogWithDetails
+import org.pakicek.monoforecast.domain.model.dto.WeatherResponseDto
 
 interface ILogsRepository {
     suspend fun isLoggingActive(): Boolean
@@ -16,4 +17,5 @@ interface ILogsRepository {
     suspend fun clearAll()
     suspend fun insertSetting(setting: String, value: String)
     suspend fun saveLocationLog(lat: Double, lon: Double)
+    suspend fun saveWeatherLog(dto: WeatherResponseDto)
 }

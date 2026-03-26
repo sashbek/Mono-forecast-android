@@ -1,22 +1,19 @@
 package org.pakicek.monoforecast.data.repositories
 
-import android.content.Context
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
-import org.pakicek.monoforecast.data.dao.LogsDb
-import org.pakicek.monoforecast.data.entities.LocationBlockEntity
-import org.pakicek.monoforecast.domain.model.dto.WeatherResponseDto
-import org.pakicek.monoforecast.domain.model.dto.enums.LogType
+import org.pakicek.monoforecast.data.dao.LogsDao
 import org.pakicek.monoforecast.data.entities.FileEntity
+import org.pakicek.monoforecast.data.entities.LocationBlockEntity
 import org.pakicek.monoforecast.data.entities.LogFrameEntity
 import org.pakicek.monoforecast.data.entities.LogWithDetails
 import org.pakicek.monoforecast.data.entities.SettingsBlockEntity
 import org.pakicek.monoforecast.data.entities.WeatherBlockEntity
+import org.pakicek.monoforecast.domain.model.dto.WeatherResponseDto
+import org.pakicek.monoforecast.domain.model.dto.enums.LogType
 import org.pakicek.monoforecast.domain.repository.ILogsRepository
 
-class LogsRepository(context: Context): ILogsRepository{
-
-    private val dao = LogsDb.getInstance(context).logsDao()
+class LogsRepository(private val dao: LogsDao) : ILogsRepository {
 
     override suspend fun isLoggingActive(): Boolean {
         val last = dao.getLastFile() ?: return false
@@ -38,39 +35,26 @@ class LogsRepository(context: Context): ILogsRepository{
     override suspend fun saveLocationLog(lat: Double, lon: Double) {
         if (!isLoggingActive()) return
 
-        val logFrame = LogFrameEntity(
-            type = LogType.LOCATION,
-            message = ""
-        )
-
-        val locationBlock = LocationBlockEntity(
-            logId = 0,
-            latitude = lat,
-            longitude = lon
-        )
-
+        val logFrame = LogFrameEntity(type = LogType.LOCATION, message = "")
+        val locationBlock = LocationBlockEntity(logId = 0, latitude = lat, longitude = lon)
         dao.insertLocationLog(logFrame, locationBlock)
     }
 
-    suspend fun saveWeatherLog(dto: WeatherResponseDto) {
+    override suspend fun saveWeatherLog(dto: WeatherResponseDto) {
         if (!isLoggingActive()) return
 
-        val logFrame = LogFrameEntity(
-            type = LogType.WEATHER,
-            message = ""
-        )
-
+        val logFrame = LogFrameEntity(type = LogType.WEATHER, message = "")
         val weatherBlock = WeatherBlockEntity(
             logId = 0,
             tempC = dto.main.temp,
+            visibilityMeters = 10000,
             windSpeedMs = dto.wind.speed,
             windDir = dto.wind.direction,
-            rainMm = 0.0,
-            visibilityMeters = 10000
+            rainMm = 0.0
         )
-
         dao.insertWeatherLog(logFrame, weatherBlock)
     }
+
     override suspend fun startNewFile() {
         val file = FileEntity(start = System.currentTimeMillis())
         dao.insertFile(file)

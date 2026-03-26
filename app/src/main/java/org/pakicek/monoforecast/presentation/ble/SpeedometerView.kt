@@ -2,14 +2,16 @@ package org.pakicek.monoforecast.presentation.ble
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.toColorInt
 import org.pakicek.monoforecast.R
 import kotlin.math.min
+import androidx.core.graphics.toColorInt
 
 class SpeedometerView @JvmOverloads constructor(
     context: Context,
@@ -20,10 +22,22 @@ class SpeedometerView @JvmOverloads constructor(
     private var maxSpeed = 60f
     private var currentSpeed = 0f
 
-    // Цвета
     private val arcColor = ContextCompat.getColor(context, R.color.purple_200)
     private val bgColor = "#404040".toColorInt()
-    private val textColor = ContextCompat.getColor(context, android.R.color.white)
+
+    private val textColor: Int by lazy {
+        val typedValue = TypedValue()
+        val theme = context.theme
+        if (theme.resolveAttribute(android.R.attr.textColor, typedValue, true)) {
+            if (typedValue.resourceId != 0) {
+                ContextCompat.getColor(context, typedValue.resourceId)
+            } else {
+                typedValue.data
+            }
+        } else {
+            Color.WHITE
+        }
+    }
 
     private val paint = Paint().apply {
         isAntiAlias = true
@@ -31,10 +45,12 @@ class SpeedometerView @JvmOverloads constructor(
         style = Paint.Style.STROKE
     }
 
-    private val textPaint = Paint().apply {
-        isAntiAlias = true
-        color = textColor
-        textAlign = Paint.Align.CENTER
+    private val textPaint by lazy {
+        Paint().apply {
+            isAntiAlias = true
+            color = textColor
+            textAlign = Paint.Align.CENTER
+        }
     }
 
     private val rect = RectF()

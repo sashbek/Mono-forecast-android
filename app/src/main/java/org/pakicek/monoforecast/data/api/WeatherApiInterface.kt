@@ -7,7 +7,6 @@ import retrofit2.http.Header
 import retrofit2.http.Query
 
 interface WeatherApiInterface {
-    // Docs: https://api-ninjas.com/api/weather
     @GET("v1/weather")
     suspend fun getWeather(
         @Query("lat") lat: Double,

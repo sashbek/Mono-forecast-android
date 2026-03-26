@@ -1,16 +1,15 @@
 package org.pakicek.monoforecast.presentation.location
 
 import android.Manifest
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.IBinder
 import android.os.Looper
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -22,52 +21,39 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import org.pakicek.monoforecast.MonoForecastApp
 import org.pakicek.monoforecast.R
-import org.pakicek.monoforecast.data.repositories.LogsRepository
-import org.pakicek.monoforecast.data.repositories.SettingsRepository
-import org.pakicek.monoforecast.domain.repository.ILogsRepository
-import org.pakicek.monoforecast.domain.repository.ISettingsRepository
 
 class LocationTrackingService : Service() {
-
-    private val serviceScope = CoroutineScope(Dispatchers.IO + Job())
-    private val repository: ILogsRepository by lazy { LogsRepository(applicationContext) }
-
-    private val settingsRepository: ISettingsRepository by lazy { SettingsRepository(applicationContext) }
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var locationCallback: LocationCallback
+    private val scope = CoroutineScope(Dispatchers.IO)
+    private lateinit var client: FusedLocationProviderClient
+    private lateinit var callback: LocationCallback
 
     companion object {
-        const val ACTION_START = "ACTION_START"
-        const val ACTION_STOP = "ACTION_STOP"
-        const val ACTION_LOCATION_UPDATE = "org.pakicek.monoforecast.LOCATION_UPDATE"
+        const val ACTION_START = "START"
+        const val ACTION_STOP = "STOP"
+        const val ACTION_UPDATE = "UPDATE"
+        const val ACTION_STOPPED = "STOPPED"
         private const val NOTIFICATION_ID = 123
-        private const val CHANNEL_ID = "gnss_tracking_channel"
-        private const val TAG = "GNSS_Service"
+        private const val CHANNEL_ID = "GPS_TRACKING"
     }
 
     override fun onCreate() {
         super.onCreate()
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        client = LocationServices.getFusedLocationProviderClient(this)
+        callback = object : LocationCallback() {
+            override fun onLocationResult(res: LocationResult) {
+                res.lastLocation?.let {
+                    val repo = (application as MonoForecastApp).container.logsRepository
+                    scope.launch { repo.saveLocationLog(it.latitude, it.longitude) }
 
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                for (location in locationResult.locations) {
-                    Log.d(TAG, "Location: ${location.latitude}, ${location.longitude}")
-
-                    serviceScope.launch {
-                        repository.saveLocationLog(location.latitude, location.longitude)
-                    }
-
-                    val intent = Intent(ACTION_LOCATION_UPDATE).apply {
+                    sendBroadcast(Intent(ACTION_UPDATE).apply {
                         setPackage(packageName)
-                        putExtra("lat", location.latitude)
-                        putExtra("lon", location.longitude)
-                    }
-                    sendBroadcast(intent)
+                        putExtra("lat", it.latitude)
+                        putExtra("lon", it.longitude)
+                    })
                 }
             }
         }
@@ -75,73 +61,65 @@ class LocationTrackingService : Service() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when (intent?.action) {
-            ACTION_START -> startTracking()
-            ACTION_STOP -> stopTracking()
-        }
-        return START_NOT_STICKY
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun startTracking() {
-        settingsRepository.setTrackingState(true)
-        if (settingsRepository.getTrackingStartTime() == 0L) {
-            settingsRepository.setTrackingStartTime(System.currentTimeMillis())
+        if (intent?.action == ACTION_STOP) {
+            stopTracking()
+            return START_NOT_STICKY
         }
 
-        val interval = settingsRepository.getGnssInterval().ms
-        Log.d(TAG, "Requested Interval: $interval ms")
+        startForeground(NOTIFICATION_ID, buildNotification())
 
-        createNotificationChannel()
-        val notification = buildNotification()
-        startForeground(NOTIFICATION_ID, notification)
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            val settings = (application as MonoForecastApp).container.settingsRepository
+            val interval = settings.getGnssInterval().ms
 
-        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, interval)
-            .setMinUpdateIntervalMillis(interval)
-            .setMaxUpdateDelayMillis(interval)
-            .build()
+            val req = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, interval)
+                .setMinUpdateIntervalMillis(interval)
+                .build()
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
+            client.requestLocationUpdates(req, callback, Looper.getMainLooper())
+        } else {
             stopSelf()
-            return
         }
-
-        fusedLocationClient.removeLocationUpdates(locationCallback)
-
-        fusedLocationClient.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.getMainLooper()
-        )
+        return START_STICKY
     }
 
     private fun stopTracking() {
-        settingsRepository.setTrackingState(false)
-        settingsRepository.setTrackingStartTime(0L)
+        client.removeLocationUpdates(callback)
 
-        fusedLocationClient.removeLocationUpdates(locationCallback)
+        val settings = (application as MonoForecastApp).container.settingsRepository
+        settings.setTrackingState(false)
+
+        sendBroadcast(Intent(ACTION_STOPPED).apply {
+            setPackage(packageName)
+        })
+
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun createNotificationChannel() {
-        val channel = NotificationChannel(
-            CHANNEL_ID,
-            "GNSS Tracking",
-            NotificationManager.IMPORTANCE_LOW
-        )
-        val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        manager.createNotificationChannel(channel)
-    }
+    private fun buildNotification(): android.app.Notification {
+        val channel = NotificationChannel(CHANNEL_ID, "Tracking", NotificationManager.IMPORTANCE_LOW)
+        getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
 
-    private fun buildNotification(): Notification {
+        val contentIntent = Intent(this, LocationActivity::class.java)
+        val contentPendingIntent = PendingIntent.getActivity(
+            this, 0, contentIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val stopIntent = Intent(this, LocationTrackingService::class.java).apply {
+            action = ACTION_STOP
+        }
+        val stopPendingIntent = PendingIntent.getService(
+            this, 1, stopIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
+        )
+
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Tracking Active")
-            .setContentText("Recording route...")
             .setSmallIcon(R.drawable.ic_location_button)
+            .setContentTitle(getString(R.string.notification_tracking_title))
+            .setContentText(getString(R.string.notification_tracking_desc))
+            .setContentIntent(contentPendingIntent)
+            .addAction(R.drawable.ic_close_button, getString(R.string.stop_tracking_button_text), stopPendingIntent)
             .setOngoing(true)
             .build()
     }
@@ -149,8 +127,7 @@ class LocationTrackingService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onDestroy() {
+        scope.cancel()
         super.onDestroy()
-        serviceScope.cancel()
-        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 }
