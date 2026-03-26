@@ -54,17 +54,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".presentation.forecast.ForecastActivity" android:exported="false" />
-        <activity android:name=".presentation.logs.LogsActivity" android:exported="false" />
-        <activity android:name=".presentation.settings.SettingsActivity" android:exported="false" />
-
-        <activity
-            android:name=".presentation.location.LocationActivity"
-            android:launchMode="singleTop"
-            android:exported="false" />
-
-        <activity android:name=".presentation.ble.BluetoothActivity" android:exported="false" />
-
         <service android:name=".presentation.services.MainService"
             android:foregroundServiceType="location"
             android:exported="false"/>
@@ -78,7 +67,7 @@
         </receiver>
 
         <service
-            android:name=".presentation.ble.connection.service.BLEService"
+            android:name=".data.features.ble.BleService"
             android:enabled="true"
             android:exported="false" />
 

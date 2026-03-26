@@ -1,9 +1,20 @@
-package org.pakicek.monoforecast.presentation.ble.connection.service
+package org.pakicek.monoforecast.data.features.ble
 
 import android.Manifest
 import android.app.Service
-import android.bluetooth.*
-import android.bluetooth.le.*
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattCallback
+import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothGattDescriptor
+import android.bluetooth.BluetoothManager
+import android.bluetooth.BluetoothProfile
+import android.bluetooth.le.BluetoothLeScanner
+import android.bluetooth.le.ScanCallback
+import android.bluetooth.le.ScanFilter
+import android.bluetooth.le.ScanResult
+import android.bluetooth.le.ScanSettings
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -16,13 +27,18 @@ import android.util.Log
 import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import org.pakicek.monoforecast.presentation.ble.connection.models.WheelDevice
-import org.pakicek.monoforecast.presentation.ble.connection.adapters.TestWheelAdapter
-import org.pakicek.monoforecast.presentation.ble.connection.adapters.WheelProtocolAdapter
-import org.pakicek.monoforecast.presentation.ble.connection.models.WheelMetrics
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import org.pakicek.monoforecast.data.features.ble.adapters.TestWheelAdapter
+import org.pakicek.monoforecast.data.features.ble.adapters.WheelProtocolAdapter
+import org.pakicek.monoforecast.domain.model.dto.ble.WheelDevice
+import org.pakicek.monoforecast.domain.model.dto.ble.WheelMetrics
+import java.util.UUID
 
-class BLEService : Service() {
+class BleService : Service() {
 
     companion object {
         const val TAG = "BLEService"
@@ -46,6 +62,7 @@ class BLEService : Service() {
     private var bluetoothLeScanner: BluetoothLeScanner? = null
     private var bluetoothGatt: BluetoothGatt? = null
     private var isScanning = false
+    private var isConnectedFlag = false  // Добавляем флаг подключения
 
     private var currentDevice: WheelDevice? = null
     private var currentAdapter: WheelProtocolAdapter? = null
@@ -82,7 +99,7 @@ class BLEService : Service() {
     }
 
     inner class LocalBinder : Binder() {
-        fun getService(): BLEService = this@BLEService
+        fun getService(): BleService = this@BleService
     }
 
     override fun onCreate() {
@@ -90,6 +107,7 @@ class BLEService : Service() {
         localBroadcastManager = LocalBroadcastManager.getInstance(this)
         initBluetooth()
         registerBluetoothStateReceiver()
+        Log.d(TAG, "BleService created")
     }
 
     private fun registerBluetoothStateReceiver() {
@@ -98,12 +116,16 @@ class BLEService : Service() {
     }
 
     private fun initBluetooth() {
-        val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        val bluetoothManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothAdapter = bluetoothManager.adapter
         bluetoothLeScanner = bluetoothAdapter?.bluetoothLeScanner
+        Log.d(TAG, "Bluetooth initialized, enabled: ${bluetoothAdapter?.isEnabled}")
     }
 
     fun isBluetoothEnabled(): Boolean = bluetoothAdapter?.isEnabled == true
+
+    // Исправленный метод isConnected()
+    fun isConnected(): Boolean = isConnectedFlag
 
     private fun hasScanPermission(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -122,12 +144,17 @@ class BLEService : Service() {
     }
 
     fun startScan() {
+        Log.d(TAG, "startScan called, isBluetoothEnabled: ${isBluetoothEnabled()}, isScanning: $isScanning")
+
         if (!isBluetoothEnabled()) {
             sendError("Bluetooth is disabled")
             return
         }
 
-        if (isScanning) return
+        if (isScanning) {
+            Log.d(TAG, "Already scanning")
+            return
+        }
 
         if (!hasScanPermission()) {
             sendError("Bluetooth scan permission not granted")
@@ -155,6 +182,8 @@ class BLEService : Service() {
     }
 
     fun stopScan() {
+        Log.d(TAG, "stopScan called, isScanning: $isScanning")
+
         if (!isScanning) return
 
         if (!hasScanPermission()) {
@@ -208,6 +237,13 @@ class BLEService : Service() {
 
         override fun onScanFailed(errorCode: Int) {
             Log.e(TAG, "onScanFailed! errorCode: $errorCode")
+            when (errorCode) {
+                SCAN_FAILED_ALREADY_STARTED -> Log.e(TAG, "Scan failed: already started")
+                SCAN_FAILED_APPLICATION_REGISTRATION_FAILED -> Log.e(TAG, "Scan failed: application registration failed")
+                SCAN_FAILED_FEATURE_UNSUPPORTED -> Log.e(TAG, "Scan failed: feature unsupported")
+                SCAN_FAILED_INTERNAL_ERROR -> Log.e(TAG, "Scan failed: internal error")
+                else -> Log.e(TAG, "Scan failed: unknown error")
+            }
             sendError("Scan failed with error: $errorCode")
             isScanning = false
         }
@@ -272,6 +308,8 @@ class BLEService : Service() {
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun connectToDevice(device: WheelDevice) {
+        Log.d(TAG, "connectToDevice called: ${device.name}")
+
         if (device.bluetoothDevice == null) {
             sendError("Invalid device")
             return
@@ -302,6 +340,7 @@ class BLEService : Service() {
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun disconnect() {
+        Log.d(TAG, "disconnect called")
         try {
             if (bluetoothGatt != null) {
                 if (hasConnectPermission()) {
@@ -312,6 +351,7 @@ class BLEService : Service() {
             }
             currentDevice = null
             currentAdapter = null
+            isConnectedFlag = false
             localBroadcastManager.sendBroadcast(Intent(ACTION_DISCONNECTED))
             Log.d(TAG, "Disconnected")
         } catch (e: Exception) {
@@ -322,9 +362,12 @@ class BLEService : Service() {
     private val gattCallback = object : BluetoothGattCallback() {
         @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
+            Log.d(TAG, "onConnectionStateChange - status: $status, newState: $newState")
+
             when (newState) {
                 BluetoothProfile.STATE_CONNECTED -> {
                     Log.d(TAG, "Connected to GATT server")
+                    isConnectedFlag = true
                     localBroadcastManager.sendBroadcast(Intent(ACTION_CONNECTED))
 
                     if (hasConnectPermission()) {
@@ -337,13 +380,21 @@ class BLEService : Service() {
                 }
                 BluetoothProfile.STATE_DISCONNECTED -> {
                     Log.d(TAG, "Disconnected from GATT server")
+                    isConnectedFlag = false
                     disconnect()
+                }
+                BluetoothProfile.STATE_CONNECTING -> {
+                    Log.d(TAG, "Connecting to GATT server...")
+                }
+                BluetoothProfile.STATE_DISCONNECTING -> {
+                    Log.d(TAG, "Disconnecting from GATT server...")
                 }
             }
         }
 
         @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
         override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
+            Log.d(TAG, "onServicesDiscovered - status: $status")
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 Log.d(TAG, "Services discovered")
                 setupNotifications()
@@ -415,15 +466,15 @@ class BLEService : Service() {
         bluetoothGatt?.let { gatt ->
             try {
                 val possibleServiceUuids = listOf(
-                    java.util.UUID.fromString("0000ffe0-0000-1000-8000-00805f9b34fb"),
-                    java.util.UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e"),
-                    java.util.UUID.fromString("0000fff0-0000-1000-8000-00805f9b34fb")
+                    UUID.fromString("0000ffe0-0000-1000-8000-00805f9b34fb"),
+                    UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e"),
+                    UUID.fromString("0000fff0-0000-1000-8000-00805f9b34fb")
                 )
 
                 val possibleCharUuids = listOf(
-                    java.util.UUID.fromString("0000ffe1-0000-1000-8000-00805f9b34fb"),
-                    java.util.UUID.fromString("6e400003-b5a3-f393-e0a9-e50e24dcca9e"),
-                    java.util.UUID.fromString("0000fff1-0000-1000-8000-00805f9b34fb")
+                    UUID.fromString("0000ffe1-0000-1000-8000-00805f9b34fb"),
+                    UUID.fromString("6e400003-b5a3-f393-e0a9-e50e24dcca9e"),
+                    UUID.fromString("0000fff1-0000-1000-8000-00805f9b34fb")
                 )
 
                 var notificationSetup = false
@@ -438,7 +489,7 @@ class BLEService : Service() {
                                 if (properties and BluetoothGattCharacteristic.PROPERTY_NOTIFY != 0) {
                                     gatt.setCharacteristicNotification(char, true)
 
-                                    val descriptor = char.getDescriptor(java.util.UUID.fromString("00002902-0000-1000-8000-00805f9b34fb"))
+                                    val descriptor = char.getDescriptor(UUID.fromString("00002902-0000-1000-8000-00805f9b34fb"))
                                     descriptor?.let {
                                         it.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
                                         gatt.writeDescriptor(it)
@@ -498,6 +549,7 @@ class BLEService : Service() {
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     override fun onDestroy() {
+        Log.d(TAG, "BleService onDestroy")
         super.onDestroy()
         disconnect()
         stopScan()

@@ -1,15 +1,19 @@
 package org.pakicek.monoforecast.presentation.ble
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+import org.pakicek.monoforecast.data.features.BleFeature
 import org.pakicek.monoforecast.domain.model.dto.VehicleMetric
-import org.pakicek.monoforecast.presentation.ble.connection.models.WheelDevice
-import org.pakicek.monoforecast.presentation.ble.connection.models.WheelMetrics
-import org.pakicek.monoforecast.presentation.ble.connection.service.BLEService
+import org.pakicek.monoforecast.domain.model.dto.ble.WheelMetrics
+import org.pakicek.monoforecast.presentation.services.MainService
+import org.pakicek.monoforecast.domain.model.dto.ble.WheelDevice
 
 class BluetoothViewModel : ViewModel() {
 
@@ -17,154 +21,176 @@ class BluetoothViewModel : ViewModel() {
         private const val TAG = "BluetoothViewModel"
     }
 
-    private var bleService: BLEService? = null
-
-    // LiveData для UI
-    private val _currentSpeed = MutableLiveData<Float>()
+    private val _currentSpeed = MutableLiveData(0f)
     val currentSpeed: LiveData<Float> = _currentSpeed
 
     private val _metrics = MutableLiveData<List<VehicleMetric>>()
     val metrics: LiveData<List<VehicleMetric>> = _metrics
 
-    private val _connectionStatus = MutableLiveData<String>()
+    private val _connectionStatus = MutableLiveData("Disconnected")
     val connectionStatus: LiveData<String> = _connectionStatus
 
-    private val _devices = MutableLiveData<List<WheelDevice>>()
+    private val _devices = MutableLiveData<List<WheelDevice>>(emptyList())
     val devices: LiveData<List<WheelDevice>> = _devices
 
-    private val _isScanning = MutableLiveData<Boolean>()
+    private val _isScanning = MutableLiveData(false)
     val isScanning: LiveData<Boolean> = _isScanning
 
-    private val _isConnected = MutableLiveData<Boolean>()
+    private val _isConnected = MutableLiveData(false)
     val isConnected: LiveData<Boolean> = _isConnected
 
-    private val devicesList = mutableListOf<WheelDevice>()
+    private var bleFeature: BleFeature? = null
 
-    fun setBLEService(service: BLEService?) {
-        bleService = service
+    init {
+        // Подписываемся на данные из MainService
+        subscribeToBleData()
     }
 
-    // Прямые методы для обновления из Activity
-    fun addDeviceDirectly(device: WheelDevice) {
-        Log.d(TAG, "addDeviceDirectly called for: ${device.name}")
-        addDevice(device)
-    }
+    private fun subscribeToBleData() {
+        viewModelScope.launch {
+            // Подписываемся на найденные устройства
+            MainService.deviceFound?.collect { device ->
+                Log.d(TAG, "Device found: ${device.name}")
+                addDeviceDirectly(device)
+            }
+        }
 
-    fun updateMetricsDirectly(metrics: WheelMetrics) {
-        Log.d(TAG, "updateMetricsDirectly called")
-        updateMetrics(metrics)
-    }
+        viewModelScope.launch {
+            // Подписываемся на обновления метрик
+            MainService.metricsUpdate?.collect { metrics ->
+                Log.d(TAG, "Metrics update received")
+                updateMetricsDirectly(metrics)
+            }
+        }
 
-    fun onScanStarted() {
-        Log.d(TAG, "onScanStarted called")
-        _isScanning.postValue(true)
-        _connectionStatus.postValue("Scanning for devices...")
-        devicesList.clear()
-        _devices.postValue(emptyList())
-    }
-
-    fun onScanStopped() {
-        Log.d(TAG, "onScanStopped called")
-        _isScanning.postValue(false)
-        _connectionStatus.postValue("Scan stopped")
-    }
-
-    fun onConnected() {
-        Log.d(TAG, "onConnected called")
-        _isConnected.postValue(true)
-        _connectionStatus.postValue("Connected to device")
-    }
-
-    fun onDisconnected() {
-        Log.d(TAG, "onDisconnected called")
-        _isConnected.postValue(false)
-        _connectionStatus.postValue("Disconnected")
-        clearMetrics()
-    }
-
-    fun onError(error: String?) {
-        Log.d(TAG, "onError called: $error")
-        _connectionStatus.postValue("Error: $error")
-    }
-
-    private fun addDevice(device: WheelDevice) {
-        Log.d(TAG, "addDevice called for: ${device.name} (${device.address})")
-        if (!devicesList.any { it.address == device.address }) {
-            devicesList.add(device)
-            _devices.postValue(devicesList.toList())
-            Log.d(TAG, "Device added, total devices: ${devicesList.size}")
-            Log.d(TAG, "Devices list: ${devicesList.map { it.name }}")
-        } else {
-            Log.d(TAG, "Device already in list")
+        viewModelScope.launch {
+            // Подписываемся на ошибки
+            MainService.error?.collect { error ->
+                Log.e(TAG, "BLE error: $error")
+                onError(error)
+            }
         }
     }
 
-    private fun updateMetrics(metrics: WheelMetrics) {
-        _currentSpeed.postValue(metrics.speed)
-
-        val vehicleMetrics = listOf(
-            VehicleMetric("Speed", "${String.format("%.1f", metrics.speed)} km/h", "km/h", "⚡"),
-            VehicleMetric("Battery", "${metrics.batteryLevel}%", "%", "🔋"),
-            VehicleMetric("Voltage", "${String.format("%.1f", metrics.voltage)} V", "V", "⚡"),
-            VehicleMetric("Current", "${String.format("%.1f", metrics.current)} A", "A", "💨"),
-            VehicleMetric("Temperature", "${String.format("%.1f", metrics.temperature)}°C", "°C", "🌡️"),
-            VehicleMetric("Distance", "${String.format("%.1f", metrics.distance)} km", "km", "📏"),
-            VehicleMetric("Odometer", "${String.format("%.1f", metrics.odometer)} km", "km", "📊"),
-            VehicleMetric("Error Code", "${metrics.errorCode}", "", "⚠️")
-        )
-
-        _metrics.postValue(vehicleMetrics)
-        _connectionStatus.postValue("Receiving data")
-    }
-
-    private fun clearMetrics() {
-        val emptyMetrics = listOf(
-            VehicleMetric("Speed", "-- km/h", "km/h", "⚡"),
-            VehicleMetric("Battery", "--%", "%", "🔋"),
-            VehicleMetric("Voltage", "-- V", "V", "⚡"),
-            VehicleMetric("Current", "-- A", "A", "💨"),
-            VehicleMetric("Temperature", "--°C", "°C", "🌡️"),
-            VehicleMetric("Distance", "-- km", "km", "📏"),
-            VehicleMetric("Odometer", "-- km", "km", "📊"),
-            VehicleMetric("Error Code", "--", "", "⚠️")
-        )
-        _metrics.postValue(emptyMetrics)
-        _currentSpeed.postValue(0f)
+    fun setBLEService(bleFeature: BleFeature?) {
+        this.bleFeature = bleFeature
     }
 
     fun startScan() {
         Log.d(TAG, "startScan called")
-        bleService?.startScan()
+        bleFeature?.startScan()
+        _isScanning.value = true
+        _connectionStatus.value = "Scanning for devices..."
     }
 
     fun stopScan() {
         Log.d(TAG, "stopScan called")
-        bleService?.stopScan()
+        bleFeature?.stopScan()
+        _isScanning.value = false
+        _connectionStatus.value = "Scan stopped"
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun connectToDevice(device: WheelDevice) {
         Log.d(TAG, "connectToDevice called: ${device.name}")
-        bleService?.connectToDevice(device)
+        bleFeature?.connectToDevice(device)
+        _connectionStatus.value = "Connecting to ${device.name}..."
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun disconnect() {
         Log.d(TAG, "disconnect called")
-        bleService?.disconnect()
+        bleFeature?.disconnect()
+        _connectionStatus.value = "Disconnecting..."
     }
 
-    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+    fun addDeviceDirectly(device: WheelDevice) {
+        Log.d(TAG, "addDeviceDirectly: ${device.name}")
+        val currentList = _devices.value?.toMutableList() ?: mutableListOf()
+
+        // Проверяем, есть ли уже такое устройство
+        val existingIndex = currentList.indexOfFirst { it.address == device.address }
+        if (existingIndex != -1) {
+            // Обновляем существующее устройство (RSSI может измениться)
+            currentList[existingIndex] = device
+        } else {
+            // Добавляем новое устройство
+            currentList.add(device)
+        }
+
+        _devices.value = currentList
+    }
+
+    fun updateMetricsDirectly(metrics: WheelMetrics) {
+        Log.d(TAG, "updateMetricsDirectly called")
+
+        // Конвертируем WheelMetrics в список VehicleMetric для отображения
+        val vehicleMetrics = mutableListOf<VehicleMetric>()
+
+        metrics.speed?.let {
+            vehicleMetrics.add(VehicleMetric("SPEED", String.format("%.1f", it), "km/h"))
+            _currentSpeed.value = it
+        }
+
+        metrics.voltage?.let {
+            vehicleMetrics.add(VehicleMetric("VOLTAGE", String.format("%.1f", it), "V"))
+        }
+
+        metrics.current?.let {
+            vehicleMetrics.add(VehicleMetric("CURRENT", String.format("%.1f", it), "A"))
+        }
+
+        metrics.distance?.let {
+            vehicleMetrics.add(VehicleMetric("DISTANCE", String.format("%.1f", it), "km"))
+        }
+
+        metrics.temperature?.let {
+            vehicleMetrics.add(VehicleMetric("TEMP", it.toString(), "°C"))
+        }
+
+        metrics.batteryLevel?.let {
+            vehicleMetrics.add(VehicleMetric("BATTERY", it.toString(), "%"))
+        }
+
+        _metrics.value = vehicleMetrics
+    }
+
+    fun onScanStarted() {
+        Log.d(TAG, "onScanStarted called")
+        _isScanning.value = true
+        _connectionStatus.value = "Scanning for devices..."
+    }
+
+    fun onScanStopped() {
+        Log.d(TAG, "onScanStopped called")
+        _isScanning.value = false
+        if (_isConnected.value != true) {
+            _connectionStatus.value = "Scan stopped"
+        }
+    }
+
+    fun onConnected() {
+        Log.d(TAG, "onConnected called")
+        _isConnected.value = true
+        _isScanning.value = false
+        _connectionStatus.value = "Connected"
+    }
+
+    fun onDisconnected() {
+        Log.d(TAG, "onDisconnected called")
+        _isConnected.value = false
+        _connectionStatus.value = "Disconnected"
+        _currentSpeed.value = 0f
+        _metrics.value = emptyList()
+    }
+
+    fun onError(message: String?) {
+        Log.e(TAG, "onError: $message")
+        _connectionStatus.value = "Error: ${message ?: "Unknown error"}"
+    }
+
     fun cleanup() {
         Log.d(TAG, "cleanup called")
-        disconnect()
-        stopScan()
-    }
-
-    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
-    override fun onCleared() {
-        super.onCleared()
-        Log.d(TAG, "onCleared")
-        cleanup()
+        bleFeature = null
     }
 }

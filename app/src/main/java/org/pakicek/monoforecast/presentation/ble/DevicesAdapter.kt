@@ -3,7 +3,7 @@ package org.pakicek.monoforecast.presentation.ble
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import org.pakicek.monoforecast.presentation.ble.connection.models.WheelDevice
+import org.pakicek.monoforecast.domain.model.dto.ble.WheelDevice
 import org.pakicek.monoforecast.databinding.ItemDeviceBinding
 
 class DevicesAdapter(

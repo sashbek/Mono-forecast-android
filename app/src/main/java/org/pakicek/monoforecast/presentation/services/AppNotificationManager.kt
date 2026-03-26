@@ -55,6 +55,7 @@ class AppNotificationManager(private val context: Context) {
             BleState.DISCONNECTED -> R.drawable.ic_bluetooth_disabled to ACTION_TOGGLE_BLE
             BleState.CONNECTED -> R.drawable.ic_bluetooth_connected to ACTION_TOGGLE_BLE
             BleState.CONNECTING -> R.drawable.ic_sync to ACTION_TOGGLE_BLE
+            BleState.SCANNING -> R.drawable.ic_bluetooth_disabled to ACTION_TOGGLE_BLE
         }
         remoteViews.setImageViewResource(R.id.btn_ble, bleIcon)
         remoteViews.setOnClickPendingIntent(R.id.btn_ble, createActionIntent(bleAction))

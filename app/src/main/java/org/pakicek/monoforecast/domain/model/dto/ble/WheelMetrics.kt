@@ -1,4 +1,4 @@
-package org.pakicek.monoforecast.presentation.ble.connection.models
+package org.pakicek.monoforecast.domain.model.dto.ble
 
 import java.util.Date
 import android.os.Parcel

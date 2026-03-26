@@ -24,6 +24,11 @@ class MainService : Service() {
     companion object {
         var isRunning = false
         var instance: MainService? = null
+
+        val deviceFound get() = instance?.bleFeature?.deviceFound
+        val metricsUpdate get() = instance?.bleFeature?.metricsUpdate
+        val error get() = instance?.bleFeature?.error
+        val connectionState get() = instance?.bleFeature?.connectionState
     }
 
     override fun onCreate() {
@@ -36,7 +41,7 @@ class MainService : Service() {
 
         gnssFeature = GnssFeature(this, container.settingsRepository, container.logsRepository)
         weatherFeature = WeatherFeature(this, container.forecastRepository)
-        bleFeature = BleFeature()
+        bleFeature = BleFeature(this)
 
         observeStates()
 

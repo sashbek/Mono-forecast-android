@@ -9,5 +9,7 @@ enum class GnssState {
 enum class BleState {
     DISCONNECTED,
     CONNECTING,
-    CONNECTED
+    CONNECTED,
+
+    SCANNING
 }

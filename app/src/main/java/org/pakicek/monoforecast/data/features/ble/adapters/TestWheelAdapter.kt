@@ -1,6 +1,6 @@
-package org.pakicek.monoforecast.presentation.ble.connection.adapters
+package org.pakicek.monoforecast.data.features.ble.adapters
 
-import org.pakicek.monoforecast.presentation.ble.connection.models.WheelMetrics
+import org.pakicek.monoforecast.domain.model.dto.ble.WheelMetrics
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 

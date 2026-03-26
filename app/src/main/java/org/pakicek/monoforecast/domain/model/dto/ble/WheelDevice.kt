@@ -1,4 +1,4 @@
-package org.pakicek.monoforecast.presentation.ble.connection.models
+package org.pakicek.monoforecast.domain.model.dto.ble
 
 import android.bluetooth.BluetoothDevice
 import android.os.Parcel
