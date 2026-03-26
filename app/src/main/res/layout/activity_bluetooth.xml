@@ -48,27 +48,115 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header">
 
-        <TextView
-            android:id="@+id/tvStatus"
+        <!-- Панель статуса и управления -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#20000000"
-            android:gravity="center"
-            android:padding="8dp"
-            android:text="Disconnected"
-            android:textColor="?attr/colorAccent"
-            android:textStyle="bold" />
+            android:orientation="vertical"
+            android:background="#20000000">
+
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Disconnected"
+                android:textColor="?attr/colorAccent"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="8dp">
+
+                <Button
+                    android:id="@+id/btnScan"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="4dp"
+                    android:text="Scan"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#4CAF50"
+                    android:enabled="false" />
+
+                <Button
+                    android:id="@+id/btnStop"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:text="Stop"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#F44336"
+                    android:enabled="false" />
+
+                <Button
+                    android:id="@+id/btnDisconnect"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="4dp"
+                    android:text="Disconnect"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#FF9800"
+                    android:enabled="false" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Список найденных устройств -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="#30000000">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:text="Found Devices"
+                    android:textColor="?attr/colorAccent"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:background="#20000000" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerDevices"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxHeight="200dp"
+                    android:padding="4dp"
+                    tools:listitem="@layout/item_device" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
 
         <org.pakicek.monoforecast.presentation.ble.SpeedometerView
             android:id="@+id/speedometer"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="0dp"
+            android:layout_weight="2"
             android:layout_margin="16dp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerMetrics"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
             android:padding="8dp"
             tools:listitem="@layout/item_metric" />
 
