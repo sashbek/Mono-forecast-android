@@ -59,7 +59,7 @@
             android:textColor="?attr/colorAccent"
             android:textStyle="bold" />
 
-        <org.pakicek.monoforecast.ui.view.SpeedometerView
+        <org.pakicek.monoforecast.presentation.ble.SpeedometerView
             android:id="@+id/speedometer"
             android:layout_width="match_parent"
             android:layout_height="300dp"

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="?android:attr/statusBarColor"
-    tools:context=".ForecastActivity">
+    tools:context=".presentation.forecast.ForecastActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header"
@@ -157,7 +157,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <org.pakicek.monoforecast.ui.view.WeatherAnimationView
+    <org.pakicek.monoforecast.presentation.forecast.WeatherAnimationView
         android:id="@+id/weatherView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
