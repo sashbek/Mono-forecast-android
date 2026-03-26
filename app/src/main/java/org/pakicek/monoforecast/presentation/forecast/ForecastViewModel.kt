@@ -13,13 +13,8 @@ import org.pakicek.monoforecast.domain.repository.IForecastRepository
 class ForecastViewModel(private val repository: IForecastRepository) : ViewModel() {
 
     private val analyzer = ForecastAnalyzer()
-
     private val _weatherState = MutableLiveData<WeatherState>()
     val weatherState: LiveData<WeatherState> = _weatherState
-
-    init {
-        refreshData()
-    }
 
     fun refreshData() {
         viewModelScope.launch {

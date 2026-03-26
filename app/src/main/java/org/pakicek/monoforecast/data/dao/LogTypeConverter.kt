@@ -1,10 +1,9 @@
-package org.pakicek.monoforecast.domain.model.dto.converters
+package org.pakicek.monoforecast.data.dao
 
 import androidx.room.TypeConverter
 import org.pakicek.monoforecast.domain.model.dto.enums.LogType
 
 class LogTypeConverter {
-
     @TypeConverter
     fun fromLogType(type: LogType): Int {
         return type.ordinal

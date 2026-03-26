@@ -9,71 +9,41 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.launch
+import org.pakicek.monoforecast.MonoForecastApp
 import org.pakicek.monoforecast.R
 import org.pakicek.monoforecast.databinding.FragmentLogListBinding
-import org.pakicek.monoforecast.presentation.logs.fragments.LogDetailsFragment.Companion.newInstance
-import org.pakicek.monoforecast.presentation.logs.LogsViewModelFactory
-import org.pakicek.monoforecast.presentation.logs.LogsViewModel
 import org.pakicek.monoforecast.presentation.logs.LogFilesAdapter
+import org.pakicek.monoforecast.presentation.logs.LogsViewModel
+import org.pakicek.monoforecast.presentation.logs.LogsViewModelFactory
 
 class LogListFragment : Fragment(R.layout.fragment_log_list) {
-
-    private var _binding: FragmentLogListBinding? = null
-    private val binding get() = _binding!!
     private val viewModel: LogsViewModel by activityViewModels {
-        val context = requireContext().applicationContext
-        LogsViewModelFactory(context)
+        LogsViewModelFactory((requireContext().applicationContext as MonoForecastApp).container.logsRepository)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentLogListBinding.bind(view)
-
-        setupRecyclerView()
-        setupListeners()
-        observeData()
-    }
-
-    private fun setupRecyclerView() {
-        val adapter = LogFilesAdapter { file ->
+        val binding = FragmentLogListBinding.bind(view)
+        val adapter = LogFilesAdapter {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.logsFragmentContainer, newInstance(file.id))
-                .addToBackStack(null)
-                .commit()
+                .replace(
+                    R.id.logsFragmentContainer,
+                    LogDetailsFragment.Companion.newInstance(it.id)
+                )
+                .addToBackStack(null).commit()
         }
 
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
-    }
+        binding.btnStartLogging.setOnClickListener { viewModel.toggleLogging() }
 
-    private fun setupListeners() {
-        binding.btnStartLogging.setOnClickListener {
-            viewModel.toggleLogging()
-        }
-    }
-
-    private fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getAllFiles().collect { files ->
-                    (binding.recyclerView.adapter as? LogFilesAdapter)?.submitList(files)
-                }
+                viewModel.getAllFiles().collect { adapter.submitList(it) }
             }
         }
-
-        viewModel.isLogging.observe(viewLifecycleOwner) { isLogging ->
-            val logging = isLogging == true
-            with(binding.btnStartLogging) {
-                isSelected = logging
-                text = getString(
-                    if (logging) R.string.stop_logging_button_text else R.string.start_logging_button_text
-                )
-            }
+        viewModel.isLogging.observe(viewLifecycleOwner) {
+            binding.btnStartLogging.isSelected = it
+            binding.btnStartLogging.text = getString(if (it) R.string.stop_logging_button_text else R.string.start_logging_button_text)
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

@@ -6,9 +6,9 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
-import androidx.core.graphics.toColorInt
 import org.pakicek.monoforecast.domain.model.dto.enums.WeatherCondition
 import kotlin.random.Random
+import androidx.core.graphics.toColorInt
 
 class WeatherAnimationView @JvmOverloads constructor(
     context: Context,
@@ -18,7 +18,6 @@ class WeatherAnimationView @JvmOverloads constructor(
 
     private var condition: WeatherCondition = WeatherCondition.CLEAR
     private val particles = mutableListOf<Particle>()
-    private val rainColor = "#40C4FF".toColorInt()
     private val paint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL
@@ -53,15 +52,14 @@ class WeatherAnimationView @JvmOverloads constructor(
     private fun createRandomParticle(randomY: Boolean): Particle {
         val w = width.toFloat().takeIf { it > 0 } ?: 1080f
         val h = height.toFloat().takeIf { it > 0 } ?: 1920f
-
         val isRain = condition == WeatherCondition.RAIN
 
         return Particle(
-            x = Random.Default.nextFloat() * w,
-            y = if (randomY) Random.Default.nextFloat() * h else -50f,
-            speed = if (isRain) Random.Default.nextFloat() * 20f + 25f else Random.Default.nextFloat() * 2f + 2f,
-            size = if (isRain) Random.Default.nextFloat() * 2f + 3f else Random.Default.nextFloat() * 5f + 5f,
-            alpha = if (isRain) Random.Default.nextInt(180, 255) else Random.Default.nextInt(100, 200)
+            x = Random.nextFloat() * w,
+            y = if (randomY) Random.nextFloat() * h else -50f,
+            speed = if (isRain) Random.nextFloat() * 20f + 25f else Random.nextFloat() * 2f + 2f,
+            size = if (isRain) Random.nextFloat() * 2f + 3f else Random.nextFloat() * 5f + 5f,
+            alpha = if (isRain) Random.nextInt(180, 255) else Random.nextInt(100, 200)
         )
     }
 
@@ -71,7 +69,7 @@ class WeatherAnimationView @JvmOverloads constructor(
         val h = height
 
         if (condition == WeatherCondition.RAIN) {
-            paint.color = rainColor
+            paint.color = "#40C4FF".toColorInt()
             paint.strokeWidth = 4f
         } else {
             paint.color = Color.WHITE

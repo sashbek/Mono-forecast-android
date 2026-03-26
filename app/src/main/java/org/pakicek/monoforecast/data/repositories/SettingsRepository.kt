@@ -1,13 +1,13 @@
 package org.pakicek.monoforecast.data.repositories
 
 import android.content.Context
-import org.pakicek.monoforecast.domain.model.dto.enums.AppTheme
-import org.pakicek.monoforecast.domain.model.dto.enums.UserActivity
-import org.pakicek.monoforecast.domain.model.dto.enums.WeatherApi
 import androidx.core.content.edit
+import org.pakicek.monoforecast.data.entities.SettingsBlockEntity
+import org.pakicek.monoforecast.domain.model.dto.enums.AppTheme
 import org.pakicek.monoforecast.domain.model.dto.enums.CacheDuration
 import org.pakicek.monoforecast.domain.model.dto.enums.GnssInterval
-import org.pakicek.monoforecast.data.entities.SettingsBlockEntity
+import org.pakicek.monoforecast.domain.model.dto.enums.UserActivity
+import org.pakicek.monoforecast.domain.model.dto.enums.WeatherApi
 import org.pakicek.monoforecast.domain.repository.ISettingsRepository
 
 class SettingsRepository(context: Context) : ISettingsRepository {
@@ -29,56 +29,32 @@ class SettingsRepository(context: Context) : ISettingsRepository {
         return AppTheme.valueOf(stored ?: "SYSTEM")
     }
 
-    override fun saveTheme(theme: AppTheme) {
-        prefs.edit {
-            putString(KEY_THEME, theme.name)
-        }
-    }
+    override fun saveTheme(theme: AppTheme) = prefs.edit { putString(KEY_THEME, theme.name) }
 
     override fun getApi(): WeatherApi {
         val stored = prefs.getString(KEY_API, "NINJA_API")
         return WeatherApi.valueOf(stored ?: "NINJA_API")
     }
 
-    override fun saveApi(api: WeatherApi) {
-        prefs.edit {
-            putString(KEY_API, api.name)
-        }
-    }
+    override fun saveApi(api: WeatherApi) = prefs.edit { putString(KEY_API, api.name) }
 
     override fun getActivity(): UserActivity {
         val stored = prefs.getString(KEY_ACTIVITY, "BIKE")
         return UserActivity.valueOf(stored ?: "BIKE")
     }
 
-    override fun saveActivity(activity: UserActivity) {
-        prefs.edit {
-            putString(KEY_ACTIVITY, activity.name)
-        }
-    }
+    override fun saveActivity(activity: UserActivity) = prefs.edit { putString(KEY_ACTIVITY, activity.name) }
 
     override fun getCacheDuration(): CacheDuration {
-        val stored = prefs.getString(KEY_CACHE, CacheDuration.MIN_15.name)
+        val stored = prefs.getString(KEY_CACHE, CacheDuration.ALWAYS_UPDATE.name)
         return try {
-            CacheDuration.valueOf(stored ?: CacheDuration.MIN_15.name)
+            CacheDuration.valueOf(stored ?: CacheDuration.ALWAYS_UPDATE.name)
         } catch (e: Exception) {
-            CacheDuration.MIN_15
+            CacheDuration.ALWAYS_UPDATE
         }
     }
 
-    override fun saveCacheDuration(duration: CacheDuration) {
-        prefs.edit {
-            putString(KEY_CACHE, duration.name)
-        }
-    }
-
-    override fun getAllSettings(): List<SettingsBlockEntity> {
-        val theme = SettingsBlockEntity(null, KEY_THEME, getTheme().name)
-        val api = SettingsBlockEntity(null, KEY_API, getApi().name)
-        val activity = SettingsBlockEntity(null, KEY_ACTIVITY, getActivity().name)
-
-        return listOf(theme, api, activity)
-    }
+    override fun saveCacheDuration(duration: CacheDuration) = prefs.edit { putString(KEY_CACHE, duration.name) }
 
     override fun getGnssInterval(): GnssInterval {
         val name = prefs.getString(KEY_GNSS_INTERVAL, GnssInterval.NORMAL.name)
@@ -89,23 +65,21 @@ class SettingsRepository(context: Context) : ISettingsRepository {
         }
     }
 
-    override fun saveGnssInterval(interval: GnssInterval) {
-        prefs.edit { putString(KEY_GNSS_INTERVAL, interval.name) }
-    }
+    override fun saveGnssInterval(interval: GnssInterval) = prefs.edit { putString(KEY_GNSS_INTERVAL, interval.name) }
 
-    override fun setTrackingState(isTracking: Boolean) {
-        prefs.edit { putBoolean(KEY_IS_TRACKING, isTracking) }
-    }
+    override fun setTrackingState(isTracking: Boolean) = prefs.edit { putBoolean(KEY_IS_TRACKING, isTracking) }
 
-    override fun isTracking(): Boolean {
-        return prefs.getBoolean(KEY_IS_TRACKING, false)
-    }
+    override fun isTracking(): Boolean = prefs.getBoolean(KEY_IS_TRACKING, false)
 
-    override fun setTrackingStartTime(timestamp: Long) {
-        prefs.edit { putLong(KEY_TRACKING_START_TIME, timestamp) }
-    }
+    override fun setTrackingStartTime(timestamp: Long) = prefs.edit { putLong(KEY_TRACKING_START_TIME, timestamp) }
 
-    override fun getTrackingStartTime(): Long {
-        return prefs.getLong(KEY_TRACKING_START_TIME, 0L)
+    override fun getTrackingStartTime(): Long = prefs.getLong(KEY_TRACKING_START_TIME, 0L)
+
+    override fun getAllSettings(): List<SettingsBlockEntity> {
+        return listOf(
+            SettingsBlockEntity(null, KEY_THEME, getTheme().name),
+            SettingsBlockEntity(null, KEY_API, getApi().name),
+            SettingsBlockEntity(null, KEY_ACTIVITY, getActivity().name)
+        )
     }
 }

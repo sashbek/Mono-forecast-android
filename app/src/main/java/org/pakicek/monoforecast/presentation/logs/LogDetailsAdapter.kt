@@ -7,71 +7,39 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.pakicek.monoforecast.R
+import org.pakicek.monoforecast.data.entities.LogWithDetails
 import org.pakicek.monoforecast.databinding.ItemLogDetailBinding
 import org.pakicek.monoforecast.domain.model.dto.enums.LogType
-import org.pakicek.monoforecast.data.entities.LogWithDetails
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class LogDetailsAdapter : ListAdapter<LogWithDetails, LogDetailsAdapter.ViewHolder>(DiffCallback) {
+class LogDetailsAdapter : ListAdapter<LogWithDetails, LogDetailsAdapter.VH>(Diff()) {
+    class VH(val binding: ItemLogDetailBinding) : RecyclerView.ViewHolder(binding.root)
+    class Diff : DiffUtil.ItemCallback<LogWithDetails>() {
+        override fun areItemsTheSame(o: LogWithDetails, n: LogWithDetails) = o.log.id == n.log.id
+        override fun areContentsTheSame(o: LogWithDetails, n: LogWithDetails) = o == n
+    }
 
-    class ViewHolder(private val binding: ItemLogDetailBinding) : RecyclerView.ViewHolder(binding.root) {
-        @SuppressLint("SetTextI18n", "DefaultLocale")
-        fun bind(item: LogWithDetails) {
-            val sdf = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-            val time = sdf.format(Date(item.log.timestamp))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = VH(ItemLogDetailBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+    @SuppressLint("SetTextI18n")
+    override fun onBindViewHolder(holder: VH, position: Int) {
+        val item = getItem(position)
+        val time = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date(item.log.timestamp))
+        holder.binding.tvTypeTime.text = "${item.log.type} • $time"
 
-            binding.tvTypeTime.text = "${item.log.type.name} • $time"
-
-            when (item.log.type) {
-                LogType.WEATHER -> {
-                    binding.ivIcon.setImageResource(R.drawable.ic_forecast_button)
-                    val w = item.weather
-                    if (w != null) {
-                        binding.tvContent.text = "Temp: ${w.tempC}°C, Wind: ${w.windSpeedMs} m/s"
-                    } else {
-                        binding.tvContent.text = item.log.message
-                    }
-                }
-                LogType.SETTINGS -> {
-                    binding.ivIcon.setImageResource(R.drawable.ic_settings)
-                    val s = item.settings
-                    if (s != null) {
-                        binding.tvContent.text = "${s.setting} changed to ${s.value}"
-                    } else {
-                        binding.tvContent.text = item.log.message
-                    }
-                }
-                LogType.LOCATION -> {
-                    binding.ivIcon.setImageResource(R.drawable.ic_location_button)
-                    val loc = item.location
-                    if (loc != null) {
-                        val lat = String.format("%.6f", loc.latitude)
-                        val lon = String.format("%.6f", loc.longitude)
-                        binding.tvContent.text = "Lat: $lat, Lon: $lon"
-                    } else {
-                        binding.tvContent.text = "No coordinates data"
-                    }
-                }
-                else -> {
-                    binding.ivIcon.setImageResource(R.drawable.ic_logs_button)
-                    binding.tvContent.text = item.log.message
-                }
-            }
+        holder.binding.tvContent.text = when (item.log.type) {
+            LogType.WEATHER -> item.weather?.let { "Temp: ${it.tempC}°C, Wind: ${it.windSpeedMs}" } ?: item.log.message
+            LogType.LOCATION -> item.location?.let { "Lat: ${it.latitude}, Lon: ${it.longitude}" } ?: item.log.message
+            LogType.SETTINGS -> item.settings?.let { "${it.setting} -> ${it.value}" } ?: item.log.message
+            else -> item.log.message
         }
-    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ItemLogDetailBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
-    }
-
-    companion object DiffCallback : DiffUtil.ItemCallback<LogWithDetails>() {
-        override fun areItemsTheSame(oldItem: LogWithDetails, newItem: LogWithDetails) = oldItem.log.id == newItem.log.id
-        override fun areContentsTheSame(oldItem: LogWithDetails, newItem: LogWithDetails) = oldItem == newItem
+        holder.binding.ivIcon.setImageResource(when (item.log.type) {
+            LogType.WEATHER -> R.drawable.ic_forecast_button
+            LogType.LOCATION -> R.drawable.ic_location_button
+            LogType.SETTINGS -> R.drawable.ic_settings
+            else -> R.drawable.ic_logs_button
+        })
     }
 }

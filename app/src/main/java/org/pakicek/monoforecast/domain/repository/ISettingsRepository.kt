@@ -11,6 +11,7 @@ interface ISettingsRepository {
     fun isTracking(): Boolean
     fun getTrackingStartTime(): Long
     fun setTrackingStartTime(timestamp: Long)
+    fun setTrackingState(isTracking: Boolean)
     fun getTheme(): AppTheme
     fun saveTheme(theme: AppTheme)
     fun getApi(): WeatherApi
@@ -22,5 +23,4 @@ interface ISettingsRepository {
     fun getAllSettings(): List<SettingsBlockEntity>
     fun getGnssInterval(): GnssInterval
     fun saveGnssInterval(interval: GnssInterval)
-    fun setTrackingState(isTracking: Boolean)
 }
