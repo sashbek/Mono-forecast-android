@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <!-- Top Row: Forecast Info + Status Text -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="12dp">
+
+        <ImageView
+            android:id="@+id/notif_weather_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_forecast_button"
+            android:contentDescription="Weather Icon" />
+
+        <!-- Weather Text (Weight 1 pushes status to the right) -->
+        <TextView
+            android:id="@+id/notif_weather_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Loading..."
+            style="@style/TextAppearance.Compat.Notification.Title"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/notif_status_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ready"
+            style="@style/TextAppearance.Compat.Notification.Info"
+            android:textSize="12sp"/>
+    </LinearLayout>
+
+    <!-- Bottom Row: Control Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <!-- GNSS Toggle -->
+        <ImageButton
+            android:id="@+id/btn_gnss"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_play"
+            android:scaleType="centerInside"
+            android:contentDescription="Toggle GNSS"
+            android:padding="8dp"
+            android:layout_marginEnd="32dp"/>
+
+        <!-- Weather Refresh -->
+        <ImageButton
+            android:id="@+id/btn_refresh"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_sync"
+            android:scaleType="centerInside"
+            android:contentDescription="Refresh Weather"
+            android:padding="8dp"
+            android:layout_marginEnd="32dp"/>
+
+        <!-- BLE Toggle -->
+        <ImageButton
+            android:id="@+id/btn_ble"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_bluetooth_button"
+            android:scaleType="centerInside"
+            android:contentDescription="Toggle BLE"
+            android:padding="8dp"/>
+
+    </LinearLayout>
+</LinearLayout>

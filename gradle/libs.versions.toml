@@ -4,6 +4,7 @@ kotlin = "2.3.20"
 coreKtx = "1.18.0"
 appcompat = "1.7.1"
 kotlinxCoroutinesPlayServices = "1.10.2"
+localbroadcastmanager = "1.1.0"
 mapsMobile = "4.5.0-navikit"
 material = "1.13.0"
 activity = "1.13.0"
@@ -26,6 +27,7 @@ fragmentKtx = "1.8.9"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-localbroadcastmanager = { module = "androidx.localbroadcastmanager:localbroadcastmanager", version.ref = "localbroadcastmanager" }
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
 maps-mobile = { module = "com.yandex.android:maps.mobile", version.ref = "mapsMobile" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }

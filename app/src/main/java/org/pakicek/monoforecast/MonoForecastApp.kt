@@ -3,7 +3,6 @@ package org.pakicek.monoforecast
 import android.app.Application
 import com.yandex.mapkit.MapKitFactory
 import org.pakicek.monoforecast.di.AppContainer
-import org.pakicek.monoforecast.di.AppContainerImpl
 
 class MonoForecastApp : Application() {
 
@@ -11,7 +10,7 @@ class MonoForecastApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        container = AppContainerImpl(this)
+        container = AppContainer(this)
         MapKitFactory.setApiKey(BuildConfig.MAPKIT_API_KEY)
     }
 }
