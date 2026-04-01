@@ -2,7 +2,6 @@ package org.pakicek.monoforecast.presentation.ble
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -13,7 +12,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -22,7 +20,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.launch
 import org.pakicek.monoforecast.databinding.ActivityBluetoothBinding
-import org.pakicek.monoforecast.presentation.services.MainService
+import org.pakicek.monoforecast.logic.service.MainService
+import org.pakicek.monoforecast.logic.viewmodel.ble.BluetoothViewModel
+import org.pakicek.monoforecast.logic.viewmodel.ble.BluetoothViewModelFactory
+import org.pakicek.monoforecast.presentation.ble.adapter.DevicesAdapter
+import org.pakicek.monoforecast.presentation.ble.adapter.MetricsAdapter
 
 class BluetoothActivity : AppCompatActivity() {
 
@@ -31,12 +33,13 @@ class BluetoothActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: ActivityBluetoothBinding
-    private val viewModel: BluetoothViewModel by viewModels()
+    private val viewModel: BluetoothViewModel by viewModels {
+        BluetoothViewModelFactory()
+    }
 
     private lateinit var devicesAdapter: DevicesAdapter
     private lateinit var metricsAdapter: MetricsAdapter
 
-    // Регистратор для запроса разрешений
     private val requestPermissionsLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -54,7 +57,6 @@ class BluetoothActivity : AppCompatActivity() {
         }
     }
 
-    // Регистратор для включения Bluetooth
     private val enableBluetoothLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -82,7 +84,6 @@ class BluetoothActivity : AppCompatActivity() {
     private fun setupUI() {
         binding.btnBack.setOnClickListener { finish() }
 
-        // Кнопки управления
         binding.btnScan.setOnClickListener {
             Log.d(TAG, "Scan button clicked")
             if (hasPermissions()) {
@@ -102,13 +103,12 @@ class BluetoothActivity : AppCompatActivity() {
             }
         }
 
-        binding.btnDisconnect.setOnClickListener @androidx.annotation.RequiresPermission(android.Manifest.permission.BLUETOOTH_CONNECT) {
+        binding.btnDisconnect.setOnClickListener @androidx.annotation.RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) {
             Log.d(TAG, "Disconnect button clicked")
             viewModel.disconnect()
         }
 
-        // Настройка адаптера для списка устройств
-        devicesAdapter = DevicesAdapter @androidx.annotation.RequiresPermission(android.Manifest.permission.BLUETOOTH_CONNECT) { device ->
+        devicesAdapter = DevicesAdapter @androidx.annotation.RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) { device ->
             Log.d(TAG, "Device selected: ${device.name} (${device.address})")
             viewModel.connectToDevice(device)
             binding.tvStatus.text = "Connecting to ${device.name}..."
@@ -116,7 +116,6 @@ class BluetoothActivity : AppCompatActivity() {
         binding.recyclerDevices.layoutManager = LinearLayoutManager(this)
         binding.recyclerDevices.adapter = devicesAdapter
 
-        // Настройка адаптера для метрик
         metricsAdapter = MetricsAdapter { metric ->
             Log.d(TAG, "Metric clicked: ${metric.name} = ${metric.value} ${metric.unit}")
             Toast.makeText(this, "${metric.name}: ${metric.value} ${metric.unit}", Toast.LENGTH_SHORT).show()
@@ -124,7 +123,6 @@ class BluetoothActivity : AppCompatActivity() {
         binding.recyclerMetrics.layoutManager = GridLayoutManager(this, 2)
         binding.recyclerMetrics.adapter = metricsAdapter
 
-        // Изначально кнопки управления недоступны
         binding.btnScan.isEnabled = false
         binding.btnStop.isEnabled = false
         binding.btnDisconnect.isEnabled = false
@@ -133,34 +131,28 @@ class BluetoothActivity : AppCompatActivity() {
     }
 
     private fun observeData() {
-        // Скорость
         viewModel.currentSpeed.observe(this) { speed ->
             binding.speedometer.setSpeed(speed)
         }
 
-        // Метрики
         viewModel.metrics.observe(this) { metricsList ->
             Log.d(TAG, "Metrics updated: ${metricsList.size} metrics")
             metricsAdapter.submitList(metricsList)
         }
 
-        // Статус подключения
         viewModel.connectionStatus.observe(this) { status ->
             binding.tvStatus.text = status
         }
 
-        // Список устройств
         viewModel.devices.observe(this) { devices ->
             Log.d(TAG, "Devices LiveData updated: ${devices.size} devices")
             devicesAdapter.submitList(devices)
 
-            // Для отладки
             devices.forEach { device ->
                 Log.d(TAG, "  Device in list: ${device.name} (${device.address})")
             }
         }
 
-        // Состояние подключения - ЗДЕСЬ УПРАВЛЯЕМ ВИДИМОСТЬЮ
         viewModel.isConnected.observe(this) { isConnected ->
             Log.d(TAG, "isConnected changed: $isConnected")
             binding.btnDisconnect.isEnabled = isConnected
@@ -169,36 +161,26 @@ class BluetoothActivity : AppCompatActivity() {
                 Log.d(TAG, "Device connected - hiding device list, showing metrics")
                 binding.tvStatus.text = "Connected"
 
-                // Скрываем список устройств
                 binding.recyclerDevices.visibility = View.GONE
-                // Показываем метрики
                 binding.recyclerMetrics.visibility = View.VISIBLE
-                // Скрываем кнопки сканирования
                 binding.btnScan.visibility = View.GONE
                 binding.btnStop.visibility = View.GONE
-                // Показываем кнопку отключения
                 binding.btnDisconnect.visibility = View.VISIBLE
             } else {
                 Log.d(TAG, "Device disconnected - showing device list, hiding metrics")
 
-                // Показываем список устройств
                 binding.recyclerDevices.visibility = View.VISIBLE
-                // Скрываем метрики
                 binding.recyclerMetrics.visibility = View.GONE
-                // Показываем кнопки сканирования (если есть разрешения)
                 if (hasPermissions()) {
                     binding.btnScan.visibility = View.VISIBLE
                     binding.btnStop.visibility = View.VISIBLE
                 }
-                // Скрываем кнопку отключения (уже не подключены)
-                binding.btnDisconnect.visibility = View.VISIBLE // Но оставляем видимой, чтобы можно было отключиться если нужно
+                binding.btnDisconnect.visibility = View.VISIBLE
 
-                // Если нужно очистить список устройств при отключении
                 // viewModel.clearDevices() // опционально
             }
         }
 
-        // Состояние сканирования
         viewModel.isScanning.observe(this) { isScanning ->
             Log.d(TAG, "isScanning changed: $isScanning")
             val hasPerms = hasPermissions()
@@ -210,31 +192,26 @@ class BluetoothActivity : AppCompatActivity() {
             }
         }
 
-        // Состояние подключения
         viewModel.isConnected.observe(this) { isConnected ->
             Log.d(TAG, "isConnected changed: $isConnected")
             binding.btnDisconnect.isEnabled = isConnected
 
             if (isConnected) {
                 binding.tvStatus.text = "Connected"
-                // Скрываем список устройств при подключении
-                binding.recyclerDevices.visibility = android.view.View.GONE
-                binding.recyclerMetrics.visibility = android.view.View.VISIBLE
-                binding.btnScan.visibility = android.view.View.GONE
-                binding.btnStop.visibility = android.view.View.GONE
+                binding.recyclerDevices.visibility = View.GONE
+                binding.recyclerMetrics.visibility = View.VISIBLE
+                binding.btnScan.visibility = View.GONE
+                binding.btnStop.visibility = View.GONE
             } else {
-                // Показываем список устройств при отключении
-                binding.recyclerDevices.visibility = android.view.View.VISIBLE
-                binding.recyclerMetrics.visibility = android.view.View.GONE
-                binding.btnScan.visibility = android.view.View.VISIBLE
-                binding.btnStop.visibility = android.view.View.VISIBLE
+                binding.recyclerDevices.visibility = View.VISIBLE
+                binding.recyclerMetrics.visibility = View.GONE
+                binding.btnScan.visibility = View.VISIBLE
+                binding.btnStop.visibility = View.VISIBLE
             }
         }
     }
 
     private fun setupMainServiceConnection() {
-        // Подписываемся на данные из MainService
-
         lifecycleScope.launch {
             MainService.deviceFound?.collect { device ->
                 Log.d(TAG, "Device found via MainService: ${device.name}")
@@ -269,7 +246,6 @@ class BluetoothActivity : AppCompatActivity() {
     }
 
     private fun connectToMainService() {
-        // Проверяем, запущен ли MainService
         if (MainService.instance == null) {
             Log.d(TAG, "MainService not running, starting...")
             val intent = Intent(this, MainService::class.java)
@@ -280,7 +256,6 @@ class BluetoothActivity : AppCompatActivity() {
             }
         }
 
-        // Получаем BleFeature из MainService
         MainService.instance?.bleFeature?.let { bleFeature ->
             Log.d(TAG, "Setting BleFeature to ViewModel")
             viewModel.setBLEService(bleFeature)
@@ -356,14 +331,12 @@ class BluetoothActivity : AppCompatActivity() {
         super.onResume()
         Log.d(TAG, "onResume")
 
-        // Обновляем состояние кнопок
         viewModel.isScanning.value?.let { isScanning ->
             val hasPerms = hasPermissions()
             binding.btnScan.isEnabled = !isScanning && hasPerms
             binding.btnStop.isEnabled = isScanning && hasPerms
         }
 
-        // Переподключаемся к MainService при необходимости
         if (hasPermissions() && MainService.instance?.bleFeature == null) {
             connectToMainService()
         }

@@ -4,20 +4,31 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Looper
-import com.google.android.gms.location.*
-import kotlinx.coroutines.*
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.pakicek.monoforecast.domain.model.GnssState
-import org.pakicek.monoforecast.domain.repository.ILogsRepository
-import org.pakicek.monoforecast.domain.repository.ISettingsRepository
+import org.pakicek.monoforecast.domain.repository.LogsRepository
+import org.pakicek.monoforecast.domain.repository.SettingsRepository
 
 class GnssFeature(
     private val context: Context,
-    private val settingsRepository: ISettingsRepository,
-    private val logsRepository: ILogsRepository
-) : IBackgroundFeature<GnssState> {
+    private val settingsRepository: SettingsRepository,
+    private val logsRepository: LogsRepository
+) : BackgroundFeature<GnssState> {
 
     private val _state = MutableStateFlow(GnssState.STOPPED)
     override val state: StateFlow<GnssState> = _state.asStateFlow()

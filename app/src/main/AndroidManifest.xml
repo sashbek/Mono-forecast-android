@@ -54,11 +54,11 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".presentation.services.MainService"
+        <service android:name=".logic.service.MainService"
             android:foregroundServiceType="location"
             android:exported="false"/>
 
-        <receiver android:name=".presentation.services.NotificationActionReceiver" android:exported="false">
+        <receiver android:name=".logic.service.NotificationActionReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="org.pakicek.monoforecast.ACTION_TOGGLE_GNSS" />
                 <action android:name="org.pakicek.monoforecast.ACTION_REFRESH_WEATHER" />
@@ -67,7 +67,7 @@
         </receiver>
 
         <service
-            android:name=".data.features.ble.BleService"
+            android:name=".data.ble.BleService"
             android:enabled="true"
             android:exported="false" />
 

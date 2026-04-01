@@ -5,14 +5,14 @@ import android.content.Intent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.pakicek.monoforecast.data.remote.dto.WeatherResponseDto
 import org.pakicek.monoforecast.domain.model.NetworkResult
-import org.pakicek.monoforecast.domain.model.dto.WeatherResponseDto
-import org.pakicek.monoforecast.domain.repository.IForecastRepository
+import org.pakicek.monoforecast.domain.repository.ForecastRepository
 
 class WeatherFeature(
     private val context: Context,
-    private val repository: IForecastRepository
-) : IBackgroundFeature<WeatherResponseDto?> {
+    private val repository: ForecastRepository
+) : BackgroundFeature<WeatherResponseDto?> {
 
     private val _state = MutableStateFlow<WeatherResponseDto?>(null)
     override val state: StateFlow<WeatherResponseDto?> = _state.asStateFlow()
@@ -38,7 +38,7 @@ class WeatherFeature(
 
     override suspend fun stop() {}
 
-    suspend fun loadCache() {
+    fun loadCache() {
         _state.value = repository.getLastKnownWeather()
     }
 }

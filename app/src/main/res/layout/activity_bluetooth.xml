@@ -145,7 +145,7 @@
 
         </androidx.cardview.widget.CardView>
 
-        <org.pakicek.monoforecast.presentation.ble.SpeedometerView
+        <org.pakicek.monoforecast.presentation.ble.view.SpeedometerView
             android:id="@+id/speedometer"
             android:layout_width="match_parent"
             android:layout_height="0dp"

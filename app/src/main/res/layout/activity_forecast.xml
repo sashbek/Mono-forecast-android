@@ -168,7 +168,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <org.pakicek.monoforecast.presentation.forecast.WeatherAnimationView
+    <org.pakicek.monoforecast.presentation.forecast.view.WeatherAnimationView
         android:id="@+id/weatherView"
         android:layout_width="match_parent"
         android:layout_height="0dp"

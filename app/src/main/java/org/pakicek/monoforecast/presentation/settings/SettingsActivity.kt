@@ -12,7 +12,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import org.pakicek.monoforecast.MonoForecastApp
 import org.pakicek.monoforecast.databinding.ActivitySettingsBinding
-import org.pakicek.monoforecast.domain.model.dto.enums.*
+import org.pakicek.monoforecast.domain.model.settings.*
+import org.pakicek.monoforecast.logic.viewmodel.settings.SettingsViewModel
+import org.pakicek.monoforecast.logic.viewmodel.settings.SettingsViewModelFactory
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySettingsBinding

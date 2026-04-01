@@ -8,12 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import org.pakicek.monoforecast.MonoForecastApp
 import org.pakicek.monoforecast.databinding.ActivityMainBinding
-import org.pakicek.monoforecast.domain.model.dto.enums.AppTheme
+import org.pakicek.monoforecast.domain.model.settings.AppTheme
+import org.pakicek.monoforecast.logic.service.MainService
 import org.pakicek.monoforecast.presentation.ble.BluetoothActivity
 import org.pakicek.monoforecast.presentation.forecast.ForecastActivity
 import org.pakicek.monoforecast.presentation.location.LocationActivity
 import org.pakicek.monoforecast.presentation.logs.LogsActivity
-import org.pakicek.monoforecast.presentation.services.MainService
 import org.pakicek.monoforecast.presentation.settings.SettingsActivity
 
 class MainActivity : AppCompatActivity() {

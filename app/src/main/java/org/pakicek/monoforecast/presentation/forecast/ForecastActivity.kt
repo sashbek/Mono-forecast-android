@@ -17,12 +17,14 @@ import androidx.core.view.WindowInsetsCompat
 import org.pakicek.monoforecast.MonoForecastApp
 import org.pakicek.monoforecast.R
 import org.pakicek.monoforecast.data.features.WeatherFeature
+import org.pakicek.monoforecast.data.remote.dto.WeatherResponseDto
 import org.pakicek.monoforecast.databinding.ActivityForecastBinding
 import org.pakicek.monoforecast.domain.model.RideDifficulty
-import org.pakicek.monoforecast.domain.model.dto.WeatherResponseDto
-import org.pakicek.monoforecast.presentation.services.AppNotificationManager
-import org.pakicek.monoforecast.presentation.services.NotificationActionReceiver
+import org.pakicek.monoforecast.logic.viewmodel.forecast.ForecastViewModel
+import org.pakicek.monoforecast.logic.viewmodel.forecast.ForecastViewModelFactory
 import org.pakicek.monoforecast.presentation.utils.showSnackbar
+import org.pakicek.monoforecast.logic.service.AppNotificationManager
+import org.pakicek.monoforecast.logic.service.NotificationActionReceiver
 
 class ForecastActivity : AppCompatActivity() {
     private lateinit var binding: ActivityForecastBinding

@@ -25,8 +25,10 @@ import org.pakicek.monoforecast.MonoForecastApp
 import org.pakicek.monoforecast.R
 import org.pakicek.monoforecast.data.features.GnssFeature
 import org.pakicek.monoforecast.databinding.ActivityLocationBinding
-import org.pakicek.monoforecast.presentation.services.AppNotificationManager
-import org.pakicek.monoforecast.presentation.services.NotificationActionReceiver
+import org.pakicek.monoforecast.logic.service.AppNotificationManager
+import org.pakicek.monoforecast.logic.service.NotificationActionReceiver
+import org.pakicek.monoforecast.logic.viewmodel.location.LocationViewModel
+import org.pakicek.monoforecast.logic.viewmodel.location.LocationViewModelFactory
 
 class LocationActivity : AppCompatActivity() {
 
@@ -196,7 +198,7 @@ class LocationActivity : AppCompatActivity() {
             if (trackPolyline == null) {
                 trackPolyline = mapObjects.addPolyline(Polyline(points)).apply {
                     setStrokeColor(Color.BLUE)
-                    setStrokeWidth(5f)
+                    strokeWidth = 5f
                 }
             } else {
                 trackPolyline?.geometry = Polyline(points)
