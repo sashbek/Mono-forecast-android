@@ -22,6 +22,7 @@
     <string name="choose_activity_type">Choose activity type</string>
     <string name="cache_duration_label">Cache duration</string>
     <string name="gnss_interval_label">GPS update interval</string>
+    <string name="ble_mode_label">BLE mode</string>
 
     <!-- Forecast -->
     <string name="forecast_header_text">Forecast</string>

@@ -74,6 +74,10 @@ class SettingsActivity : AppCompatActivity() {
         setupSpinner(binding.gnssSpinner, GnssInterval.entries, viewModel.getGnssInterval(),
             labelMapper = { it.displayName }
         ) { viewModel.saveGnssInterval(it) }
+
+        setupSpinner(binding.bleSpinner, BleMode.entries, viewModel.getBleMode(),
+            labelMapper = { it.name.lowercase().replaceFirstChar { c -> c.uppercase() } }
+        ) { viewModel.saveBleMode(it) }
     }
 
     private fun <T : Enum<T>> setupSpinner(

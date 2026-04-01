@@ -49,4 +49,11 @@ class SettingsViewModel(
         repository.saveGnssInterval(interval)
         logSettingChange("GNSS Interval", interval.displayName)
     }
+
+    fun getBleMode() = repository.getBleMode()
+
+    fun saveBleMode(mode: org.pakicek.monoforecast.domain.model.settings.BleMode) {
+        repository.saveBleMode(mode)
+        logSettingChange("BleMode", mode.name)
+    }
 }

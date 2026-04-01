@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.core.content.edit
 import org.pakicek.monoforecast.data.local.entity.SettingsBlockEntity
 import org.pakicek.monoforecast.domain.model.settings.AppTheme
+import org.pakicek.monoforecast.domain.model.settings.BleMode
 import org.pakicek.monoforecast.domain.model.settings.CacheDuration
 import org.pakicek.monoforecast.domain.model.settings.GnssInterval
 import org.pakicek.monoforecast.domain.model.settings.UserActivity
@@ -22,6 +23,7 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         private const val KEY_GNSS_INTERVAL = "KEY_GNSS_INTERVAL"
         private const val KEY_IS_TRACKING = "KEY_IS_TRACKING"
         private const val KEY_TRACKING_START_TIME = "KEY_TRACKING_START_TIME"
+        private const val KEY_BLE_MODE = "KEY_BLE_MODE"
     }
 
     override fun getTheme(): AppTheme {
@@ -74,6 +76,19 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
     override fun setTrackingStartTime(timestamp: Long) = prefs.edit { putLong(KEY_TRACKING_START_TIME, timestamp) }
 
     override fun getTrackingStartTime(): Long = prefs.getLong(KEY_TRACKING_START_TIME, 0L)
+
+    override fun getBleMode(): BleMode {
+        val value = prefs.getString(KEY_BLE_MODE, BleMode.REAL.name)
+        return try {
+            BleMode.valueOf(value ?: BleMode.REAL.name)
+        } catch (_: Exception) {
+            BleMode.REAL
+        }
+    }
+
+    override fun saveBleMode(mode: BleMode) {
+        prefs.edit { putString(KEY_BLE_MODE, mode.name) }
+    }
 
     override fun getAllSettings(): List<SettingsBlockEntity> {
         return listOf(

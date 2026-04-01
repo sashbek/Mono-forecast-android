@@ -1,33 +1,30 @@
 package org.pakicek.monoforecast.presentation.ble
 
 import android.Manifest
-import android.annotation.SuppressLint
-import android.util.Log
+import android.content.Context
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.pakicek.monoforecast.data.ble.BleFeature
+import org.pakicek.monoforecast.domain.model.BleState
 import org.pakicek.monoforecast.domain.model.VehicleMetric
 import org.pakicek.monoforecast.domain.model.ble.WheelDevice
 import org.pakicek.monoforecast.domain.model.ble.WheelMetrics
-import org.pakicek.monoforecast.logic.service.MainService
 
 class BluetoothViewModel : ViewModel() {
-
-    companion object {
-        private const val TAG = "BluetoothViewModel"
-    }
 
     private val _currentSpeed = MutableLiveData(0f)
     val currentSpeed: LiveData<Float> = _currentSpeed
 
-    private val _metrics = MutableLiveData<List<VehicleMetric>>()
+    private val _metrics = MutableLiveData<List<VehicleMetric>>(emptyList())
     val metrics: LiveData<List<VehicleMetric>> = _metrics
 
-    private val _connectionStatus = MutableLiveData("Disconnected")
+    private val _connectionStatus = MutableLiveData("Waiting for Bluetooth...")
     val connectionStatus: LiveData<String> = _connectionStatus
 
     private val _devices = MutableLiveData<List<WheelDevice>>(emptyList())
@@ -41,149 +38,121 @@ class BluetoothViewModel : ViewModel() {
 
     private var bleFeature: BleFeature? = null
 
-    init {
-        subscribeToBleData()
-    }
+    private var stateJob: Job? = null
+    private var devicesJob: Job? = null
+    private var metricsJob: Job? = null
+    private var errorJob: Job? = null
 
-    private fun subscribeToBleData() {
-        viewModelScope.launch {
-            MainService.deviceFound?.collect { device ->
-                Log.d(TAG, "Device found: ${device.name}")
-                addDeviceDirectly(device)
+    fun attach(context: Context) {
+        if (bleFeature != null) return
+
+        val feature = BleFeature(context.applicationContext)
+        bleFeature = feature
+
+        stateJob = viewModelScope.launch {
+            feature.state.collectLatest { state ->
+                when (state) {
+                    BleState.DISCONNECTED -> {
+                        _isScanning.value = false
+                        _isConnected.value = false
+                        _connectionStatus.value = "Disconnected"
+                        _currentSpeed.value = 0f
+                        _metrics.value = emptyList()
+                    }
+
+                    BleState.CONNECTING -> {
+                        _isScanning.value = false
+                        _isConnected.value = false
+                        _connectionStatus.value = "Connecting..."
+                    }
+
+                    BleState.CONNECTED -> {
+                        _isScanning.value = false
+                        _isConnected.value = true
+                        _connectionStatus.value = "Connected"
+                    }
+
+                    BleState.SCANNING -> {
+                        _isScanning.value = true
+                        _isConnected.value = false
+                        _connectionStatus.value = "Scanning..."
+                    }
+                }
             }
         }
 
-        viewModelScope.launch {
-            MainService.metricsUpdate?.collect { metrics ->
-                Log.d(TAG, "Metrics update received")
-                updateMetricsDirectly(metrics)
+        devicesJob = viewModelScope.launch {
+            feature.deviceFound.collectLatest { device ->
+                val current = _devices.value?.toMutableList() ?: mutableListOf()
+                val index = current.indexOfFirst { it.address == device.address }
+                if (index >= 0) {
+                    current[index] = device
+                } else {
+                    current.add(device)
+                }
+                _devices.value = current
             }
         }
 
-        viewModelScope.launch {
-            MainService.error?.collect { error ->
-                Log.e(TAG, "BLE error: $error")
-                onError(error)
+        metricsJob = viewModelScope.launch {
+            feature.metricsUpdate.collectLatest { metrics ->
+                _currentSpeed.value = metrics.speed
+                _metrics.value = mapMetrics(metrics)
+            }
+        }
+
+        errorJob = viewModelScope.launch {
+            feature.error.collectLatest { message ->
+                _connectionStatus.value = message
+                _isConnected.value = false
             }
         }
     }
 
-    fun setBLEService(bleFeature: BleFeature?) {
-        this.bleFeature = bleFeature
-    }
-
+    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
     fun startScan() {
-        Log.d(TAG, "startScan called")
         bleFeature?.startScan()
-        _isScanning.value = true
-        _connectionStatus.value = "Scanning for devices..."
     }
 
+    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
     fun stopScan() {
-        Log.d(TAG, "stopScan called")
         bleFeature?.stopScan()
-        _isScanning.value = false
-        _connectionStatus.value = "Scan stopped"
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun connectToDevice(device: WheelDevice) {
-        Log.d(TAG, "connectToDevice called: ${device.name}")
-        bleFeature?.connectToDevice(device)
         _connectionStatus.value = "Connecting to ${device.name}..."
+        _isConnected.value = false
+        bleFeature?.connectToDevice(device)
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun disconnect() {
-        Log.d(TAG, "disconnect called")
         bleFeature?.disconnect()
-        _connectionStatus.value = "Disconnecting..."
     }
 
-    fun addDeviceDirectly(device: WheelDevice) {
-        Log.d(TAG, "addDeviceDirectly: ${device.name}")
-        val currentList = _devices.value?.toMutableList() ?: mutableListOf()
-
-        val existingIndex = currentList.indexOfFirst { it.address == device.address }
-        if (existingIndex != -1) {
-            currentList[existingIndex] = device
-        } else {
-            currentList.add(device)
+    private fun mapMetrics(metrics: WheelMetrics): List<VehicleMetric> {
+        return buildList {
+            add(VehicleMetric("SPEED", "%.1f".format(metrics.speed), "km/h"))
+            add(VehicleMetric("BATTERY", metrics.batteryLevel.toString(), "%"))
+            add(VehicleMetric("VOLTAGE", "%.1f".format(metrics.voltage), "V"))
+            add(VehicleMetric("CURRENT", "%.1f".format(metrics.current), "A"))
+            add(VehicleMetric("TEMP", "%.1f".format(metrics.temperature), "°C"))
+            add(VehicleMetric("DISTANCE", "%.1f".format(metrics.distance), "km"))
         }
-
-        _devices.value = currentList
-    }
-
-    @SuppressLint("DefaultLocale")
-    fun updateMetricsDirectly(metrics: WheelMetrics) {
-        Log.d(TAG, "updateMetricsDirectly called")
-
-        val vehicleMetrics = mutableListOf<VehicleMetric>()
-
-        metrics.speed.let {
-            vehicleMetrics.add(VehicleMetric("SPEED", String.format("%.1f", it), "km/h"))
-            _currentSpeed.value = it
-        }
-
-        metrics.voltage.let {
-            vehicleMetrics.add(VehicleMetric("VOLTAGE", String.format("%.1f", it), "V"))
-        }
-
-        metrics.current.let {
-            vehicleMetrics.add(VehicleMetric("CURRENT", String.format("%.1f", it), "A"))
-        }
-
-        metrics.distance.let {
-            vehicleMetrics.add(VehicleMetric("DISTANCE", String.format("%.1f", it), "km"))
-        }
-
-        metrics.temperature.let {
-            vehicleMetrics.add(VehicleMetric("TEMP", it.toString(), "°C"))
-        }
-
-        metrics.batteryLevel.let {
-            vehicleMetrics.add(VehicleMetric("BATTERY", it.toString(), "%"))
-        }
-
-        _metrics.value = vehicleMetrics
-    }
-
-    fun onScanStarted() {
-        Log.d(TAG, "onScanStarted called")
-        _isScanning.value = true
-        _connectionStatus.value = "Scanning for devices..."
-    }
-
-    fun onScanStopped() {
-        Log.d(TAG, "onScanStopped called")
-        _isScanning.value = false
-        if (_isConnected.value != true) {
-            _connectionStatus.value = "Scan stopped"
-        }
-    }
-
-    fun onConnected() {
-        Log.d(TAG, "onConnected called")
-        _isConnected.value = true
-        _isScanning.value = false
-        _connectionStatus.value = "Connected"
-    }
-
-    fun onDisconnected() {
-        Log.d(TAG, "onDisconnected called")
-        _isConnected.value = false
-        _connectionStatus.value = "Disconnected"
-        _currentSpeed.value = 0f
-        _metrics.value = emptyList()
-    }
-
-    fun onError(message: String?) {
-        Log.e(TAG, "onError: $message")
-        _connectionStatus.value = "Error: ${message ?: "Unknown error"}"
     }
 
     fun cleanup() {
-        Log.d(TAG, "cleanup called")
+        stateJob?.cancel()
+        devicesJob?.cancel()
+        metricsJob?.cancel()
+        errorJob?.cancel()
+        bleFeature?.cleanup()
         bleFeature = null
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        cleanup()
     }
 }

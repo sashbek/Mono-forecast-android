@@ -59,6 +59,15 @@ class SpeedometerView @JvmOverloads constructor(
         invalidate()
     }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val width = MeasureSpec.getSize(widthMeasureSpec)
+        val height = MeasureSpec.getSize(heightMeasureSpec)
+
+        val size = min(width, height)
+
+        setMeasuredDimension(size, size)
+    }
+
     override fun onDraw(canvas: android.graphics.Canvas) {
         super.onDraw(canvas)
 
@@ -80,7 +89,12 @@ class SpeedometerView @JvmOverloads constructor(
 
         textPaint.textSize = size * 0.25f
         textPaint.isFakeBoldText = true
-        canvas.drawText(currentSpeed.toInt().toString(), w / 2, h / 2 + (textPaint.textSize / 3), textPaint)
+        canvas.drawText(
+            currentSpeed.toInt().toString(),
+            w / 2,
+            h / 2 + (textPaint.textSize / 3),
+            textPaint
+        )
 
         textPaint.textSize = size * 0.08f
         textPaint.isFakeBoldText = false
