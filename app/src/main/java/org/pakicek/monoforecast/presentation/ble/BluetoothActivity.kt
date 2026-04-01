@@ -21,8 +21,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.launch
 import org.pakicek.monoforecast.databinding.ActivityBluetoothBinding
 import org.pakicek.monoforecast.logic.service.MainService
-import org.pakicek.monoforecast.logic.viewmodel.ble.BluetoothViewModel
-import org.pakicek.monoforecast.logic.viewmodel.ble.BluetoothViewModelFactory
 import org.pakicek.monoforecast.presentation.ble.adapter.DevicesAdapter
 import org.pakicek.monoforecast.presentation.ble.adapter.MetricsAdapter
 

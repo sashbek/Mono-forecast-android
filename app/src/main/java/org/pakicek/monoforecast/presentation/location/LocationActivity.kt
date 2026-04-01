@@ -27,8 +27,6 @@ import org.pakicek.monoforecast.data.features.GnssFeature
 import org.pakicek.monoforecast.databinding.ActivityLocationBinding
 import org.pakicek.monoforecast.logic.service.AppNotificationManager
 import org.pakicek.monoforecast.logic.service.NotificationActionReceiver
-import org.pakicek.monoforecast.logic.viewmodel.location.LocationViewModel
-import org.pakicek.monoforecast.logic.viewmodel.location.LocationViewModelFactory
 
 class LocationActivity : AppCompatActivity() {
 

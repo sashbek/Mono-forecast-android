@@ -12,8 +12,8 @@ import kotlinx.coroutines.launch
 import org.pakicek.monoforecast.MonoForecastApp
 import org.pakicek.monoforecast.R
 import org.pakicek.monoforecast.databinding.FragmentLogListBinding
-import org.pakicek.monoforecast.logic.viewmodel.logs.LogsViewModel
-import org.pakicek.monoforecast.logic.viewmodel.logs.LogsViewModelFactory
+import org.pakicek.monoforecast.presentation.logs.LogsViewModel
+import org.pakicek.monoforecast.presentation.logs.LogsViewModelFactory
 import org.pakicek.monoforecast.presentation.logs.adapter.LogFilesAdapter
 
 class LogListFragment : Fragment(R.layout.fragment_log_list) {

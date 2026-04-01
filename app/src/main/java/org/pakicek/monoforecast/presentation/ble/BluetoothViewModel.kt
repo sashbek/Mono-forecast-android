@@ -1,4 +1,4 @@
-package org.pakicek.monoforecast.logic.viewmodel.ble
+package org.pakicek.monoforecast.presentation.ble
 
 import android.Manifest
 import android.annotation.SuppressLint

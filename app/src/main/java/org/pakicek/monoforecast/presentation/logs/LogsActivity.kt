@@ -9,8 +9,6 @@ import androidx.core.view.WindowInsetsCompat
 import org.pakicek.monoforecast.MonoForecastApp
 import org.pakicek.monoforecast.R
 import org.pakicek.monoforecast.databinding.ActivityLogsBinding
-import org.pakicek.monoforecast.logic.viewmodel.logs.LogsViewModel
-import org.pakicek.monoforecast.logic.viewmodel.logs.LogsViewModelFactory
 import org.pakicek.monoforecast.presentation.logs.fragment.LogListFragment
 import org.pakicek.monoforecast.presentation.utils.showSnackbar
 

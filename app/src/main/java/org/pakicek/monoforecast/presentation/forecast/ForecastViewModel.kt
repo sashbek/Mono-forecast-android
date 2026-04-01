@@ -1,4 +1,4 @@
-package org.pakicek.monoforecast.logic.viewmodel.forecast
+package org.pakicek.monoforecast.presentation.forecast
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

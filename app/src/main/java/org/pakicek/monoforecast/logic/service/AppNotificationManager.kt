@@ -50,7 +50,6 @@ class AppNotificationManager(private val context: Context) {
         remoteViews.setImageViewResource(R.id.btn_gnss, gnssIcon)
         remoteViews.setOnClickPendingIntent(R.id.btn_gnss, createActionIntent(gnssAction))
 
-        // BLE Button
         val (bleIcon, bleAction) = when (bleState) {
             BleState.DISCONNECTED -> R.drawable.ic_bluetooth_disabled to ACTION_TOGGLE_BLE
             BleState.CONNECTED -> R.drawable.ic_bluetooth_connected to ACTION_TOGGLE_BLE
@@ -60,7 +59,6 @@ class AppNotificationManager(private val context: Context) {
         remoteViews.setImageViewResource(R.id.btn_ble, bleIcon)
         remoteViews.setOnClickPendingIntent(R.id.btn_ble, createActionIntent(bleAction))
 
-        // Refresh Button
         remoteViews.setOnClickPendingIntent(R.id.btn_refresh, createActionIntent(ACTION_REFRESH_WEATHER))
 
         val statusMsg = "GNSS: ${gnssState.name} | BLE: ${bleState.name}"

@@ -1,4 +1,4 @@
-package org.pakicek.monoforecast.logic.viewmodel.location
+package org.pakicek.monoforecast.presentation.location
 
 import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData

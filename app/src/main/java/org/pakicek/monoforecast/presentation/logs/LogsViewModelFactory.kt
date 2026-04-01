@@ -1,4 +1,4 @@
-package org.pakicek.monoforecast.logic.viewmodel.logs
+package org.pakicek.monoforecast.presentation.logs
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
