@@ -1,4 +1,4 @@
-package org.pakicek.monoforecast.presentation.utils
+package org.pakicek.monoforecast.utils
 
 import android.view.View
 import androidx.core.content.ContextCompat

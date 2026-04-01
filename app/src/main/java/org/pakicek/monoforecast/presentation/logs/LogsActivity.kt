@@ -10,7 +10,7 @@ import org.pakicek.monoforecast.MonoForecastApp
 import org.pakicek.monoforecast.R
 import org.pakicek.monoforecast.databinding.ActivityLogsBinding
 import org.pakicek.monoforecast.presentation.logs.fragment.LogListFragment
-import org.pakicek.monoforecast.presentation.utils.showSnackbar
+import org.pakicek.monoforecast.utils.showSnackbar
 
 class LogsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLogsBinding
