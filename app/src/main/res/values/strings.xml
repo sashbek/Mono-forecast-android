@@ -75,4 +75,26 @@
 
     <!-- Bluetooth -->
     <string name="bluetooth_header_text">Connection</string>
+
+    <!-- BDUI -->
+    <string name="bdui_more">More info</string>
+    <string name="bdui_action">Action</string>
+    <string name="bdui_add_post">Add a post</string>
+    <string name="bdui_fill_fields">Enter a title and content</string>
+    <string name="bdui_post_title">Title</string>
+    <string name="bdui_post_body">Post content</string>
+    <string name="bdui_header_loading">Loading…</string>
+    <string name="bdui_header_error">Error</string>
+    <string name="bdui_error">Unable to load page</string>
+    <string name="bdui_icon">Icon</string>
+    <string name="bdui_image">Image</string>
+    <string name="bdui_delete">Delete</string>
+    <string name="bdui_delete_confirm_title">Delete the post?</string>
+    <string name="bdui_delete_confirm_message">The post will be removed from the feed. This action cannot be undone.</string>
+    <string name="bdui_add_only_main">Adding posts is only available on the main news page.</string>
+    <string name="bdui_delete_only_main">Deleting posts is only available on the main news page.</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="news_button_text">News</string>
+    <string name="news_button_icon">News</string>
 </resources>

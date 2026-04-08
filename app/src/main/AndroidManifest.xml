@@ -44,6 +44,9 @@
             android:name=".presentation.ble.BluetoothActivity"
             android:exported="false" />
         <activity
+            android:name=".presentation.bdui.BduiActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.main.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.MonoForecast">
