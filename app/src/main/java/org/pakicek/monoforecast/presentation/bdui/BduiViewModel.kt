@@ -26,6 +26,11 @@ class BduiViewModel(
         }
     }
 
+    private fun normalizeMainBlocks(blocks: List<BduiBlock>): List<BduiBlock> {
+        val (content, actions) = blocks.partition { it.type != "action_button" }
+        return content + actions
+    }
+
     fun addPost(title: String, body: String, previewImageKey: String) {
         viewModelScope.launch {
             val postId = "post_${System.currentTimeMillis()}"
@@ -41,31 +46,45 @@ class BduiViewModel(
 
             val putPost = repo.putPage(postPath, postPage)
             if (putPost.isFailure) {
-                _state.value = BduiUiState.Error(postPath, putPost.exceptionOrNull()?.message ?: "Failed to save post")
+                _state.value = BduiUiState.Error(
+                    postPath,
+                    putPost.exceptionOrNull()?.message ?: "Failed to save post"
+                )
                 return@launch
             }
 
             val mainResult = repo.getPage("/main")
             if (mainResult.isFailure) {
-                _state.value = BduiUiState.Error("/main", mainResult.exceptionOrNull()?.message ?: "Failed to load main")
+                _state.value = BduiUiState.Error(
+                    "/main",
+                    mainResult.exceptionOrNull()?.message ?: "Failed to load main"
+                )
                 return@launch
             }
 
             val main = mainResult.getOrThrow()
+            val normalized = normalizeMainBlocks(main.blocks)
+            val (contentBlocks, actionBlocks) = normalized.partition { it.type != "action_button" }
+
+            val newPreview = BduiBlock(
+                type = "post_preview",
+                id = postId,
+                title = title,
+                imageKey = previewImageKey,
+                buttonText = "More info",
+                path = postPath
+            )
+
             val updatedMain = main.copy(
-                blocks = main.blocks + BduiBlock(
-                    type = "post_preview",
-                    id = postId,
-                    title = title,
-                    imageKey = previewImageKey,
-                    buttonText = "More info",
-                    path = postPath
-                )
+                blocks = contentBlocks + newPreview + actionBlocks
             )
 
             val putMain = repo.putPage("/main", updatedMain)
             if (putMain.isFailure) {
-                _state.value = BduiUiState.Error("/main", putMain.exceptionOrNull()?.message ?: "Failed to update main")
+                _state.value = BduiUiState.Error(
+                    "/main",
+                    putMain.exceptionOrNull()?.message ?: "Failed to update main"
+                )
                 return@launch
             }
 
@@ -79,22 +98,30 @@ class BduiViewModel(
 
             val mainRes = repo.getPage("/main")
             if (mainRes.isFailure) {
-                _state.value = BduiUiState.Error("/main", mainRes.exceptionOrNull()?.message ?: "Failed to load main")
+                _state.value = BduiUiState.Error(
+                    "/main",
+                    mainRes.exceptionOrNull()?.message ?: "Failed to load main"
+                )
                 return@launch
             }
 
             val main = mainRes.getOrThrow()
 
-            val updatedBlocks = main.blocks.filterNot { block ->
+            val filtered = main.blocks.filterNot { block ->
                 block.type == "post_preview" && (
                         (!postId.isNullOrBlank() && block.id == postId) ||
                                 (block.path != null && block.path == postPath)
                         )
             }
 
+            val updatedBlocks = normalizeMainBlocks(filtered)
+
             val putMain = repo.putPage("/main", main.copy(blocks = updatedBlocks))
             if (putMain.isFailure) {
-                _state.value = BduiUiState.Error("/main", putMain.exceptionOrNull()?.message ?: "Failed to update main")
+                _state.value = BduiUiState.Error(
+                    "/main",
+                    putMain.exceptionOrNull()?.message ?: "Failed to update main"
+                )
                 return@launch
             }
 

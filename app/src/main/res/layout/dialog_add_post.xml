@@ -17,7 +17,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:hint="@string/bdui_post_body"
-        android:minLines="4"
         android:gravity="top"
         android:inputType="textMultiLine" />
 

@@ -22,7 +22,14 @@ class BduiRenderer(
     ) {
         container.removeAllViews()
 
-        blocks.forEach { block ->
+        val normalizedBlocks = if (isMainPage) {
+            val (content, actions) = blocks.partition { it.type != "action_button" }
+            content + actions
+        } else {
+            blocks
+        }
+
+        normalizedBlocks.forEach { block ->
             when (block.type) {
                 "post_preview" -> {
                     val v = inflater.inflate(R.layout.item_bdui_post_preview, container, false)
@@ -76,6 +83,8 @@ class BduiRenderer(
                     btn.setOnClickListener { if (action != null) onAction(action) }
                     container.addView(btn)
                 }
+
+                else -> Unit
             }
         }
     }

@@ -24,4 +24,14 @@
         <item name="android:src">@drawable/ic_back_button</item>
     </style>
 
+    <style name="Widget.MonoForecast.DialogTextButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">?attr/colorSecondary</item>
+    </style>
+
+    <style name="ThemeOverlay.MonoForecast.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.MonoForecast.DialogTextButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.MonoForecast.DialogTextButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.MonoForecast.DialogTextButton</item>
+    </style>
+
 </resources>

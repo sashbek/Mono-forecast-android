@@ -7,6 +7,7 @@ import android.widget.EditText
 import android.widget.Spinner
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -82,8 +83,7 @@ class BduiActivity : AppCompatActivity() {
 
     private fun navigate(path: String) {
         startActivity(
-            Intent(this, BduiActivity::class.java)
-                .putExtra(EXTRA_PATH, path)
+            Intent(this, BduiActivity::class.java).putExtra(EXTRA_PATH, path)
         )
     }
 
@@ -114,15 +114,28 @@ class BduiActivity : AppCompatActivity() {
         val iconSpinner = dialogView.findViewById<Spinner>(R.id.spinnerIcon)
 
         val icons = listOf(
-            "ic_forecast_button",
-            "ic_location_button",
+            "ic_back_button",
             "ic_bluetooth_button",
+            "ic_bluetooth_connected",
+            "ic_bluetooth_disabled",
+            "ic_close_button",
+            "ic_delete_button",
+            "ic_forecast_button",
+            "ic_launcher_background",
+            "ic_launcher_foreground",
+            "ic_location_button",
             "ic_logs_button",
+            "ic_news_button",
+            "ic_play",
+            "ic_settings",
+            "ic_stop",
+            "ic_sync",
+            "ic_timer",
             "ic_warning"
         )
         iconSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, icons)
 
-        val dialog = MaterialAlertDialogBuilder(this)
+        val dialog = MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_MonoForecast_MaterialAlertDialog)
             .setTitle(getString(R.string.bdui_add_post))
             .setView(dialogView)
             .setNegativeButton(getString(R.string.cancel)) { d, _ -> d.dismiss() }
@@ -133,7 +146,7 @@ class BduiActivity : AppCompatActivity() {
             dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val title = titleEt.text?.toString()?.trim().orEmpty()
                 val body = bodyEt.text?.toString()?.trim().orEmpty()
-                val iconKey = icons.getOrElse(iconSpinner.selectedItemPosition) { "ic_logs_button" }
+                val iconKey = icons.getOrElse(iconSpinner.selectedItemPosition) { "ic_news_button" }
 
                 if (title.isBlank() || body.isBlank()) {
                     binding.root.showSnackbar(getString(R.string.bdui_fill_fields))
@@ -154,7 +167,7 @@ class BduiActivity : AppCompatActivity() {
             return
         }
 
-        MaterialAlertDialogBuilder(this)
+        val dialog = MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_MonoForecast_MaterialAlertDialog)
             .setTitle(getString(R.string.bdui_delete_confirm_title))
             .setMessage(getString(R.string.bdui_delete_confirm_message))
             .setNegativeButton(getString(R.string.cancel)) { d, _ -> d.dismiss() }
@@ -162,7 +175,14 @@ class BduiActivity : AppCompatActivity() {
                 viewModel.deletePostFromMain(postId, postPath)
                 d.dismiss()
             }
-            .show()
+            .create()
+
+        dialog.setOnShowListener {
+            dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(ContextCompat.getColor(this, R.color.red))
+        }
+
+        dialog.show()
     }
 
     private fun setupInsets() {
