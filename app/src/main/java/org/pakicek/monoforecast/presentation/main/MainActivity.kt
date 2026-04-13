@@ -10,7 +10,7 @@ import org.pakicek.monoforecast.MonoForecastApp
 import org.pakicek.monoforecast.databinding.ActivityMainBinding
 import org.pakicek.monoforecast.domain.model.settings.AppTheme
 import org.pakicek.monoforecast.logic.service.MainService
-import org.pakicek.monoforecast.presentation.bdui.BduiActivity
+import org.pakicek.monoforecast.presentation.sdui.SduiActivity
 import org.pakicek.monoforecast.presentation.ble.BluetoothActivity
 import org.pakicek.monoforecast.presentation.forecast.ForecastActivity
 import org.pakicek.monoforecast.presentation.location.LocationActivity
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
             logsActivityButton.setOnClickListener { navigateTo(LogsActivity::class.java) }
             locationActivityButton.setOnClickListener { navigateTo(LocationActivity::class.java) }
             bluetoothActivityButton.setOnClickListener { navigateTo(BluetoothActivity::class.java) }
-            bduiActivityButton.setOnClickListener { navigateTo(BduiActivity::class.java) }
+            sduiActivityButton.setOnClickListener { navigateTo(SduiActivity::class.java) }
         }
     }
 

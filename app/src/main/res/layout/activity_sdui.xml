@@ -13,8 +13,8 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimaryDark"
         android:padding="4dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/btnBack"
@@ -26,15 +26,37 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1" />
 
+        <ImageButton
+            android:id="@+id/btnJson"
+            style="@style/backButton"
+            android:contentDescription="@string/bdui_view_json_desc"
+            android:src="@drawable/ic_logs_button"
+            app:tint="?android:attr/textColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1" />
+
+        <ImageButton
+            android:id="@+id/btnReload"
+            style="@style/backButton"
+            android:contentDescription="@string/bdui_reload_desc"
+            android:src="@drawable/ic_sync"
+            app:tint="?android:attr/textColor"
+            app:layout_constraintEnd_toStartOf="@id/btnJson"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1" />
+
         <TextView
             android:id="@+id/tvSectionTitle"
             style="@style/TextAppearance.AppCompat.Header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="@string/bdui_header_loading"
+            android:textColor="?android:attr/textColor"
             app:layout_constraintStart_toEndOf="@id/btnBack"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnReload"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 

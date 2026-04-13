@@ -1,17 +1,17 @@
-package org.pakicek.monoforecast.presentation.bdui
+package org.pakicek.monoforecast.presentation.sdui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import org.pakicek.monoforecast.domain.repository.BduiRepository
+import org.pakicek.monoforecast.domain.repository.EchoRepository
 
-class BduiViewModelFactory(
-    private val repo: BduiRepository
+class SduiViewModelFactory(
+    private val repo: EchoRepository
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(BduiViewModel::class.java)) {
-            return BduiViewModel(repo) as T
+        if (modelClass.isAssignableFrom(SduiViewModel::class.java)) {
+            return SduiViewModel(repo) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

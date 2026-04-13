@@ -44,7 +44,7 @@
             android:name=".presentation.ble.BluetoothActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.bdui.BduiActivity"
+            android:name=".presentation.sdui.SduiActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.main.MainActivity"

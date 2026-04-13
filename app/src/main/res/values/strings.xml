@@ -89,10 +89,15 @@
     <string name="bdui_icon">Icon</string>
     <string name="bdui_image">Image</string>
     <string name="bdui_delete">Delete</string>
-    <string name="bdui_delete_confirm_title">Delete the post?</string>
-    <string name="bdui_delete_confirm_message">The post will be removed from the feed. This action cannot be undone.</string>
+    <string name="bdui_delete_confirm_title">Delete post?</string>
+    <string name="bdui_delete_confirm_message">This action cannot be undone.</string>
     <string name="bdui_add_only_main">Adding posts is only available on the main news page.</string>
     <string name="bdui_delete_only_main">Deleting posts is only available on the main news page.</string>
+    <string name="bdui_view_json_desc">View raw JSON</string>
+    <string name="bdui_reload_desc">Reload</string>
+    <string name="bdui_raw_json_title">Raw JSON</string>
+    <string name="copy">Copy</string>
+    <string name="close">Close</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="news_button_text">News</string>
