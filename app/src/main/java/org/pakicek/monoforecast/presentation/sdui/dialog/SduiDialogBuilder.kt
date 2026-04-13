@@ -1,8 +1,6 @@
 package org.pakicek.monoforecast.presentation.sdui.dialog
 
 import android.content.Context
-import android.text.InputType
-import android.util.TypedValue
 import android.view.ContextThemeWrapper
 import android.view.View
 import android.view.ViewGroup
@@ -10,24 +8,21 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.NestedScrollView
-import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.textfield.MaterialAutoCompleteTextView
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.JsonObject
 import org.pakicek.monoforecast.R
 import org.pakicek.monoforecast.domain.model.sdui.SduiParser
 import org.pakicek.monoforecast.domain.model.sdui.arr
 import org.pakicek.monoforecast.domain.model.sdui.asObjOrNull
-import org.pakicek.monoforecast.domain.model.sdui.bool
 import org.pakicek.monoforecast.domain.model.sdui.obj
 import org.pakicek.monoforecast.domain.model.sdui.str
 import org.pakicek.monoforecast.domain.model.sdui.models.SduiAction
 import org.pakicek.monoforecast.domain.model.sdui.models.TemplateVars
+import org.pakicek.monoforecast.presentation.sdui.dialog.items.DialogItemRegistry
+import org.pakicek.monoforecast.presentation.sdui.dialog.items.DialogItemRenderContext
+import org.pakicek.monoforecast.presentation.sdui.dialog.items.IconSelectItemRenderer
+import org.pakicek.monoforecast.presentation.sdui.dialog.items.InputTextItemRenderer
 import org.pakicek.monoforecast.presentation.sdui.dialog.util.DialogUi
-import org.pakicek.monoforecast.presentation.sdui.dialog.util.IconOptionsParser
-import org.pakicek.monoforecast.presentation.sdui.dialog.util.NoFilterArrayAdapter
 
 class SduiDialogBuilder(
     private val appContext: Context
@@ -38,6 +33,13 @@ class SduiDialogBuilder(
         val negativeAction: SduiAction?,
         val positiveAction: SduiAction?,
         val buildVarsOrNull: () -> TemplateVars?
+    )
+
+    private val registry = DialogItemRegistry(
+        listOf(
+            InputTextItemRenderer(),
+            IconSelectItemRenderer()
+        )
     )
 
     fun build(dialogObj: JsonObject, baseVars: TemplateVars): BuiltDialog {
@@ -53,7 +55,7 @@ class SduiDialogBuilder(
 
         val formValues = mutableMapOf<String, String>()
         val requiredFields = mutableSetOf<String>()
-        val textLayouts = mutableMapOf<String, TextInputLayout>()
+        val textLayouts = mutableMapOf<String, com.google.android.material.textfield.TextInputLayout>()
 
         val content = LinearLayout(dialogContext).apply {
             orientation = LinearLayout.VERTICAL
@@ -66,109 +68,20 @@ class SduiDialogBuilder(
             content.addView(DialogUi.space(dialogContext, 12))
         }
 
+        val ctx = DialogItemRenderContext(
+            context = dialogContext,
+            typeface = typeface,
+            inputTextSizeSp = inputTextSizeSp,
+            addItem = ::addItem,
+            formValues = formValues,
+            requiredFields = requiredFields,
+            textLayouts = textLayouts
+        )
+
         itemsArr.forEach { el ->
             val itemObj = el.asObjOrNull() ?: return@forEach
             val type = itemObj.str("type") ?: return@forEach
-            val id = itemObj.str("id") ?: error("dialog item id is required")
-            val data = itemObj.obj("data") ?: JsonObject()
-
-            when (type) {
-                "input_text" -> {
-                    val hint = data.str("hint")
-                    val required = data.bool("required") ?: false
-                    val multiline = data.bool("multiline") ?: false
-
-                    if (required) requiredFields += id
-
-                    val til = DialogUi.outlinedTil(dialogContext).apply {
-                        this.hint = hint
-                        isErrorEnabled = true
-                    }
-
-                    val et = TextInputEditText(dialogContext).apply {
-                        layoutParams = DialogUi.lpMatchWrap()
-                        setTextSize(TypedValue.COMPLEX_UNIT_SP, inputTextSizeSp)
-                        if (typeface != null) setTypeface(typeface)
-
-                        if (multiline) {
-                            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-                            isSingleLine = false
-                            minLines = 1
-                            maxLines = 6
-                        } else {
-                            inputType = InputType.TYPE_CLASS_TEXT
-                            isSingleLine = true
-                            maxLines = 1
-                        }
-                    }
-
-                    til.addView(et)
-
-                    formValues[id] = ""
-                    textLayouts[id] = til
-
-                    et.doAfterTextChanged { s ->
-                        formValues[id] = s?.toString().orEmpty()
-                        til.error = null
-                    }
-
-                    addItem(til)
-                }
-
-                "icon_select" -> {
-                    val label = data.str("label") ?: "Icon"
-                    val optionsEl = requireNotNull(data.get("options")) { "icon_select.options is required" }
-                    val options = IconOptionsParser.parse(optionsEl)
-                    require(options.isNotEmpty()) { "icon_select.options must not be empty" }
-
-                    val labels = options.map { it.label }
-
-                    val til = DialogUi.outlinedTil(dialogContext).apply {
-                        hint = label
-                        endIconMode = TextInputLayout.END_ICON_DROPDOWN_MENU
-                        isErrorEnabled = false
-                    }
-
-                    val adapter = NoFilterArrayAdapter(
-                        dialogContext,
-                        com.google.android.material.R.layout.mtrl_auto_complete_simple_item,
-                        labels
-                    )
-
-                    val actv = MaterialAutoCompleteTextView(dialogContext).apply {
-                        layoutParams = DialogUi.lpMatchWrap()
-                        setAdapter(adapter)
-                        threshold = 0
-
-                        setTextSize(TypedValue.COMPLEX_UNIT_SP, inputTextSizeSp)
-                        if (typeface != null) setTypeface(typeface)
-
-                        keyListener = null
-                        inputType = InputType.TYPE_NULL
-                        isCursorVisible = false
-                        setTextIsSelectable(false)
-                        setOnLongClickListener { true }
-
-                        setText(labels.first(), false)
-                        setOnClickListener { showDropDown() }
-                    }
-
-                    til.addView(actv)
-
-                    formValues[id] = options.first().key
-
-                    til.setEndIconOnClickListener {
-                        actv.requestFocus()
-                        actv.showDropDown()
-                    }
-
-                    actv.setOnItemClickListener { _, _, position, _ ->
-                        formValues[id] = options.getOrNull(position)?.key.orEmpty()
-                    }
-
-                    addItem(til)
-                }
-            }
+            registry.get(type)?.render(itemObj, ctx)
         }
 
         val negative = buttonsArr[0].asObjOrNull() ?: error("dialog.buttons[0] must be object")
