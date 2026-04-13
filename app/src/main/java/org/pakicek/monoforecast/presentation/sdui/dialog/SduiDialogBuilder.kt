@@ -15,12 +15,19 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import org.pakicek.monoforecast.R
-import org.pakicek.monoforecast.domain.model.sdui.*
+import org.pakicek.monoforecast.domain.model.sdui.SduiParser
+import org.pakicek.monoforecast.domain.model.sdui.arr
+import org.pakicek.monoforecast.domain.model.sdui.asObjOrNull
+import org.pakicek.monoforecast.domain.model.sdui.bool
+import org.pakicek.monoforecast.domain.model.sdui.obj
+import org.pakicek.monoforecast.domain.model.sdui.str
 import org.pakicek.monoforecast.domain.model.sdui.models.SduiAction
 import org.pakicek.monoforecast.domain.model.sdui.models.TemplateVars
+import org.pakicek.monoforecast.presentation.sdui.dialog.util.DialogUi
+import org.pakicek.monoforecast.presentation.sdui.dialog.util.IconOptionsParser
+import org.pakicek.monoforecast.presentation.sdui.dialog.util.NoFilterArrayAdapter
 
 class SduiDialogBuilder(
     private val appContext: Context
@@ -50,13 +57,13 @@ class SduiDialogBuilder(
 
         val content = LinearLayout(dialogContext).apply {
             orientation = LinearLayout.VERTICAL
-            layoutParams = lpMatchWrap()
-            setPadding(dp(dialogContext, 16), dp(dialogContext, 8), dp(dialogContext, 16), dp(dialogContext, 0))
+            layoutParams = DialogUi.lpMatchWrap()
+            setPadding(DialogUi.dp(dialogContext, 16), DialogUi.dp(dialogContext, 8), DialogUi.dp(dialogContext, 16), 0)
         }
 
         fun addItem(view: View) {
             content.addView(view)
-            content.addView(space(dialogContext, 12))
+            content.addView(DialogUi.space(dialogContext, 12))
         }
 
         itemsArr.forEach { el ->
@@ -73,13 +80,13 @@ class SduiDialogBuilder(
 
                     if (required) requiredFields += id
 
-                    val til = newOutlinedTextInputLayout(dialogContext).apply {
+                    val til = DialogUi.outlinedTil(dialogContext).apply {
                         this.hint = hint
                         isErrorEnabled = true
                     }
 
                     val et = TextInputEditText(dialogContext).apply {
-                        layoutParams = lpMatchWrap()
+                        layoutParams = DialogUi.lpMatchWrap()
                         setTextSize(TypedValue.COMPLEX_UNIT_SP, inputTextSizeSp)
                         if (typeface != null) setTypeface(typeface)
 
@@ -111,16 +118,16 @@ class SduiDialogBuilder(
                 "icon_select" -> {
                     val label = data.str("label") ?: "Icon"
                     val optionsEl = requireNotNull(data.get("options")) { "icon_select.options is required" }
-                    val options = normalizeIconOptions(optionsEl)
+                    val options = IconOptionsParser.parse(optionsEl)
                     require(options.isNotEmpty()) { "icon_select.options must not be empty" }
 
-                    val til = newOutlinedTextInputLayout(dialogContext).apply {
+                    val labels = options.map { it.label }
+
+                    val til = DialogUi.outlinedTil(dialogContext).apply {
                         hint = label
                         endIconMode = TextInputLayout.END_ICON_DROPDOWN_MENU
                         isErrorEnabled = false
                     }
-
-                    val labels = options.map { it.label }
 
                     val adapter = NoFilterArrayAdapter(
                         dialogContext,
@@ -129,10 +136,12 @@ class SduiDialogBuilder(
                     )
 
                     val actv = MaterialAutoCompleteTextView(dialogContext).apply {
-                        layoutParams = lpMatchWrap()
-
+                        layoutParams = DialogUi.lpMatchWrap()
                         setAdapter(adapter)
-                        setText(labels.first(), false)
+                        threshold = 0
+
+                        setTextSize(TypedValue.COMPLEX_UNIT_SP, inputTextSizeSp)
+                        if (typeface != null) setTypeface(typeface)
 
                         keyListener = null
                         inputType = InputType.TYPE_NULL
@@ -140,6 +149,7 @@ class SduiDialogBuilder(
                         setTextIsSelectable(false)
                         setOnLongClickListener { true }
 
+                        setText(labels.first(), false)
                         setOnClickListener { showDropDown() }
                     }
 
@@ -158,8 +168,6 @@ class SduiDialogBuilder(
 
                     addItem(til)
                 }
-
-                else -> Unit
             }
         }
 
@@ -205,75 +213,5 @@ class SduiDialogBuilder(
             positiveAction = posAction,
             buildVarsOrNull = buildVarsOrNull
         )
-    }
-
-    private data class IconOption(val key: String, val label: String)
-
-    private fun normalizeIconOptions(el: JsonElement): List<IconOption> {
-        val arr = el.asArrOrNull() ?: error("icon_select.options must be array")
-        return arr.mapNotNull { item ->
-            when {
-                item.isJsonPrimitive -> {
-                    val s = item.asString
-                    IconOption(key = s, label = s)
-                }
-                item.isJsonObject -> {
-                    val o = item.asJsonObject
-                    val key = o.str("key") ?: return@mapNotNull null
-                    val label = o.str("label") ?: key
-                    IconOption(key = key, label = label)
-                }
-                else -> null
-            }
-        }
-    }
-
-    private fun newOutlinedTextInputLayout(ctx: Context): TextInputLayout {
-        return TextInputLayout(ctx).apply {
-            layoutParams = lpMatchWrap()
-            boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
-        }
-    }
-
-    private fun lpMatchWrap(): ViewGroup.LayoutParams =
-        LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-
-    private fun dp(ctx: Context, v: Int): Int =
-        (v * ctx.resources.displayMetrics.density).toInt()
-
-    private fun space(ctx: Context, dp: Int): View =
-        View(ctx).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                this@SduiDialogBuilder.dp(ctx, dp)
-            )
-        }
-
-    private class NoFilterArrayAdapter(
-        context: Context,
-        layoutRes: Int,
-        private val allItems: List<String>
-    ) : android.widget.ArrayAdapter<String>(context, layoutRes, ArrayList(allItems)) {
-
-        private val noFilter = object : android.widget.Filter() {
-            override fun performFiltering(constraint: CharSequence?): FilterResults {
-                return FilterResults().apply {
-                    values = allItems
-                    count = allItems.size
-                }
-            }
-
-            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                clear()
-                addAll(allItems)
-                notifyDataSetChanged()
-            }
-
-            override fun convertResultToString(resultValue: Any): CharSequence {
-                return resultValue.toString()
-            }
-        }
-
-        override fun getFilter(): android.widget.Filter = noFilter
     }
 }

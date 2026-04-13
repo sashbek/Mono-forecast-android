@@ -20,12 +20,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.gson.JsonObject
 import kotlinx.coroutines.launch
 import org.pakicek.monoforecast.MonoForecastApp
 import org.pakicek.monoforecast.R
 import org.pakicek.monoforecast.databinding.ActivitySduiBinding
-import org.pakicek.monoforecast.domain.model.sdui.obj
 import org.pakicek.monoforecast.domain.model.sdui.models.SduiAction
 import org.pakicek.monoforecast.domain.model.sdui.models.SduiEffect
 import org.pakicek.monoforecast.domain.model.sdui.models.TemplateVars
@@ -56,11 +54,7 @@ class SduiActivity : AppCompatActivity() {
         binding.btnReload.setOnClickListener { viewModel.load(currentPath()) }
         binding.btnJson.setOnClickListener {
             val json = lastRawJson
-            if (json.isNullOrBlank()) {
-                binding.root.showSnackbar("No JSON loaded")
-            } else {
-                showRawJsonDialog(json)
-            }
+            if (json.isNullOrBlank()) binding.root.showSnackbar("No JSON loaded") else showRawJsonDialog(json)
         }
 
         viewModel.load(currentPath())
@@ -95,11 +89,10 @@ class SduiActivity : AppCompatActivity() {
                     lastRawJson = state.rawJson
                     binding.tvSectionTitle.text = state.page.title ?: "News"
 
-                    val isMain = state.path == "/main"
                     renderer.render(
                         container = binding.contentContainer,
                         blocks = state.page.blocks,
-                        isMainPage = isMain,
+                        isMainPage = state.path == "/main",
                         onAction = ::dispatchAction,
                         onDeleteAction = ::confirmDelete
                     )
@@ -114,6 +107,7 @@ class SduiActivity : AppCompatActivity() {
                 is SduiEffect.Navigate -> navigate(effect.path)
                 is SduiEffect.CloseDialog -> closeDialog()
                 is SduiEffect.Message -> binding.root.showSnackbar(effect.text)
+                is SduiEffect.OpenDialog -> showDialog(effect.dialog, effect.baseVars)
             }
         }
     }
@@ -130,15 +124,6 @@ class SduiActivity : AppCompatActivity() {
     }
 
     private fun dispatchAction(action: SduiAction) {
-        if (action.type == "open_dialog") {
-            val dialogObj = action.data?.obj("dialog") ?: run {
-                binding.root.showSnackbar("open_dialog requires data.dialog")
-                return
-            }
-            showDialog(dialogObj)
-            return
-        }
-
         val vars = TemplateVars(ts = System.currentTimeMillis().toString(), form = emptyMap())
         viewModel.runAction(action, vars, currentPath())
     }
@@ -149,8 +134,7 @@ class SduiActivity : AppCompatActivity() {
             .setMessage(getString(R.string.bdui_delete_confirm_message))
             .setNegativeButton(getString(R.string.cancel)) { d, _ -> d.dismiss() }
             .setPositiveButton(getString(R.string.bdui_delete)) { d, _ ->
-                val vars = TemplateVars(ts = System.currentTimeMillis().toString(), form = emptyMap())
-                viewModel.runAction(action, vars, currentPath())
+                dispatchAction(action)
                 d.dismiss()
             }
             .create()
@@ -163,10 +147,8 @@ class SduiActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun showDialog(dialogObj: JsonObject) {
-        val baseVars = TemplateVars(ts = System.currentTimeMillis().toString())
+    private fun showDialog(dialogObj: com.google.gson.JsonObject, baseVars: TemplateVars) {
         val built = SduiDialogBuilder(this).build(dialogObj, baseVars)
-
         activeDialog = built.dialog
 
         built.dialog.setOnShowListener {
@@ -205,20 +187,11 @@ class SduiActivity : AppCompatActivity() {
             typeface = Typeface.MONOSPACE
             textSize = 12f
             setPadding(24, 16, 24, 16)
-            isHorizontalScrollBarEnabled = true
-            isVerticalScrollBarEnabled = false
             setHorizontallyScrolling(true)
         }
 
-        val hScroll = HorizontalScrollView(this).apply {
-            isHorizontalScrollBarEnabled = true
-            addView(tv)
-        }
-
-        val vScroll = ScrollView(this).apply {
-            isVerticalScrollBarEnabled = true
-            addView(hScroll)
-        }
+        val hScroll = HorizontalScrollView(this).apply { addView(tv) }
+        val vScroll = ScrollView(this).apply { addView(hScroll) }
 
         MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_MonoForecast_MaterialAlertDialog)
             .setTitle(getString(R.string.bdui_raw_json_title))

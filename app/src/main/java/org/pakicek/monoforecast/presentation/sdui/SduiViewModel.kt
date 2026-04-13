@@ -46,10 +46,15 @@ class SduiViewModel(
     fun runAction(action: SduiAction, vars: TemplateVars, currentPath: String) {
         viewModelScope.launch {
             runCatching { engine.execute(action, vars) }
-                .onSuccess { effects ->
-                    effects.forEach { _effects.tryEmit(it) }
-                    val hasNavigate = effects.any { it is SduiEffect.Navigate }
-                    if (!hasNavigate) load(currentPath)
+                .onSuccess { res ->
+                    res.effects.forEach { _effects.tryEmit(it) }
+
+                    val hasNavigate = res.effects.any { it is SduiEffect.Navigate }
+                    val hasOpenDialog = res.effects.any { it is SduiEffect.OpenDialog }
+
+                    if (res.didMutate && !hasNavigate && !hasOpenDialog) {
+                        load(currentPath)
+                    }
                 }
                 .onFailure { e ->
                     _effects.tryEmit(SduiEffect.Message(e.message ?: "Action failed"))
